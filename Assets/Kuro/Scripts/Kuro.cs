@@ -9,8 +9,6 @@ using Rnd = UnityEngine.Random;
 
 public class Kuro : MonoBehaviour {
 
-    //todo create a class of the voice channels
-    //todo assign people to the chill vc randomly on start
     //todo fix pfps looking the opposite way
 
     private List<VoiceChannel> voiceChannels; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie
