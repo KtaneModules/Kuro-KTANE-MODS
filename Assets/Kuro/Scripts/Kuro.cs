@@ -12,7 +12,7 @@ public class Kuro : MonoBehaviour {
     //todo create a class of the voice channels
     //todo create the text channels objects
     //todo assign people to the chill vc randomly on start
-    //todo fix kuro pfps looking the opposite way
+    //todo fix pfps looking the opposite way
 
     private TextChannel generalTextChannel;
     private TextChannel modIdeasTextChannel;
@@ -22,8 +22,36 @@ public class Kuro : MonoBehaviour {
     public Material[] kuroMoods;
     private Material currentKuroMood;
 
-   private KMBombInfo Bomb;
-   private KMAudio Audio;
+    public Material acerPfp;
+    public Material blaisePfp;
+    public Material camiaPfp;
+    public Material cielPfp;
+    public Material curlPfp;
+    public Material goodhoodPfp;
+    public Material hawkerPfp;
+    public Material hazelPfp;
+    public Material kitPfp;
+    public Material marPfp;
+    public Material piccoloPfp;
+    public Material playPfp;
+
+    private Person acer;
+    private Person blaise;
+    private Person camia;
+    private Person ciel;
+    private Person curl;
+    private Person goodhood;
+    private Person hawker;
+    private Person hazel;
+    private Person kit;
+    private Person mar;
+    private Person piccolo;
+    private Person play;
+
+
+    private DateTime currentTime;
+    private KMBombInfo Bomb;
+    private KMAudio Audio;
 
    static int ModuleIdCounter = 1;
    int ModuleId;
@@ -34,6 +62,20 @@ public class Kuro : MonoBehaviour {
         Bomb = GetComponent<KMBombInfo>();
         Audio = GetComponent<KMAudio>();
         ModuleId = ModuleIdCounter++;
+
+
+        //creating people
+        acer = new Person(acerPfp);
+        blaise = new Person(blaisePfp);
+        camia = new Person(cielPfp);
+        curl = new Person(curlPfp);
+        goodhood = new Person(goodhoodPfp);
+        hawker = new Person(hawkerPfp);
+        hazel = new Person(hazelPfp);
+        kit = new Person(kitPfp);
+        mar = new Person(marPfp);
+        piccolo = new Person(piccoloPfp);
+        play = new Person(playPfp);
 
         //changing kuro pfp
         GameObject textChannels = transform.Find("Text Channels").gameObject;
@@ -69,6 +111,25 @@ public class Kuro : MonoBehaviour {
    void Update () {
 
    }
+
+    void OnActivate()
+    {
+        //calculations start here
+        currentTime = DateTime.Now;
+        DayOfWeek day = currentTime.DayOfWeek;
+
+        acer.SetTolerance(day);
+        blaise.SetTolerance(day);
+        camia.SetTolerance(day);
+        curl.SetTolerance(day);
+        goodhood.SetTolerance(day);
+        hawker.SetTolerance(day);
+        hazel.SetTolerance(day);
+        kit.SetTolerance(day);
+        mar.SetTolerance(day);
+        piccolo.SetTolerance(day);
+        play.SetTolerance(day);
+    }
 
     public TextChannel CreateTextChannel(GameObject gameObject)
     {

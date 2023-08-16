@@ -3083,6 +3083,18 @@ MonoBehaviour:
   - {fileID: 2100000, guid: a7bdf2723dcbda84ab64bdaea5b33699, type: 2}
   - {fileID: 2100000, guid: 76fef692b76d0b046ab580e8de2384fc, type: 2}
   - {fileID: 2100000, guid: 2ecb3da56a2da6244bb243a6f468b2b7, type: 2}
+  acerPfp: {fileID: 2100000, guid: b40f59387f915ba47ad66385f958d18e, type: 2}
+  blaisePfp: {fileID: 2100000, guid: e65782e0afaa40a4fb2a2fba6adb1ad5, type: 2}
+  camiaPfp: {fileID: 2100000, guid: 8f292ff1f5fa19847a8e54a8a13728db, type: 2}
+  cielPfp: {fileID: 2100000, guid: 1ca792a4c9943b0469560467ec9aeddf, type: 2}
+  curlPfp: {fileID: 2100000, guid: 13c716053613d61448815f5201800075, type: 2}
+  goodhoodPfp: {fileID: 2100000, guid: 081ec9a6ecf3f184682d1d458cc3718d, type: 2}
+  hawkerPfp: {fileID: 2100000, guid: ed77ad1ded508e54cb262b4bb6a5af18, type: 2}
+  hazelPfp: {fileID: 2100000, guid: 35033643a39894f40ba5b77d8140d168, type: 2}
+  kitPfp: {fileID: 2100000, guid: a46dd3eae6c43e74182932a97a97f8a3, type: 2}
+  marPfp: {fileID: 2100000, guid: 4ffab957bcc62d5449661366845be28b, type: 2}
+  piccoloPfp: {fileID: 2100000, guid: 1b8ca637a87edc946a03bb6bf774df5e, type: 2}
+  playPfp: {fileID: 2100000, guid: a43c9e94178479f4194ae906d0cdcdf8, type: 2}
 --- !u!114 &114157157113190852
 MonoBehaviour:
   m_ObjectHideFlags: 1
