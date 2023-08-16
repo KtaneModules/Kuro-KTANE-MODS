@@ -10,9 +10,12 @@ using Rnd = UnityEngine.Random;
 public class Kuro : MonoBehaviour {
 
     //todo create a class of the voice channels
-    //todo create the text channels objects
     //todo assign people to the chill vc randomly on start
     //todo fix pfps looking the opposite way
+
+    private List<VoiceChannel> voiceChannels; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie
+
+    public GameObject[] chillZoneAlfaPeople;
 
     private TextChannel generalTextChannel;
     private TextChannel modIdeasTextChannel;
@@ -35,18 +38,7 @@ public class Kuro : MonoBehaviour {
     public Material piccoloPfp;
     public Material playPfp;
 
-    private Person acer;
-    private Person blaise;
-    private Person camia;
-    private Person ciel;
-    private Person curl;
-    private Person goodhood;
-    private Person hawker;
-    private Person hazel;
-    private Person kit;
-    private Person mar;
-    private Person piccolo;
-    private Person play;
+    private List<Person> people; //acer, blaise, camia, ciel, curl, goodhood, hawker, hazel, kit, mar, piccolo, play
 
 
     private DateTime currentTime;
@@ -63,19 +55,55 @@ public class Kuro : MonoBehaviour {
         Audio = GetComponent<KMAudio>();
         ModuleId = ModuleIdCounter++;
 
-
         //creating people
-        acer = new Person(acerPfp);
-        blaise = new Person(blaisePfp);
-        camia = new Person(cielPfp);
-        curl = new Person(curlPfp);
-        goodhood = new Person(goodhoodPfp);
-        hawker = new Person(hawkerPfp);
-        hazel = new Person(hazelPfp);
-        kit = new Person(kitPfp);
-        mar = new Person(marPfp);
-        piccolo = new Person(piccoloPfp);
-        play = new Person(playPfp);
+        people = new List<Person>()
+        {
+            new Person(acerPfp),
+            new Person(blaisePfp),
+            new Person(camiaPfp),
+            new Person(cielPfp),
+            new Person(curlPfp),
+            new Person(goodhoodPfp),
+            new Person(hawkerPfp),
+            new Person(hazelPfp),
+            new Person(kitPfp),
+            new Person(marPfp),
+            new Person(piccoloPfp),
+            new Person(playPfp),
+        };
+
+        //create the vcs
+        voiceChannels = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaPeople), new VoiceChannel(null), new VoiceChannel(null) };
+
+        //set people in vcs
+
+        int[] vcCount = new int[3];
+
+        do
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                vcCount[i] = Rnd.Range(1, 4);
+            }
+        } while (vcCount.Distinct().Count() != 3);
+
+        List<Person> notInVcsPeople = people.Select(x => x).ToList();
+
+        for (int i = 0; i < 3; i++)
+        {
+            VoiceChannel vc = voiceChannels[i];
+            for (int j = 0; j < vcCount[i]; j++)
+            {
+                Person p = notInVcsPeople[Rnd.Range(0, notInVcsPeople.Count)];
+                notInVcsPeople.Remove(p);
+                vc.AddPerson(p);
+            }
+        }
+
+        voiceChannels.ForEach(x => Debug.Log(x.ToString()));
+
+        voiceChannels[0].DisplayPeople();
+
 
         //changing kuro pfp
         GameObject textChannels = transform.Find("Text Channels").gameObject;
@@ -117,18 +145,7 @@ public class Kuro : MonoBehaviour {
         //calculations start here
         currentTime = DateTime.Now;
         DayOfWeek day = currentTime.DayOfWeek;
-
-        acer.SetTolerance(day);
-        blaise.SetTolerance(day);
-        camia.SetTolerance(day);
-        curl.SetTolerance(day);
-        goodhood.SetTolerance(day);
-        hawker.SetTolerance(day);
-        hazel.SetTolerance(day);
-        kit.SetTolerance(day);
-        mar.SetTolerance(day);
-        piccolo.SetTolerance(day);
-        play.SetTolerance(day);
+        people.ForEach(person => person.SetTolerance(day));
     }
 
     public TextChannel CreateTextChannel(GameObject gameObject)

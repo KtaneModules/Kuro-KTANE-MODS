@@ -7,10 +7,15 @@ public class Person {
     public string Name { get; private set; }
     public Material ProfilePicture { get; private set; }
     public int Tolerance { get; private set;  }
+
+    public VoiceChannel voiceChanel { private get;  set; }
+
+    private bool InVC { get { return voiceChanel != null; } }
     public Person(Material picture)
     {
         Name = picture.name;
         ProfilePicture = picture;
+        voiceChanel = null;
     }
 
     public void SetTolerance(DayOfWeek day)
@@ -215,4 +220,5 @@ public class Person {
                 return int.MinValue;
         }
     }
+
 }
