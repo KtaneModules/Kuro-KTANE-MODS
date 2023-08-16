@@ -15,7 +15,9 @@ public class Kuro : MonoBehaviour {
 
     private List<VoiceChannel> voiceChannels; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie
 
-    public GameObject[] chillZoneAlfaPeople;
+    public GameObject chillZoneAlfaGameObject;
+    public GameObject chillZoneBravoGameObject;
+    public GameObject chillZoneCharlieGameObject;
 
     private TextChannel generalTextChannel;
     private TextChannel modIdeasTextChannel;
@@ -73,7 +75,7 @@ public class Kuro : MonoBehaviour {
         };
 
         //create the vcs
-        voiceChannels = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaPeople), new VoiceChannel(null), new VoiceChannel(null) };
+        voiceChannels = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaGameObject), new VoiceChannel(chillZoneBravoGameObject), new VoiceChannel(chillZoneCharlieGameObject) };
 
         //set people in vcs
 
@@ -100,9 +102,17 @@ public class Kuro : MonoBehaviour {
             }
         }
 
-        voiceChannels.ForEach(x => Debug.Log(x.ToString()));
+        voiceChannels.ForEach(x => { Debug.Log(x.ToString()); x.DisplayPeople(); });
 
-        voiceChannels[0].DisplayPeople();
+        const float offset = -0.0081f;
+
+        int alfaPeople = voiceChannels[0].PeopleCount;
+        int bravoPeople = voiceChannels[1].PeopleCount;
+
+        Vector3 bravoVector = chillZoneBravoGameObject.transform.localPosition;
+        chillZoneBravoGameObject.transform.localPosition = new Vector3(bravoVector.x, bravoVector.y, bravoVector.z + (offset * alfaPeople));
+        Vector3 charlieVector = chillZoneCharlieGameObject.transform.localPosition;
+        chillZoneCharlieGameObject.transform.localPosition = new Vector3(charlieVector.x, charlieVector.y, charlieVector.z + (offset * (alfaPeople + bravoPeople)));
 
 
         //changing kuro pfp

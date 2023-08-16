@@ -9,10 +9,16 @@ public class VoiceChannel
     private GameObject[] peopleGameObjects;
     public int PeopleCount { get { return people.Count; } }
 
-    public VoiceChannel(GameObject[] peopleGameObjects)
+    public VoiceChannel(GameObject gameObject)
     {
         people = new List<Person>();
-        this.peopleGameObjects = peopleGameObjects;
+
+        peopleGameObjects = new GameObject[3];
+
+        for (int i = 0; i < 3; i++)
+        {
+            peopleGameObjects[i] = gameObject.transform.Find($"Person {i + 1}").gameObject;
+        }
     }
 
     public void AddPerson(Person person)
@@ -27,16 +33,20 @@ public class VoiceChannel
 
     public void DisplayPeople()
     {
-        int maxIndex = Mathf.Min(PeopleCount, peopleGameObjects.Length);
-
-        for (int i = 0; i < maxIndex; i++)
+        for (int i = 0; i < PeopleCount; i++)
         {
             Person p = people[i];
-            MeshRenderer meshRenderer = peopleGameObjects[i].transform.Find("PFP").GetComponent<MeshRenderer>();
-            TextMesh textMesh = peopleGameObjects[i].transform.Find("Name").GetComponent<TextMesh>();
+            GameObject gameObject = peopleGameObjects[i];
+            MeshRenderer meshRenderer = gameObject.transform.Find("PFP").GetComponent<MeshRenderer>();
+            TextMesh textMesh = gameObject.transform.Find("Name").GetComponent<TextMesh>();
 
             meshRenderer.material = p.ProfilePicture;
             textMesh.text = p.Name;
+        }
+
+        for(int i = PeopleCount; i < 3; i++) 
+        {
+            peopleGameObjects[i].SetActive(false);
         }
     }
 
