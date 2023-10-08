@@ -21,6 +21,14 @@ public class Kuro : MonoBehaviour {
     public GameObject chillZoneBravoGameObject;
     public GameObject chillZoneCharlieGameObject;
 
+    public KMSelectable modIdeasButton;
+    public KMSelectable repoRequestButton;
+    public KMSelectable voiceTextModdedButton;
+    public KMSelectable moddedAlfaButton;
+    public KMSelectable chillZoneAlfaButton;
+    public KMSelectable chillZoneBravoButton;
+    public KMSelectable chillZoneCharlieButton;
+
     private TextChannel generalTextChannel;
     private TextChannel modIdeasTextChannel;
     private TextChannel repoRequestTextChannel;
@@ -48,18 +56,22 @@ public class Kuro : MonoBehaviour {
     private DateTime currentTime; //the time the bomb was activated
     private DateTime desiredTime; //th time used to figure out what to do
     private Enums.Task desiredTask; //the task needed to get done
-    private KMBombInfo Bomb;
+   
+    private KMBombInfo BombInfo;
     private KMAudio Audio;
+    private KMBombModule BombModule;
 
    static int ModuleIdCounter = 1;
    int ModuleId;
     private bool ModuleSolved, moduleActivated = false;
+    private bool debug = true;
 
 
     void Awake() {
 
-        Bomb = GetComponent<KMBombInfo>();
+        BombInfo = GetComponent<KMBombInfo>();
         Audio = GetComponent<KMAudio>();
+        BombModule = GetComponent<KMBombModule>();
         ModuleId = ModuleIdCounter++;
 
         //creating people
@@ -136,19 +148,19 @@ public class Kuro : MonoBehaviour {
         repoRequestTextChannel.Deactivate();
         voiceTextModdedTextChannel.Deactivate();
 
-
-        /*
-        foreach (KMSelectable object in keypad) {
-            object.OnInteract += delegate () { keypadPress(object); return false; };
-        }
-        */
-
-        //button.OnInteract += delegate () { buttonPress(); return false; };
+        //setting buttons
+        modIdeasButton.OnInteract += delegate () { if (moduleActivated) { OnModIdeas(); }  return false; };
+        repoRequestButton.OnInteract += delegate () { if (moduleActivated) { OnRepoRequest(); } return false; }; ;
+        voiceTextModdedButton.OnInteract += delegate () { if (moduleActivated) { OnVoiceTextModded(); } return false; }; ;
+        moddedAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnModdedAlfa(); } return false; }; ;
+        chillZoneAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneAlfa(); } return false; }; ;
+        chillZoneBravoButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneBravo(); } return false; }; ;
+        chillZoneCharlieButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneCharlie(); } return false; }; ;
     }
 
     void Start()
     {
-        GetComponent<KMBombModule>().OnActivate += OnActivate;
+        BombModule.OnActivate += OnActivate;
     }
 
     void OnActivate()
@@ -159,9 +171,9 @@ public class Kuro : MonoBehaviour {
         people.ForEach(person => person.SetTolerance(day));
 
         //Take the highest out of batteries, indicators and ports
-        int batteryCount = Bomb.GetBatteryCount();
-        int indicatorCount = Bomb.GetIndicators().Count();
-        int portCount = Bomb.GetPortCount();
+        int batteryCount = BombInfo.GetBatteryCount();
+        int indicatorCount = BombInfo.GetIndicators().Count();
+        int portCount = BombInfo.GetPortCount();
 
         int minuteOffset = 0;
 
@@ -192,7 +204,7 @@ public class Kuro : MonoBehaviour {
             Log("Port count is the highest. Minute offset is now " + minuteOffset);
         }
 
-        string serialNumber = Bomb.GetSerialNumber().ToUpper();
+        string serialNumber = BombInfo.GetSerialNumber().ToUpper();
 
         foreach (char c in serialNumber)
         {
@@ -227,6 +239,9 @@ public class Kuro : MonoBehaviour {
         else
             desiredTask = Enums.Task.Bed;
 
+        if (debug)
+            desiredTask = Enums.Task.MaintainRepo;
+
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
         moduleActivated = true;
     }
@@ -235,16 +250,80 @@ public class Kuro : MonoBehaviour {
 
     public TextChannel CreateTextChannel(GameObject gameObject)
     {
-        GameObject highlight = gameObject.transform.Find("highlight").gameObject;
+        GameObject highlight = gameObject.transform.Find("background").gameObject;
         TextMesh textMesh = gameObject.transform.Find("label").GetComponent<TextMesh>();
 
         return new TextChannel(textMesh, highlight);
+    }
+
+    private void OnModIdeas()
+    {
+        if (desiredTask != Enums.Task.CreateModule)
+        {
+            WrongChannel("#mod-ideas");
+            return;
+        }
+    }
+
+    private void OnRepoRequest()
+    { 
+        if(desiredTask != Enums.Task.MaintainRepo) 
+        {
+            WrongChannel("#repo-request");
+            return;
+        }
+    }
+
+    private void OnVoiceTextModded()
+    {
+        if (desiredTask != Enums.Task.PlayKTANE)
+        {
+            WrongChannel("#voice-text-modded");
+            return;
+        }
+    }
+
+    private void OnModdedAlfa()
+    {
+        if (desiredTask != Enums.Task.PlayKTANE)
+        {
+            WrongChannel("Modded Alfa");
+            return;
+        }
+    }
+
+    private void OnChillZoneAlfa()
+    {
+        if (desiredTask != Enums.Task.Eat)
+        {
+            WrongChannel("Chill Zone Alfa");
+            return;
+        }
+    }
+
+    private void OnChillZoneBravo()
+    {
+        if (desiredTask != Enums.Task.Eat)
+        {
+            WrongChannel("Chill Zone Bravo");
+            return;
+        }
+    }
+
+    private void OnChillZoneCharlie()
+    {
+        if (desiredTask != Enums.Task.Eat)
+        {
+            WrongChannel("Chill Zone Charlie");
+            return;
+        }
     }
 
     private string FormatHourMinute(DateTime dateTime)
     {
         return string.Format("{0:00}:{1:00}", dateTime.Hour, dateTime.Minute);
     }
+
 
     private string GetTask(Enums.Task task) 
     {
@@ -264,6 +343,19 @@ public class Kuro : MonoBehaviour {
 
         return "ERROR";
     }
+
+    private void WrongChannel(string location)
+    {
+        Strike($"You don't need to go to {location}. Strike!");
+    }
+
+    private void Strike(string s)
+    {
+        if (s != "")
+            Debug.Log($"[Kuro #{ModuleId}] {s}");
+        BombModule.HandleStrike();
+    }
+
     private void Log(string s)
     {
         Debug.Log($"[Kuro #{ModuleId}] {s}");

@@ -113,6 +113,23 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &123062990 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1871800697246728, guid: f14fcc42174e6004181c93929d509c2a,
+    type: 2}
+  m_PrefabInternal: {fileID: 202812562}
+--- !u!114 &123062991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 123062990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521675aa30601cf448da626847a0d250, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderer: {fileID: 1087490039}
 --- !u!1001 &202812562
 Prefab:
   m_ObjectHideFlags: 0
@@ -152,6 +169,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 23604185179493306, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 23604185179493306, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dab20a794dec6564ea551732970b9f8b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -202,6 +229,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8814ea52310d2614a9feda02ec355ae4, type: 2}
   m_IsPrefabParent: 0
+--- !u!23 &1087490039 stripped
+MeshRenderer:
+  m_PrefabParentObject: {fileID: 23604185179493306, guid: f14fcc42174e6004181c93929d509c2a,
+    type: 2}
+  m_PrefabInternal: {fileID: 202812562}
 --- !u!1 &1251366466
 GameObject:
   m_ObjectHideFlags: 0
