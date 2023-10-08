@@ -9,7 +9,11 @@ using Rnd = UnityEngine.Random;
 
 public class Kuro : MonoBehaviour {
 
+    //todo make text on module a bit bigger X
     //todo fix pfps looking the opposite way
+    //todo calcuate the correct time X
+    //todo based on the correct time, make them do the correct thing
+    //todo maintaining the repo
 
     private List<VoiceChannel> voiceChannels; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie
 
@@ -41,13 +45,16 @@ public class Kuro : MonoBehaviour {
     private List<Person> people; //acer, blaise, camia, ciel, curl, goodhood, hawker, hazel, kit, mar, piccolo, play
 
 
-    private DateTime currentTime;
+    private DateTime currentTime; //the time the bomb was activated
+    private DateTime desiredTime; //th time used to figure out what to do
+    private Enums.Task desiredTask; //the task needed to get done
     private KMBombInfo Bomb;
     private KMAudio Audio;
 
    static int ModuleIdCounter = 1;
    int ModuleId;
-   private bool ModuleSolved;
+    private bool ModuleSolved, moduleActivated = false;
+
 
     void Awake() {
 
@@ -100,7 +107,7 @@ public class Kuro : MonoBehaviour {
             }
         }
 
-        voiceChannels.ForEach(x => { Debug.Log(x.ToString()); x.DisplayPeople(); });
+        voiceChannels.ForEach(x => { x.DisplayPeople(); });
 
         const float offset = -0.0081f;
 
@@ -137,16 +144,12 @@ public class Kuro : MonoBehaviour {
         */
 
         //button.OnInteract += delegate () { buttonPress(); return false; };
-
     }
 
-    void Start () {
-
-   }
-
-   void Update () {
-
-   }
+    void Start()
+    {
+        GetComponent<KMBombModule>().OnActivate += OnActivate;
+    }
 
     void OnActivate()
     {
@@ -154,7 +157,81 @@ public class Kuro : MonoBehaviour {
         currentTime = DateTime.Now;
         DayOfWeek day = currentTime.DayOfWeek;
         people.ForEach(person => person.SetTolerance(day));
+
+        //Take the highest out of batteries, indicators and ports
+        int batteryCount = Bomb.GetBatteryCount();
+        int indicatorCount = Bomb.GetIndicators().Count();
+        int portCount = Bomb.GetPortCount();
+
+        int minuteOffset = 0;
+
+
+        Log("Current Time: " + FormatHourMinute(currentTime));
+        Log("Battery Count: " + batteryCount);
+        Log("Indicator Count: " + indicatorCount);
+        Log("Port Count: " + portCount);
+
+        //If the number of batteries is the highest, add 1 hour for each batteries
+        if (batteryCount > indicatorCount && batteryCount > portCount)
+        { 
+            minuteOffset = 60 * batteryCount;
+            Log("Battery count is the highest. Minute offset is now " + minuteOffset);
+        }
+
+        //Otherwise, if the number of indicators is the highest, add 30 minutes for each indicators
+        if (indicatorCount > batteryCount && indicatorCount > portCount)
+        {
+            minuteOffset = 30 * indicatorCount;
+            Log("Indicator count is the highest. Minute offset is now " + minuteOffset);
+        }
+
+        //Otherwise, add 15 minutes for each port
+        else
+        {
+            minuteOffset = 15 * portCount;
+            Log("Port count is the highest. Minute offset is now " + minuteOffset);
+        }
+
+        string serialNumber = Bomb.GetSerialNumber().ToUpper();
+
+        foreach (char c in serialNumber)
+        {
+            if (Char.IsLetter(c))
+            {
+                if ("AEIOU".Contains(c))
+                {
+                    minuteOffset -= 60;
+                    Log($"{c} is a vowel. Minute offset is now {minuteOffset}");
+                }
+
+                else
+                { 
+                    minuteOffset -= 30;
+                    Log($"{c} is a consonant. Minute offset is now {minuteOffset}");
+                }
+            }
+        }
+
+        desiredTime = currentTime.AddMinutes(minuteOffset);
+        
+        int fullMiutes = desiredTime.Hour * 60 + desiredTime.Minute;
+
+        if (fullMiutes >= 9 * 60 && fullMiutes <= 12 * 60 + 59)
+            desiredTask = Enums.Task.MaintainRepo;
+        else if (fullMiutes >= 13 * 60 && fullMiutes <= 15 * 60 + 59)
+            desiredTask = Enums.Task.CreateModule;
+        else if (fullMiutes >= 16 * 60 && fullMiutes <= 18 * 60 + 59)
+            desiredTask = Enums.Task.CreateModule;
+        else if (fullMiutes >= 19 * 60 && fullMiutes <= 21 * 60 + 59)
+            desiredTask = Enums.Task.PlayKTANE;
+        else
+            desiredTask = Enums.Task.Bed;
+
+        Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
+        moduleActivated = true;
     }
+
+
 
     public TextChannel CreateTextChannel(GameObject gameObject)
     {
@@ -162,6 +239,34 @@ public class Kuro : MonoBehaviour {
         TextMesh textMesh = gameObject.transform.Find("label").GetComponent<TextMesh>();
 
         return new TextChannel(textMesh, highlight);
+    }
+
+    private string FormatHourMinute(DateTime dateTime)
+    {
+        return string.Format("{0:00}:{1:00}", dateTime.Hour, dateTime.Minute);
+    }
+
+    private string GetTask(Enums.Task task) 
+    {
+        switch (task) 
+        {
+            case Enums.Task.MaintainRepo:
+                return "maintaining the repo";
+            case Enums.Task.CreateModule:
+                return "creating a module";
+            case Enums.Task.Eat:
+                return "eating";
+            case Enums.Task.PlayKTANE:
+                return "playing KTANE";
+            case Enums.Task.Bed:
+                return "getting ready for bed";
+        }
+
+        return "ERROR";
+    }
+    private void Log(string s)
+    {
+        Debug.Log($"[Kuro #{ModuleId}] {s}");
     }
 
 #pragma warning disable 414
