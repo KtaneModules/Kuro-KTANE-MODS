@@ -2,18 +2,43 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using KModkit;
 using Rnd = UnityEngine.Random;
+using UnityEngine.UI;
 
 public class Kuro : MonoBehaviour {
 
-    //todo make text on module a bit bigger X
+    //x todo make text on module a bit bigger
+    //x todo calcuate the correct time
     //todo fix pfps looking the opposite way
-    //todo calcuate the correct time X
     //todo based on the correct time, make them do the correct thing
     //todo maintaining the repo
+    //x todo -get all modules from the repo
+    //x todo --if json can't be gotten, have the people say to choose anyone to solve the module
+    //todo -test in game if a module appears, the tolerance multiplies itself by 2
+    //todo -add button interaction to profile pictures
+    //todo have a solved state where it shows people's game activity
+    //todo fix the bug of the time not being displayed properly in the log
+    // todo figure out why you got an out of range error from just loading the module 
+    private static RepoJSONGetter jsonData;
+
+    #region Repo Request
+    [SerializeField]
+    private GameObject repoRequestGameObject;
+
+    private int[] repoRequestValue = { 0, 0, 0 };
+
+    private bool repoRequestCalculatedValues = false; //tells if we are done calculating values'
+
+    [SerializeField]
+    private KMSelectable[] repoRequestPfpButtons;
+
+    private Person[] repoRequestPeople;
+    #endregion
+
+
+
 
     private List<VoiceChannel> voiceChannels; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie
 
@@ -35,7 +60,7 @@ public class Kuro : MonoBehaviour {
     private TextChannel voiceTextModdedTextChannel;
 
     public Material[] kuroMoods;
-    private Material currentKuroMood;
+
 
     public Material acerPfp;
     public Material blaisePfp;
@@ -52,7 +77,9 @@ public class Kuro : MonoBehaviour {
 
     private List<Person> people; //acer, blaise, camia, ciel, curl, goodhood, hawker, hazel, kit, mar, piccolo, play
 
-
+    private Material currentKuroMood; //kuro's mood
+    private Enums.TextLocation currentTextLocation;
+    private Enums.VoiceLocation currentVoiceLocation;
     private DateTime currentTime; //the time the bomb was activated
     private DateTime desiredTime; //th time used to figure out what to do
     private Enums.Task desiredTask; //the task needed to get done
@@ -68,7 +95,6 @@ public class Kuro : MonoBehaviour {
 
 
     void Awake() {
-
         BombInfo = GetComponent<KMBombInfo>();
         Audio = GetComponent<KMAudio>();
         BombModule = GetComponent<KMBombModule>();
@@ -113,7 +139,7 @@ public class Kuro : MonoBehaviour {
             VoiceChannel vc = voiceChannels[i];
             for (int j = 0; j < vcCount[i]; j++)
             {
-                Person p = notInVcsPeople[Rnd.Range(0, notInVcsPeople.Count)];
+                Person p = notInVcsPeople.PickRandom();
                 notInVcsPeople.Remove(p);
                 vc.AddPerson(p);
             }
@@ -135,8 +161,12 @@ public class Kuro : MonoBehaviour {
         //changing kuro pfp
         GameObject textChannels = transform.Find("Text Channels").gameObject;
         MeshRenderer kuroPfp = transform.Find("Profile").Find("PFP").GetComponent<MeshRenderer>();
-        currentKuroMood = kuroMoods[Rnd.Range(0, kuroMoods.Length)];
+        currentKuroMood = kuroMoods.PickRandom();
         kuroPfp.material = currentKuroMood;
+
+        //set locations
+        currentTextLocation = Enums.TextLocation.None;
+        currentVoiceLocation = Enums.VoiceLocation.None;
 
         //setting text channels
         generalTextChannel = CreateTextChannel(textChannels.transform.Find("general").gameObject);
@@ -148,6 +178,9 @@ public class Kuro : MonoBehaviour {
         repoRequestTextChannel.Deactivate();
         voiceTextModdedTextChannel.Deactivate();
 
+        //hide reqo request
+        repoRequestGameObject.SetActive(false);
+
         //setting buttons
         modIdeasButton.OnInteract += delegate () { if (moduleActivated) { OnModIdeas(); }  return false; };
         repoRequestButton.OnInteract += delegate () { if (moduleActivated) { OnRepoRequest(); } return false; }; ;
@@ -155,21 +188,44 @@ public class Kuro : MonoBehaviour {
         moddedAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnModdedAlfa(); } return false; }; ;
         chillZoneAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneAlfa(); } return false; }; ;
         chillZoneBravoButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneBravo(); } return false; }; ;
-        chillZoneCharlieButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneCharlie(); } return false; }; ;
+        chillZoneCharlieButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneCharlie(); } return false; };
+
+        //repo request buttons
+
+        for (int i = 0; i < 3; i++)
+        {
+            int dummy = i;
+            repoRequestPfpButtons[dummy].OnInteract += delegate () { OnRepoRequestProfilePic(dummy); return false; };
+        }
     }
 
-    void Start()
+    IEnumerator Start()
     {
         BombModule.OnActivate += OnActivate;
+
+        jsonData = gameObject.GetComponent<RepoJSONGetter>();
+
+        //if data is not done loaded
+        if (!RepoJSONGetter.LoadingDone)
+        {
+            //if not already loading, load
+            if (!RepoJSONGetter.Loading)
+                yield return jsonData.LoadData();
+
+            //if aleady loading, wait until loading is done
+            else
+            {
+                do
+                {
+                    yield return new WaitForSeconds(0.1f);
+
+                } while (!RepoJSONGetter.LoadingDone);
+            }
+        }
     }
 
     void OnActivate()
     {
-        //calculations start here
-        currentTime = DateTime.Now;
-        DayOfWeek day = currentTime.DayOfWeek;
-        people.ForEach(person => person.SetTolerance(day));
-
         //Take the highest out of batteries, indicators and ports
         int batteryCount = BombInfo.GetBatteryCount();
         int indicatorCount = BombInfo.GetIndicators().Count();
@@ -191,7 +247,7 @@ public class Kuro : MonoBehaviour {
         }
 
         //Otherwise, if the number of indicators is the highest, add 30 minutes for each indicators
-        if (indicatorCount > batteryCount && indicatorCount > portCount)
+        else if (indicatorCount > batteryCount && indicatorCount > portCount)
         {
             minuteOffset = 30 * indicatorCount;
             Log("Indicator count is the highest. Minute offset is now " + minuteOffset);
@@ -242,6 +298,8 @@ public class Kuro : MonoBehaviour {
         if (debug)
             desiredTask = Enums.Task.MaintainRepo;
 
+        people.ForEach(person => person.SetTolerance(desiredTime.DayOfWeek));
+
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
         moduleActivated = true;
     }
@@ -272,6 +330,128 @@ public class Kuro : MonoBehaviour {
             WrongChannel("#repo-request");
             return;
         }
+
+        if (currentTextLocation == Enums.TextLocation.None)
+        {
+            Dictionary<string, int> dictionary = new Dictionary<string, int>()
+            {
+                ["Make an interactive for"] = -2,
+                ["Upload manual for"] = -1,
+                ["Fix grammar mistakes in"] = 0,
+                ["Add dark mode support to"] = 1,
+                ["Add LFA Support to"] = 2,
+                ["Svgify"] = 3,
+            };
+
+            Text[] requestsText = Enumerable.Range(1, 3).Select(x => repoRequestGameObject.transform.Find("Canvas").Find($"Person {x} Text").GetComponent<Text>()).ToArray();
+            
+            if (!RepoJSONGetter.Success)
+            {
+                requestsText[0].text = requestsText[1].text = requestsText[2].text = "Unable get data. Select any pfp to solve the module";
+            }
+
+            else
+            {
+                do
+                {
+                    repoRequestPeople = Enumerable.Range(1, 3).Select(i => people.PickRandom()).ToArray();
+                }
+                while (repoRequestPeople.Distinct().Count() != 3);
+
+                for (int i = 0; i < 3; i++)
+                {
+                    //setting up request and people
+                    MeshRenderer meshRenderer = repoRequestGameObject.transform.Find($"Person {i + 1}").Find("PFP").GetComponent<MeshRenderer>();
+                    TextMesh textMesh = repoRequestGameObject.transform.Find($"Person {i + 1}").Find("Name").GetComponent<TextMesh>();
+                    Person p = repoRequestPeople[i];
+
+                    meshRenderer.material = p.ProfilePicture;
+                    textMesh.text = p.Name;
+
+                    KeyValuePair<string, int> kv = dictionary.PickRandom();
+                    string moduleName = RepoJSONGetter.ModuleNames.PickRandom();
+
+                    requestsText[i].text = $"{kv.Key} {moduleName}";
+
+                    //calculating values
+                    int tolerance = p.Tolerance;
+
+                    Log($"{p.Name}'s request: {requestsText[i].text}");
+
+                    Log($"{p.Name} has an inital tolerance of {tolerance}");
+
+                    if (tolerance != int.MinValue)
+                    {
+                        //modify it based on what the task is
+                        tolerance += kv.Value;
+
+                        Log($"Modify it by {kv.Value}. Tolerance is now {tolerance}");
+
+                        //If the module that is named in the request is on the bomb, double the value
+                        if (BombInfo.GetModuleNames().Contains(moduleName))
+                        {
+                            tolerance *= 2;
+                            Log($"{moduleName} is on the bomb. Tolerance is now {tolerance}");
+                        }
+                    }
+
+                    Log($"{p.Name} has a total tolerance of {GetTolerance(tolerance)}");
+                    repoRequestValue[i] = tolerance;       
+                }
+            }
+            repoRequestGameObject.SetActive(true);
+            currentTextLocation = Enums.TextLocation.RepoRequest;
+            repoRequestCalculatedValues = true;
+        }
+    }
+
+    public void OnRepoRequestProfilePic(int index)
+    {
+        Log($"You chose {repoRequestPeople[index]}");
+
+        if (!ModuleSolved || !repoRequestCalculatedValues)
+            return;
+
+        //if the data could not be laoded properly
+        if (!RepoJSONGetter.Success)
+        {
+            Solve("Data could not be loaded. Solving module...");
+            return;
+        }
+
+        int max = repoRequestValue.Max();
+
+        //check to see this index is the max
+        if (repoRequestValue[index] == max)
+        {
+            //all the indicies that have the max value
+            List<int> maxIndex = new List<int>();
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (max == repoRequestValue[i])
+                    maxIndex.Add(i);
+            }
+
+            if (maxIndex.Count != 1)
+            {
+                if (maxIndex[0] != index)
+                {
+                    Strike($"{repoRequestPeople[0]} was higher in the list. Strike!");
+                    return;
+                }
+            }
+
+            else
+            {
+                Solve("Solving module...");
+            }
+        }
+    }
+
+    private string GetTolerance(int num)
+    {
+        return num == int.MinValue ? "Skull" : num.ToString();
     }
 
     private void OnVoiceTextModded()
@@ -321,7 +501,7 @@ public class Kuro : MonoBehaviour {
 
     private string FormatHourMinute(DateTime dateTime)
     {
-        return string.Format("{0:00}:{1:00}", dateTime.Hour, dateTime.Minute);
+        return $"{dateTime.DayOfWeek}, {dateTime.Hour.ToString("00")}:{dateTime.Minute.ToString("00")}";
     }
 
 
@@ -347,6 +527,14 @@ public class Kuro : MonoBehaviour {
     private void WrongChannel(string location)
     {
         Strike($"You don't need to go to {location}. Strike!");
+    }
+
+    private void Solve(string s)
+    {
+        if (s != "")
+            Debug.Log($"[Kuro #{ModuleId}] {s}");
+        BombModule.HandlePass();
+        ModuleSolved = true;
     }
 
     private void Strike(string s)

@@ -1,2 +1,46 @@
-Replace this with a JSON generated at ktane.timwi.de (see Tools -> Create new module)
-Don't forget to add Tags to the description that describe what your module LOOKS LIKE to be able to find it in the list from the defuser's description.
+{
+    "Compatibility": "Compatible",
+    "Contributors": {
+        "Developer": [
+            "Hawker"
+        ],
+        "Modeling": [
+            "Kuro"
+        ]
+    },
+    "DefuserDifficulty": "Medium",
+    "Description": "Answer challenging trivia questions. Tags: weakest-link, blue-background, blackboard, black-screen, names, subjects, oval-button, circle-button",
+    "ExpertDifficulty": "Medium",
+    "ModuleID": "TheWeakestLink",
+    "Name": "The Weakest Link",
+    "Origin": "Mods",
+    "Published": "2023-06-11",
+    "TimeMode": {
+        "Score": 15,
+        "Origin": "TwitchPlays"
+    },
+    "SourceUrl": "https://github.com/KTANE-MODS/Weakest-Link",
+    "Souvenir": {
+        "Status": "Supported"
+    },
+    "SteamID": "2987856391",
+    "Symbol": "Twl",
+    "TutorialVideos": [
+        {
+            "Language": "English",
+            "Url": "https://www.youtube.com/watch?v=g2m0ekqks-A"
+        }
+    ],
+    "Type": "Regular",
+    "Author": "Hawker",
+    "TwitchPlays": {
+        "Score": 15,
+        "ScoreString": "15"
+    },
+    "Sheets": [
+        "|html|0",
+        "|pdf|2"
+    ],
+    "X": 30,
+    "Y": 40
+}

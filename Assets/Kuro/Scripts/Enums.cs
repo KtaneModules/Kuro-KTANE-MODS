@@ -12,4 +12,22 @@ public class Enums {
         PlayKTANE,
         Bed
     }
+
+    public enum TextLocation
+    { 
+        General,
+        ModIdeas,
+        RepoRequest,
+        VoiceTextModded,
+        None,
+    }
+
+    public enum VoiceLocation 
+    {
+        ModdedAlfa,
+        ChillZoneAlfa,
+        ChillZoneBravo,
+        ChillZoneCharlie,
+        None
+    }
 }
