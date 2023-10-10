@@ -16,37 +16,46 @@ public class Kuro : MonoBehaviour {
     //todo maintaining the repo
     //x todo -get all modules from the repo
     //x todo --if json can't be gotten, have the people say to choose anyone to solve the module
+    //x todo -add button interaction to profile pictures
+    //x todo -test to see if the module solves if the loading fails and any pfp is pressed
     //todo -test in game if a module appears, the tolerance multiplies itself by 2
-    //todo -add button interaction to profile pictures
+    //x todo fix the bug of the time not being displayed properly in the log
+    //x todo figure out why you got an out of range error from just loading the module 
+    //x todo have a set up module method that will deal with what is shown and the buttons. (Call it in start before module loading starts)
+    //x todo have the custom highlighting work with all voice / text channels
+    //x todo have a loading state (that doesn't break all the kms)
+    //todo when a channel is active, deactivate the other one (fix a bug where the gray highlighting disappears when the highlight event ends)
     //todo have a solved state where it shows people's game activity
-    //todo fix the bug of the time not being displayed properly in the log
-    // todo figure out why you got an out of range error from just loading the module 
+
+    //todo beta testing
+    //todo -maintaining the repo
     private static RepoJSONGetter jsonData;
 
+    #region Module States
+    private GameObject moduleActiveState, loadingState, solvedState;
+    #endregion
+
     #region Repo Request
-    [SerializeField]
     private GameObject repoRequestGameObject;
 
     private int[] repoRequestValue = { 0, 0, 0 };
 
     private bool repoRequestCalculatedValues = false; //tells if we are done calculating values'
 
-    [SerializeField]
     private KMSelectable[] repoRequestPfpButtons;
 
     private Person[] repoRequestPeople;
     #endregion
 
 
+    #region voice/text channels
+    private List<VoiceChannel> voiceChannelList; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie
 
-
-    private List<VoiceChannel> voiceChannels; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie
-
-    public GameObject chillZoneAlfaGameObject;
+    private GameObject chillZoneAlfaGameObject;
     public GameObject chillZoneBravoGameObject;
     public GameObject chillZoneCharlieGameObject;
 
-    public KMSelectable modIdeasButton;
+    private KMSelectable modIdeasButton;
     public KMSelectable repoRequestButton;
     public KMSelectable voiceTextModdedButton;
     public KMSelectable moddedAlfaButton;
@@ -58,6 +67,7 @@ public class Kuro : MonoBehaviour {
     private TextChannel modIdeasTextChannel;
     private TextChannel repoRequestTextChannel;
     private TextChannel voiceTextModdedTextChannel;
+    private List<TextChannel> textChannelList;
 
     public Material[] kuroMoods;
 
@@ -78,130 +88,38 @@ public class Kuro : MonoBehaviour {
     private List<Person> people; //acer, blaise, camia, ciel, curl, goodhood, hawker, hazel, kit, mar, piccolo, play
 
     private Material currentKuroMood; //kuro's mood
+    #endregion
+
+
     private Enums.TextLocation currentTextLocation;
     private Enums.VoiceLocation currentVoiceLocation;
     private DateTime currentTime; //the time the bomb was activated
     private DateTime desiredTime; //th time used to figure out what to do
     private Enums.Task desiredTask; //the task needed to get done
-   
+
     private KMBombInfo BombInfo;
     private KMAudio Audio;
     private KMBombModule BombModule;
 
-   static int ModuleIdCounter = 1;
-   int ModuleId;
+    static int ModuleIdCounter = 1;
+    int ModuleId;
     private bool ModuleSolved, moduleActivated = false;
     private bool debug = true;
 
 
-    void Awake() {
+    void Awake()
+    {
         BombInfo = GetComponent<KMBombInfo>();
         Audio = GetComponent<KMAudio>();
         BombModule = GetComponent<KMBombModule>();
         ModuleId = ModuleIdCounter++;
-
-        //creating people
-        people = new List<Person>()
-        {
-            new Person(acerPfp),
-            new Person(blaisePfp),
-            new Person(camiaPfp),
-            new Person(cielPfp),
-            new Person(curlPfp),
-            new Person(goodhoodPfp),
-            new Person(hawkerPfp),
-            new Person(hazelPfp),
-            new Person(kitPfp),
-            new Person(marPfp),
-            new Person(piccoloPfp),
-            new Person(playPfp),
-        };
-
-        //create the vcs
-        voiceChannels = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaGameObject), new VoiceChannel(chillZoneBravoGameObject), new VoiceChannel(chillZoneCharlieGameObject) };
-
-        //set people in vcs
-
-        int[] vcCount = new int[3];
-
-        do
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                vcCount[i] = Rnd.Range(1, 4);
-            }
-        } while (vcCount.Distinct().Count() != 3);
-
-        List<Person> notInVcsPeople = people.Select(x => x).ToList();
-
-        for (int i = 0; i < 3; i++)
-        {
-            VoiceChannel vc = voiceChannels[i];
-            for (int j = 0; j < vcCount[i]; j++)
-            {
-                Person p = notInVcsPeople.PickRandom();
-                notInVcsPeople.Remove(p);
-                vc.AddPerson(p);
-            }
-        }
-
-        voiceChannels.ForEach(x => { x.DisplayPeople(); });
-
-        const float offset = -0.0081f;
-
-        int alfaPeople = voiceChannels[0].PeopleCount;
-        int bravoPeople = voiceChannels[1].PeopleCount;
-
-        Vector3 bravoVector = chillZoneBravoGameObject.transform.localPosition;
-        chillZoneBravoGameObject.transform.localPosition = new Vector3(bravoVector.x, bravoVector.y, bravoVector.z + (offset * alfaPeople));
-        Vector3 charlieVector = chillZoneCharlieGameObject.transform.localPosition;
-        chillZoneCharlieGameObject.transform.localPosition = new Vector3(charlieVector.x, charlieVector.y, charlieVector.z + (offset * (alfaPeople + bravoPeople)));
-
-
-        //changing kuro pfp
-        GameObject textChannels = transform.Find("Text Channels").gameObject;
-        MeshRenderer kuroPfp = transform.Find("Profile").Find("PFP").GetComponent<MeshRenderer>();
-        currentKuroMood = kuroMoods.PickRandom();
-        kuroPfp.material = currentKuroMood;
-
-        //set locations
-        currentTextLocation = Enums.TextLocation.None;
-        currentVoiceLocation = Enums.VoiceLocation.None;
-
-        //setting text channels
-        generalTextChannel = CreateTextChannel(textChannels.transform.Find("general").gameObject);
-        modIdeasTextChannel = CreateTextChannel(textChannels.transform.Find("mod ideas").gameObject);
-        repoRequestTextChannel = CreateTextChannel(textChannels.transform.Find("repo request").gameObject);
-        voiceTextModdedTextChannel = CreateTextChannel(textChannels.transform.Find("voice text modded").gameObject);
-        generalTextChannel.Activate();
-        modIdeasTextChannel.Deactivate();
-        repoRequestTextChannel.Deactivate();
-        voiceTextModdedTextChannel.Deactivate();
-
-        //hide reqo request
-        repoRequestGameObject.SetActive(false);
-
-        //setting buttons
-        modIdeasButton.OnInteract += delegate () { if (moduleActivated) { OnModIdeas(); }  return false; };
-        repoRequestButton.OnInteract += delegate () { if (moduleActivated) { OnRepoRequest(); } return false; }; ;
-        voiceTextModdedButton.OnInteract += delegate () { if (moduleActivated) { OnVoiceTextModded(); } return false; }; ;
-        moddedAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnModdedAlfa(); } return false; }; ;
-        chillZoneAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneAlfa(); } return false; }; ;
-        chillZoneBravoButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneBravo(); } return false; }; ;
-        chillZoneCharlieButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneCharlie(); } return false; };
-
-        //repo request buttons
-
-        for (int i = 0; i < 3; i++)
-        {
-            int dummy = i;
-            repoRequestPfpButtons[dummy].OnInteract += delegate () { OnRepoRequestProfilePic(dummy); return false; };
-        }
     }
 
     IEnumerator Start()
     {
         BombModule.OnActivate += OnActivate;
+
+        SetUpModule();
 
         jsonData = gameObject.GetComponent<RepoJSONGetter>();
 
@@ -222,17 +140,145 @@ public class Kuro : MonoBehaviour {
                 } while (!RepoJSONGetter.LoadingDone);
             }
         }
+
+        loadingState.SetActive(false);
+        moduleActiveState.SetActive(true);
+    }
+
+    void SetUpModule()
+    {
+        //get gameobjects
+        moduleActiveState = transform.Find("Module Active State").gameObject;
+        loadingState = transform.Find("Loading State").gameObject;
+        solvedState = transform.Find("Solved State").gameObject;
+        repoRequestGameObject = moduleActiveState.transform.Find("Repo Request").gameObject;
+
+        Transform voiceChannelTransform = moduleActiveState.transform.Find("Voice Channels");
+
+        chillZoneAlfaGameObject = voiceChannelTransform.Find("Chill Zone Alfa").gameObject;
+        chillZoneBravoGameObject = voiceChannelTransform.Find("Chill Zone Bravo").gameObject;
+        chillZoneCharlieGameObject = voiceChannelTransform.Find("Chill Zone Charlie").gameObject;
+
+
+        //creating people
+        people = new List<Person>()
+        {
+            new Person(acerPfp),
+            new Person(blaisePfp),
+            new Person(camiaPfp),
+            new Person(cielPfp),
+            new Person(curlPfp),
+            new Person(goodhoodPfp),
+            new Person(hawkerPfp),
+            new Person(hazelPfp),
+            new Person(kitPfp),
+            new Person(marPfp),
+            new Person(piccoloPfp),
+            new Person(playPfp),
+        };
+
+        //create the vcs
+        voiceChannelList = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaGameObject), new VoiceChannel(chillZoneBravoGameObject), new VoiceChannel(chillZoneCharlieGameObject) };
+
+        voiceChannelList.ForEach(t => t.Deactivate());
+
+        //show the loading state
+        solvedState.SetActive(false);
+        moduleActiveState.SetActive(false);
+
+        //hide reqo request
+        repoRequestGameObject.SetActive(false);
+
+        //set people in vcs
+
+        int[] vcCount = new int[3];
+
+        do
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                vcCount[i] = Rnd.Range(1, 4);
+            }
+        } while (vcCount.Distinct().Count() != 3);
+
+        List<Person> notInVcsPeople = people.Select(x => x).ToList();
+
+        for (int i = 0; i < 3; i++)
+        {
+            VoiceChannel vc = voiceChannelList[i];
+            for (int j = 0; j < vcCount[i]; j++)
+            {
+                Person p = notInVcsPeople.PickRandom();
+                notInVcsPeople.Remove(p);
+                vc.AddPerson(p);
+            }
+        }
+
+        voiceChannelList.ForEach(x => { x.DisplayPeople(); });
+
+        const float offset = -0.0081f;
+
+        int alfaPeople = voiceChannelList[0].PeopleCount;
+        int bravoPeople = voiceChannelList[1].PeopleCount;
+
+        Vector3 bravoVector = chillZoneBravoGameObject.transform.localPosition;
+        chillZoneBravoGameObject.transform.localPosition = new Vector3(bravoVector.x, bravoVector.y, bravoVector.z + (offset * alfaPeople));
+        Vector3 charlieVector = chillZoneCharlieGameObject.transform.localPosition;
+        chillZoneCharlieGameObject.transform.localPosition = new Vector3(charlieVector.x, charlieVector.y, charlieVector.z + (offset * (alfaPeople + bravoPeople)));
+
+
+        //changing kuro pfp
+        GameObject textChannels = moduleActiveState.transform.Find("Text Channels").gameObject;
+        MeshRenderer kuroPfp = moduleActiveState.transform.Find("Profile").Find("PFP").GetComponent<MeshRenderer>();
+        currentKuroMood = kuroMoods.PickRandom();
+        kuroPfp.material = currentKuroMood;
+
+        //set locations
+        currentTextLocation = Enums.TextLocation.None;
+        currentVoiceLocation = Enums.VoiceLocation.None;
+
+        //setting text channels
+        generalTextChannel = CreateTextChannel(textChannels.transform.Find("general").gameObject);
+        modIdeasTextChannel = CreateTextChannel(textChannels.transform.Find("mod ideas").gameObject);
+        repoRequestTextChannel = CreateTextChannel(textChannels.transform.Find("repo request").gameObject);
+        voiceTextModdedTextChannel = CreateTextChannel(textChannels.transform.Find("voice text modded").gameObject);
+
+        textChannelList = new List<TextChannel>() { generalTextChannel, modIdeasTextChannel, repoRequestTextChannel, voiceTextModdedTextChannel };
+        textChannelList.ForEach(t => t.Deactivate());
+        generalTextChannel.Activate();
+
+
+    //setting buttons
+        modIdeasButton = textChannels.transform.Find("mod ideas").GetComponent<KMSelectable>();
+        modIdeasButton.OnInteract += delegate () { if (moduleActivated) { OnModIdeas(); } return false; };
+        
+        repoRequestButton.OnInteract += delegate () { if (moduleActivated) { OnRepoRequest(); } return false; }; ;
+        voiceTextModdedButton.OnInteract += delegate () { if (moduleActivated) { OnVoiceTextModded(); } return false; }; ;
+        moddedAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnModdedAlfa(); } return false; }; ;
+        chillZoneAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneAlfa(); } return false; }; ;
+        chillZoneBravoButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneBravo(); } return false; };
+        chillZoneCharlieButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneCharlie(); } return false; };
+
+        //repo request buttons
+        repoRequestPfpButtons = Enumerable.Range(1, 3).Select(i => repoRequestGameObject.transform.Find($"Person {i}").Find("PFP").GetComponent<KMSelectable>()).ToArray();
+
+        for (int i = 0; i < 3; i++)
+        {
+            int dummy = i;
+            repoRequestPfpButtons[dummy].OnInteract += delegate () { OnRepoRequestProfilePic(dummy); return false; };
+        }
     }
 
     void OnActivate()
     {
+        currentTime = DateTime.Now;
+
         //Take the highest out of batteries, indicators and ports
         int batteryCount = BombInfo.GetBatteryCount();
         int indicatorCount = BombInfo.GetIndicators().Count();
         int portCount = BombInfo.GetPortCount();
 
         int minuteOffset = 0;
-
 
         Log("Current Time: " + FormatHourMinute(currentTime));
         Log("Battery Count: " + batteryCount);
@@ -333,6 +379,9 @@ public class Kuro : MonoBehaviour {
 
         if (currentTextLocation == Enums.TextLocation.None)
         {
+            generalTextChannel.Deactivate();
+            repoRequestTextChannel.Activate();
+
             Dictionary<string, int> dictionary = new Dictionary<string, int>()
             {
                 ["Make an interactive for"] = -2,
@@ -344,29 +393,35 @@ public class Kuro : MonoBehaviour {
             };
 
             Text[] requestsText = Enumerable.Range(1, 3).Select(x => repoRequestGameObject.transform.Find("Canvas").Find($"Person {x} Text").GetComponent<Text>()).ToArray();
-            
+
+            do
+            {
+                repoRequestPeople = Enumerable.Range(1, 3).Select(i => people.PickRandom()).ToArray();
+            }
+            while (repoRequestPeople.Distinct().Count() != 3);
+
+            for (int i = 0; i < 3; i++)
+            {
+                //setting up request and people
+                MeshRenderer meshRenderer = repoRequestGameObject.transform.Find($"Person {i + 1}").Find("PFP").GetComponent<MeshRenderer>();
+                TextMesh textMesh = repoRequestGameObject.transform.Find($"Person {i + 1}").Find("Name").GetComponent<TextMesh>();
+                Person p = repoRequestPeople[i];
+
+                meshRenderer.material = p.ProfilePicture;
+                textMesh.text = p.Name;
+            }
+
             if (!RepoJSONGetter.Success)
             {
                 requestsText[0].text = requestsText[1].text = requestsText[2].text = "Unable get data. Select any pfp to solve the module";
+                Log("Unable get data. Select any pfp to solve the module");
             }
 
             else
             {
-                do
-                {
-                    repoRequestPeople = Enumerable.Range(1, 3).Select(i => people.PickRandom()).ToArray();
-                }
-                while (repoRequestPeople.Distinct().Count() != 3);
-
                 for (int i = 0; i < 3; i++)
                 {
-                    //setting up request and people
-                    MeshRenderer meshRenderer = repoRequestGameObject.transform.Find($"Person {i + 1}").Find("PFP").GetComponent<MeshRenderer>();
-                    TextMesh textMesh = repoRequestGameObject.transform.Find($"Person {i + 1}").Find("Name").GetComponent<TextMesh>();
                     Person p = repoRequestPeople[i];
-
-                    meshRenderer.material = p.ProfilePicture;
-                    textMesh.text = p.Name;
 
                     KeyValuePair<string, int> kv = dictionary.PickRandom();
                     string moduleName = RepoJSONGetter.ModuleNames.PickRandom();
@@ -378,20 +433,20 @@ public class Kuro : MonoBehaviour {
 
                     Log($"{p.Name}'s request: {requestsText[i].text}");
 
-                    Log($"{p.Name} has an inital tolerance of {tolerance}");
+                    Log($"{p.Name} has an inital tolerance of {GetTolerance(tolerance)}");
 
                     if (tolerance != int.MinValue)
                     {
                         //modify it based on what the task is
                         tolerance += kv.Value;
 
-                        Log($"Modify it by {kv.Value}. Tolerance is now {tolerance}");
+                        Log($"Modify it by {kv.Value}");
 
                         //If the module that is named in the request is on the bomb, double the value
                         if (BombInfo.GetModuleNames().Contains(moduleName))
                         {
                             tolerance *= 2;
-                            Log($"{moduleName} is on the bomb. Tolerance is now {tolerance}");
+                            Log($"{moduleName} is on the bomb. Multiplying tolerance by 2");
                         }
                     }
 
@@ -407,10 +462,10 @@ public class Kuro : MonoBehaviour {
 
     public void OnRepoRequestProfilePic(int index)
     {
-        Log($"You chose {repoRequestPeople[index]}");
-
-        if (!ModuleSolved || !repoRequestCalculatedValues)
+        if (ModuleSolved || !repoRequestCalculatedValues)
             return;
+
+        Log($"You chose {repoRequestPeople[index].Name}");
 
         //if the data could not be laoded properly
         if (!RepoJSONGetter.Success)
@@ -446,6 +501,11 @@ public class Kuro : MonoBehaviour {
             {
                 Solve("Solving module...");
             }
+        }
+
+        else
+        {
+            Strike("Somoene had a higher value. Strike!");
         }
     }
 
@@ -501,7 +561,7 @@ public class Kuro : MonoBehaviour {
 
     private string FormatHourMinute(DateTime dateTime)
     {
-        return $"{dateTime.DayOfWeek}, {dateTime.Hour.ToString("00")}:{dateTime.Minute.ToString("00")}";
+        return $"{dateTime.DayOfWeek}, {dateTime.Hour:00}:{dateTime.Minute:00}";
     }
 
 
@@ -533,6 +593,9 @@ public class Kuro : MonoBehaviour {
     {
         if (s != "")
             Debug.Log($"[Kuro #{ModuleId}] {s}");
+
+        moduleActiveState.SetActive(false);
+        solvedState.SetActive(true);
         BombModule.HandlePass();
         ModuleSolved = true;
     }

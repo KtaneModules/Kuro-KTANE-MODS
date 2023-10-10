@@ -8,9 +8,14 @@ public class VoiceChannel
     private List<Person> people;
     private GameObject[] peopleGameObjects;
     public int PeopleCount { get { return people.Count; } }
+    private TextMesh textMesh;
+    private GameObject highlight;
+    private Color defaultColor = new Color(148f / 255, 155f / 255, 164f / 255);
 
     public VoiceChannel(GameObject gameObject)
     {
+        textMesh = gameObject.transform.Find("label").GetComponent<TextMesh>();
+        highlight = gameObject.transform.Find("background").gameObject;
         people = new List<Person>();
 
         peopleGameObjects = new GameObject[3];
@@ -19,6 +24,18 @@ public class VoiceChannel
         {
             peopleGameObjects[i] = gameObject.transform.Find($"Person {i + 1}").gameObject;
         }
+    }
+
+    public void Activate()
+    {
+        textMesh.color = Color.white;
+        highlight.SetActive(true);
+    }
+
+    public void Deactivate() 
+    {
+        textMesh.color = defaultColor;
+        highlight.SetActive(false);
     }
 
     public void AddPerson(Person person)

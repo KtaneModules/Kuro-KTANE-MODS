@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TextChannel {
-    private static Color grayTextColor = new Color(148f/255, 155f/255, 164f/255);
+    private static Color defaultTextColor = new Color(148f/255, 155f/255, 164f/255);
     private TextMesh textMesh;
     private GameObject highlight;
 
@@ -27,7 +27,7 @@ public class TextChannel {
     /// </summary>
     public void Deactivate()
     {
-        textMesh.color = grayTextColor;
+        textMesh.color = defaultTextColor;
         highlight.SetActive(false);
     }
 
