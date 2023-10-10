@@ -392,7 +392,16 @@ public class Kuro : MonoBehaviour {
                 ["Svgify"] = 3,
             };
 
-            Text[] requestsText = Enumerable.Range(1, 3).Select(x => repoRequestGameObject.transform.Find("Canvas").Find($"Person {x} Text").GetComponent<Text>()).ToArray();
+            MeshRenderer[] pfpMeshRenderers = new MeshRenderer[3];
+            TextMesh[] requestsText = new TextMesh[3];
+            TextMesh[] nameText = new TextMesh[3];
+            for (int i = 0; i < 3; i++)
+            {
+                Transform personTransform = repoRequestGameObject.transform.Find($"Person {i + 1}");
+                requestsText[i] = personTransform.Find("Request").GetComponent<TextMesh>();
+                pfpMeshRenderers[i] = personTransform.Find("PFP").GetComponent<MeshRenderer>();
+                nameText[i] = personTransform.Find("Name").GetComponent<TextMesh>();
+            }
 
             do
             {
@@ -403,12 +412,9 @@ public class Kuro : MonoBehaviour {
             for (int i = 0; i < 3; i++)
             {
                 //setting up request and people
-                MeshRenderer meshRenderer = repoRequestGameObject.transform.Find($"Person {i + 1}").Find("PFP").GetComponent<MeshRenderer>();
-                TextMesh textMesh = repoRequestGameObject.transform.Find($"Person {i + 1}").Find("Name").GetComponent<TextMesh>();
                 Person p = repoRequestPeople[i];
-
-                meshRenderer.material = p.ProfilePicture;
-                textMesh.text = p.Name;
+                pfpMeshRenderers[i].material = p.ProfilePicture;
+                nameText[i].text = p.Name;
             }
 
             if (!RepoJSONGetter.Success)
@@ -426,8 +432,30 @@ public class Kuro : MonoBehaviour {
                     KeyValuePair<string, int> kv = dictionary.PickRandom();
                     string moduleName = RepoJSONGetter.ModuleNames.PickRandom();
 
-                    requestsText[i].text = $"{kv.Key} {moduleName}";
+                    string text = "";
+                    int maxWidth = 1650;
+                    int fontSize = requestsText[i].fontSize;
 
+                    int currentSize = 0;
+                    string[] requestArr = $"{kv.Key} {moduleName}".Split(' ');
+                    foreach (string s in requestArr)
+                    {
+                        currentSize += (s.Length + 1) * fontSize;
+
+                        if (currentSize > maxWidth)
+                        {
+                            text += $"\n{s} ";
+                            currentSize %= maxWidth;
+                        }
+
+                        else
+                        {
+                            text += $"{s} ";
+                        }
+
+                    }
+
+                    requestsText[i].text = text;
                     //calculating values
                     int tolerance = p.Tolerance;
 
