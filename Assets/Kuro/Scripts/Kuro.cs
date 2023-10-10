@@ -19,6 +19,13 @@ public class Kuro : MonoBehaviour {
     //x todo -add button interaction to profile pictures
     //x todo -test to see if the module solves if the loading fails and any pfp is pressed
     //todo -test in game if a module appears, the tolerance multiplies itself by 2
+    //todo create a module
+    //todo -make code that will put kuro into chill zone alfa
+    //todo -test to make sure on a strike, kuro will be moved to chill zone alfa on his own
+    //todo -use souv's warning triangle to show that the loading failed
+    //todo -test if loading fails, the hard coded list will be used instead
+    //todo eat
+    //todo play ktane
     //x todo fix the bug of the time not being displayed properly in the log
     //x todo figure out why you got an out of range error from just loading the module 
     //x todo have a set up module method that will deal with what is shown and the buttons. (Call it in start before module loading starts)
@@ -56,22 +63,21 @@ public class Kuro : MonoBehaviour {
     public GameObject chillZoneCharlieGameObject;
 
     private KMSelectable modIdeasButton;
-    public KMSelectable repoRequestButton;
-    public KMSelectable voiceTextModdedButton;
-    public KMSelectable moddedAlfaButton;
-    public KMSelectable chillZoneAlfaButton;
-    public KMSelectable chillZoneBravoButton;
-    public KMSelectable chillZoneCharlieButton;
+    private KMSelectable repoRequestButton;
+    private KMSelectable voiceTextModdedButton;
+    private KMSelectable moddedAlfaButton;
+    private KMSelectable chillZoneAlfaButton;
+    private KMSelectable chillZoneBravoButton;
+    private KMSelectable chillZoneCharlieButton;
 
     private TextChannel generalTextChannel;
     private TextChannel modIdeasTextChannel;
     private TextChannel repoRequestTextChannel;
     private TextChannel voiceTextModdedTextChannel;
+    
     private List<TextChannel> textChannelList;
 
     public Material[] kuroMoods;
-
-
     public Material acerPfp;
     public Material blaisePfp;
     public Material camiaPfp;
@@ -105,6 +111,11 @@ public class Kuro : MonoBehaviour {
     int ModuleId;
     private bool ModuleSolved, moduleActivated = false;
     private bool debug = true;
+
+    private List<string> onBombKuroModules; //all the modules on the bomb made by Kuro
+    private List<string> currentSolvedModules; //modules that have been solved on the bomb
+
+    private bool pause = false; //if this is true, something must finish before any interactions can be done
 
 
     void Awake()
@@ -141,8 +152,48 @@ public class Kuro : MonoBehaviour {
             }
         }
 
+        //get all the modules made by kuro
+        List<string> allModules = BombInfo.GetSolvableModuleNames(); //new List<string>();
+        List<string> kuroModules;
+        if (!RepoJSONGetter.Success)
+            kuroModules = "Technical Keypad|Procedural Maze|Blank Slate|Orientation Hypercube|Shy Guy Says|Samuel Says|Coloured Cubes".Split('|').ToList();
+        else
+            kuroModules = RepoJSONGetter.kuroModules;
+        
+        onBombKuroModules = allModules.Where(mod => kuroModules.Contains(mod)).ToList();
+        currentSolvedModules = new List<string>();
         loadingState.SetActive(false);
         moduleActiveState.SetActive(true);
+    }
+
+    void Update()
+    {
+        if (!RepoJSONGetter.LoadingDone || ModuleSolved || desiredTask != Enums.Task.CreateModule)
+            return;
+        List<string> solvedModules = BombInfo.GetSolvedModuleNames();
+
+        if (currentSolvedModules.Count != solvedModules.Count)
+        { 
+            string solvedModule = GetLatestSolve(solvedModules, currentSolvedModules);
+
+            if (onBombKuroModules.Contains(solvedModule) && currentVoiceLocation != Enums.VoiceLocation.ChillZoneAlfa)
+            {
+                Strike($"You solved {solvedModule} before moving to Chill Zone Alfa. Strike!");
+            }
+        }
+    }
+
+    private string GetLatestSolve(List<string> solvedModules, List<string> currentSolves)
+    {
+        for (int i = 0; i < currentSolves.Count; i++)
+        {
+            solvedModules.Remove(currentSolves.ElementAt(i));
+        }
+        for (int i = 0; i < solvedModules.Count; i++)
+        {
+            currentSolvedModules.Add(solvedModules.ElementAt(i));
+        }
+        return solvedModules.ElementAt(0);
     }
 
     void SetUpModule()
@@ -228,7 +279,7 @@ public class Kuro : MonoBehaviour {
 
 
         //changing kuro pfp
-        GameObject textChannels = moduleActiveState.transform.Find("Text Channels").gameObject;
+        Transform textChannelsTransform = moduleActiveState.transform.Find("Text Channels");
         MeshRenderer kuroPfp = moduleActiveState.transform.Find("Profile").Find("PFP").GetComponent<MeshRenderer>();
         currentKuroMood = kuroMoods.PickRandom();
         kuroPfp.material = currentKuroMood;
@@ -238,10 +289,10 @@ public class Kuro : MonoBehaviour {
         currentVoiceLocation = Enums.VoiceLocation.None;
 
         //setting text channels
-        generalTextChannel = CreateTextChannel(textChannels.transform.Find("general").gameObject);
-        modIdeasTextChannel = CreateTextChannel(textChannels.transform.Find("mod ideas").gameObject);
-        repoRequestTextChannel = CreateTextChannel(textChannels.transform.Find("repo request").gameObject);
-        voiceTextModdedTextChannel = CreateTextChannel(textChannels.transform.Find("voice text modded").gameObject);
+        generalTextChannel = CreateTextChannel(textChannelsTransform.Find("general").gameObject);
+        modIdeasTextChannel = CreateTextChannel(textChannelsTransform.Find("mod ideas").gameObject);
+        repoRequestTextChannel = CreateTextChannel(textChannelsTransform.Find("repo request").gameObject);
+        voiceTextModdedTextChannel = CreateTextChannel(textChannelsTransform.Find("voice text modded").gameObject);
 
         textChannelList = new List<TextChannel>() { generalTextChannel, modIdeasTextChannel, repoRequestTextChannel, voiceTextModdedTextChannel };
         textChannelList.ForEach(t => t.Deactivate());
@@ -249,15 +300,26 @@ public class Kuro : MonoBehaviour {
 
 
     //setting buttons
-        modIdeasButton = textChannels.transform.Find("mod ideas").GetComponent<KMSelectable>();
-        modIdeasButton.OnInteract += delegate () { if (moduleActivated) { OnModIdeas(); } return false; };
-        
-        repoRequestButton.OnInteract += delegate () { if (moduleActivated) { OnRepoRequest(); } return false; }; ;
-        voiceTextModdedButton.OnInteract += delegate () { if (moduleActivated) { OnVoiceTextModded(); } return false; }; ;
-        moddedAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnModdedAlfa(); } return false; }; ;
-        chillZoneAlfaButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneAlfa(); } return false; }; ;
-        chillZoneBravoButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneBravo(); } return false; };
-        chillZoneCharlieButton.OnInteract += delegate () { if (moduleActivated) { OnChillZoneCharlie(); } return false; };
+        modIdeasButton = textChannelsTransform.Find("mod ideas").GetComponent<KMSelectable>();
+        modIdeasButton.OnInteract += delegate () { if (moduleActivated && !pause) { OnModIdeas(); } return false; };
+
+        repoRequestButton = textChannelsTransform.Find("repo request").GetComponent<KMSelectable>();
+        repoRequestButton.OnInteract += delegate () { if (moduleActivated && !pause) { OnRepoRequest(); } return false; }; ;
+
+        voiceTextModdedButton = textChannelsTransform.Find("voice text modded").GetComponent<KMSelectable>();
+        voiceTextModdedButton.OnInteract += delegate () { if (moduleActivated && !pause) { OnVoiceTextModded(); } return false; }; ;
+
+        moddedAlfaButton = voiceChannelTransform.Find("Modded Alfa").GetComponent<KMSelectable>();
+        moddedAlfaButton.OnInteract += delegate () { if (moduleActivated && !pause) { OnModdedAlfa(); } return false; }; ;
+
+        chillZoneAlfaButton = voiceChannelTransform.Find("Chill Zone Alfa").GetComponent<KMSelectable>();
+        chillZoneAlfaButton.OnInteract += delegate () { if (moduleActivated && !pause) { OnChillZoneAlfa(); } return false; }; ;
+
+        chillZoneBravoButton = voiceChannelTransform.Find("Chill Zone Bravo").GetComponent<KMSelectable>();
+        chillZoneBravoButton.OnInteract += delegate () { if (moduleActivated && !pause) { OnChillZoneBravo(); } return false; };
+
+        chillZoneCharlieButton = voiceChannelTransform.Find("Chill Zone Charlie").GetComponent<KMSelectable>();
+        chillZoneCharlieButton.OnInteract += delegate () { if (moduleActivated && !pause) { OnChillZoneCharlie(); } return false; };
 
         //repo request buttons
         repoRequestPfpButtons = Enumerable.Range(1, 3).Select(i => repoRequestGameObject.transform.Find($"Person {i}").Find("PFP").GetComponent<KMSelectable>()).ToArray();
@@ -342,7 +404,7 @@ public class Kuro : MonoBehaviour {
             desiredTask = Enums.Task.Bed;
 
         if (debug)
-            desiredTask = Enums.Task.MaintainRepo;
+            desiredTask = Enums.Task.CreateModule;
 
         people.ForEach(person => person.SetTolerance(desiredTime.DayOfWeek));
 
@@ -362,15 +424,24 @@ public class Kuro : MonoBehaviour {
 
     private void OnModIdeas()
     {
+        Log("You pressed #mod-ideas");
+
         if (desiredTask != Enums.Task.CreateModule)
         {
             WrongChannel("#mod-ideas");
             return;
         }
+
+        if (currentTextLocation == Enums.TextLocation.None)
+        {
+
+            currentTextLocation = Enums.TextLocation.ModIdeas;
+        }
     }
 
     private void OnRepoRequest()
-    { 
+    {
+        Log("You pressed #repo-request");
         if(desiredTask != Enums.Task.MaintainRepo) 
         {
             WrongChannel("#repo-request");
@@ -535,6 +606,11 @@ public class Kuro : MonoBehaviour {
         {
             Strike("Somoene had a higher value. Strike!");
         }
+    }
+
+    private void MoveToChillZoneAlfa()
+    {
+        
     }
 
     private string GetTolerance(int num)

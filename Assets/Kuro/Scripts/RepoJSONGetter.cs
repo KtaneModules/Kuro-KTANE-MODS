@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditorInternal;
 using UnityEngine;
+using static UnityEngine.UI.Navigation;
 
 public class RepoJSONGetter : MonoBehaviour {
 
@@ -13,13 +14,15 @@ public class RepoJSONGetter : MonoBehaviour {
     public static bool LoadingDone = false;
     private static bool Error;
 
+    private List<KtaneModule> allModules;
+
     //Stores the URL of the JSON that is grabbed.
     private string url = "https://ktane.timwi.de/json/raw";
     //private string url = "https://ktane-mods.github.io/Weakest-Link-Data/data.json";
 
 
     public static List<string> ModuleNames;
-
+    public static List<string> kuroModules;
     public IEnumerator LoadData()
     {
         Loading = true;
@@ -55,8 +58,9 @@ public class RepoJSONGetter : MonoBehaviour {
         {
             try
             {
-                List<KtaneModule> allData = RepoJSONParser.ParseRaw(request.text);
-                ModuleNames = allData.Select(mod => mod.Name).ToList();
+                allModules = RepoJSONParser.ParseRaw(request.text);
+                ModuleNames = allModules.Select(mod => mod.Name).ToList();
+                kuroModules = allModules.Where(mod => mod.Contributors.Developer.Contains("Kuro")).Select(mod => mod.Name).ToList();
             }
 
             catch
