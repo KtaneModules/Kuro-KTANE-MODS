@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Person {
-    public string Name { get; private set; }
+    public string Name { get; set; }
     public Material ProfilePicture { get; private set; }
     public int Tolerance { get; private set;  }
     public Person(Material picture)

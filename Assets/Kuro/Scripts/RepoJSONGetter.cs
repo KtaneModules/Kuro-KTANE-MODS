@@ -40,6 +40,7 @@ public class RepoJSONGetter : MonoBehaviour {
 
         if (Error)
         {
+            Debug.Log("There was an error getting the data");
             Loading = false;
             LoadingDone = true;
             yield break;
@@ -60,11 +61,12 @@ public class RepoJSONGetter : MonoBehaviour {
             {
                 allModules = RepoJSONParser.ParseRaw(request.text);
                 ModuleNames = allModules.Select(mod => mod.Name).ToList();
-                kuroModules = allModules.Where(mod => mod.Contributors.Developer.Contains("Kuro")).Select(mod => mod.Name).ToList();
+                kuroModules = allModules.Where(mod => mod.Contributors != null && mod.Contributors.Developer != null && mod.Contributors.Developer.Contains("Kuro")).Select(mod => mod.Name).ToList();
             }
 
             catch
             {
+                Debug.Log("There was an error parsing the data");
                 Success = false;
                 Loading = false;
                 LoadingDone = true;

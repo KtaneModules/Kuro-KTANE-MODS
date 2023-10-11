@@ -12,6 +12,9 @@ public class VoiceChannel
     private GameObject highlight;
     private Color defaultColor = new Color(148f / 255, 155f / 255, 164f / 255);
 
+    private bool active;
+    public bool Active { get { return active; } }
+
     public VoiceChannel(GameObject gameObject)
     {
         textMesh = gameObject.transform.Find("label").GetComponent<TextMesh>();
@@ -28,14 +31,14 @@ public class VoiceChannel
 
     public void Activate()
     {
-        textMesh.color = Color.white;
         highlight.SetActive(true);
+        active = true;
     }
 
     public void Deactivate() 
     {
-        textMesh.color = defaultColor;
         highlight.SetActive(false);
+        active = false;
     }
 
     public void AddPerson(Person person)

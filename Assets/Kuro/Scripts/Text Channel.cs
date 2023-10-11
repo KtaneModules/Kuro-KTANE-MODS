@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TextChannel {
-    private static Color defaultTextColor = new Color(148f/255, 155f/255, 164f/255);
+    private static Color defaultTextColor = new Color(148f / 255, 155f / 255, 164f / 255);
     private TextMesh textMesh;
     private GameObject highlight;
+
+    private bool active;
+    public bool Active { get { return active; } }
 
     public TextChannel(TextMesh textMesh, GameObject highlight)
     {
@@ -18,8 +21,8 @@ public class TextChannel {
     /// </summary>
     public void Activate()
     {
-        textMesh.color = Color.white;
         highlight.SetActive(true);
+        active = true;
     }
 
     /// <summary>
@@ -27,8 +30,8 @@ public class TextChannel {
     /// </summary>
     public void Deactivate()
     {
-        textMesh.color = defaultTextColor;
         highlight.SetActive(false);
+        active = false;
     }
 
 }
