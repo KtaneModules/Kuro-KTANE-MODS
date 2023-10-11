@@ -407,9 +407,46 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 1421519433412082, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_Name
-      value: Person 1
+    - target: {fileID: 23468180182480336, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4517738391855814, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 0.012367
+      objectReference: {fileID: 0}
+    - target: {fileID: 4517738391855814, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalScale.y
+      value: -0.0001145092
+      objectReference: {fileID: 0}
+    - target: {fileID: 4517738391855814, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 0.01301241
+      objectReference: {fileID: 0}
+    - target: {fileID: 4898839397496038, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 0.012367
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931144025570090, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 0.012367
+      objectReference: {fileID: 0}
+    - target: {fileID: 4898839397496038, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalScale.y
+      value: -0.0001145092
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931144025570090, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalScale.y
+      value: -0.0001145092
+      objectReference: {fileID: 0}
+    - target: {fileID: 4898839397496038, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 0.01301241
+      objectReference: {fileID: 0}
+    - target: {fileID: 4931144025570090, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 0.01301241
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
