@@ -14,6 +14,12 @@ public class Kuro : MonoBehaviour {
     //x todo calcuate the correct time
     //todo fix pfps looking the opposite way
     //todo based on the correct time, make them do the correct thing
+    //todo - maintaining the repo
+    //todo - creating a module
+    //todo - eating
+    //todo - playing KTANE
+    //todo - getting ready for bed
+
     //todo maintaining the repo
     //x todo -get all modules from the repo
     //x todo --if json can't be gotten, have the people say to choose anyone to solve the module
@@ -21,6 +27,7 @@ public class Kuro : MonoBehaviour {
     //x todo -test to see if the module solves if the loading fails and any pfp is pressed
     //todo -test in game if a module appears, the tolerance multiplies itself by 2
     //todo create a module
+    //x todo - logging: if there are duplicate mods, put numbers in parentheses
     //todo -test when there are modules kuro made on the bomb
     //todo --make code that will put kuro into chill zone alfa
     //todo --test to make sure on a strike, kuro will be moved to chill zone alfa on his own
@@ -168,14 +175,23 @@ public class Kuro : MonoBehaviour {
             kuroModules = RepoJSONGetter.kuroModules;
         }
 
-        onBombKuroModules = allModules.Where(mod => kuroModules.Contains(mod)).ToList();
+        onBombKuroModules = allModules.Where(mod => kuroModules.Contains(mod)).OrderBy(q => q).ToList();
+        Dictionary<string, int> dictionary = new Dictionary<string, int>();
+        //this is the grossest for each loop I have ever made
+        foreach (KeyValuePair<string, int> kv in onBombKuroModules.GroupBy(name => name).Select(g => new KeyValuePair<string, int>(g.Key, g.Count())))
+        {
+            dictionary[kv.Key] = kv.Value;
+        }
+        
+
         currentSolvedModules = new List<string>();
 
         if (desiredTask == Enums.Task.CreateModule)
         {
             if (onBombKuroModules.Count > 0)
             {
-                Log($"You must just Chill Zone Alfa. Then solve the following modules: ${onBombKuroModules.Join(", ")}");
+
+                Log($"You must just Chill Zone Alfa. Then solve the following modules: {dictionary.Select(kv => $"{kv.Key} ({kv.Value})").Join(", ")}");
             }
             else
             {
@@ -421,16 +437,18 @@ public class Kuro : MonoBehaviour {
         }
 
         desiredTime = currentTime.AddMinutes(minuteOffset);
+
+        desiredTime = new DateTime(2024, 1, 1, 9, 0, 0);
         
         int fullMiutes = desiredTime.Hour * 60 + desiredTime.Minute;
 
-        if (fullMiutes >= 9 * 60 && fullMiutes <= 12 * 60 + 59)
+        if (fullMiutes >= 540 && fullMiutes <= 779)
             desiredTask = Enums.Task.MaintainRepo;
-        else if (fullMiutes >= 13 * 60 && fullMiutes <= 15 * 60 + 59)
+        else if (fullMiutes >= 780 && fullMiutes <= 959)
             desiredTask = Enums.Task.CreateModule;
-        else if (fullMiutes >= 16 * 60 && fullMiutes <= 18 * 60 + 59)
+        else if (fullMiutes >= 960 && fullMiutes <= 1139)
             desiredTask = Enums.Task.Eat;
-        else if (fullMiutes >= 19 * 60 && fullMiutes <= 21 * 60 + 59)
+        else if (fullMiutes >= 1140 && fullMiutes <= 1319)
             desiredTask = Enums.Task.PlayKTANE;
         else
             desiredTask = Enums.Task.Bed;
