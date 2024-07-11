@@ -76,6 +76,7 @@ GameObject:
   - component: {fileID: 114003124274028050}
   - component: {fileID: 114964353452558752}
   - component: {fileID: 114140987466491046}
+  - component: {fileID: 114947186577736612}
   m_Layer: 0
   m_Name: Orientation Hypercube
   m_TagString: Untagged
@@ -1104,6 +1105,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/Diffuse
+--- !u!114 &114947186577736612
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1268094439923870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 285296e084d4f0b4b8816cb9c7c64e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114964353452558752
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1116,7 +1128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ModuleType: a
-  ModuleDisplayName: Technical Keypad
+  ModuleDisplayName: Orientation Hypercube
   RequiresTimerVisibility: 0
 --- !u!114 &114990737647851440
 MonoBehaviour:

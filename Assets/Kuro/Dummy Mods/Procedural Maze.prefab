@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 114377469162126370}
   - component: {fileID: 114485911595410012}
   - component: {fileID: 114199646521979008}
+  - component: {fileID: 114309268146155738}
   m_Layer: 0
   m_Name: Procedural Maze
   m_TagString: Untagged
@@ -955,6 +956,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/Diffuse
+--- !u!114 &114309268146155738
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1366813331273958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 285296e084d4f0b4b8816cb9c7c64e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114377469162126370
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1025,7 +1037,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ModuleType: a
-  ModuleDisplayName: Technical Keypad
+  ModuleDisplayName: Procedural Maze
   RequiresTimerVisibility: 0
 --- !u!114 &114510656872433082
 MonoBehaviour:

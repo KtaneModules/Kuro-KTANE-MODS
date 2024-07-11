@@ -13,7 +13,8 @@ public class Dummy : MonoBehaviour {
     private bool ModuleSolved;
     void Start()
     {
-        GetComponent<KMSelectable>().OnFocus += delegate () { Solve(); };
+        GetComponent<KMSelectable>().OnFocus += delegate () { { Solve(); } };
+        
     }
 
     public void Solve()

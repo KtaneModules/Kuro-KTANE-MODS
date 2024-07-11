@@ -52,6 +52,8 @@ public class Kuro : MonoBehaviour {
     //todo -maintaining the repo
 
     [SerializeField]
+    private AudioClip[] audioClips; //join, leave
+    [SerializeField]
     private GameObject wariningSign;
     private static RepoJSONGetter jsonData;
 
@@ -664,6 +666,7 @@ public class Kuro : MonoBehaviour {
     private void MoveToChillZoneAlfa()
     {
         pause = true;
+        Audio.PlaySoundAtTransform(audioClips[0].name, transform);
         VoiceChannel vc = voiceChannelList[3];
         Person kuro = new Person(currentKuroMood);
         kuro.Name = "Kuro";
@@ -696,11 +699,13 @@ public class Kuro : MonoBehaviour {
 
     private void OnChillZoneAlfa()
     {
-        if (desiredTask != Enums.Task.Eat)
+        if (desiredTask != Enums.Task.Eat && !(desiredTask == Enums.Task.CreateModule && onBombKuroModules.Count > 0))
         {
             WrongChannel("Chill Zone Alfa");
             return;
         }
+
+        MoveToChillZoneAlfa();
     }
 
     private void OnChillZoneBravo()
@@ -754,7 +759,7 @@ public class Kuro : MonoBehaviour {
     private void Solve(string s)
     {
         if (s != "")
-            Debug.Log($"[Kuro #{ModuleId}] {s}");
+            Log(s);
 
         moduleActiveState.SetActive(false);
         solvedState.SetActive(true);
@@ -765,7 +770,7 @@ public class Kuro : MonoBehaviour {
     private void Strike(string s)
     {
         if (s != "")
-            Debug.Log($"[Kuro #{ModuleId}] {s}");
+            Log(s);
         BombModule.HandleStrike();
     }
 

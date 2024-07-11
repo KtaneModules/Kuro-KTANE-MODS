@@ -251,6 +251,7 @@ GameObject:
   - component: {fileID: 114290182012271772}
   - component: {fileID: 114826946302048122}
   - component: {fileID: 114090373242484400}
+  - component: {fileID: 114747585429245628}
   m_Layer: 0
   m_Name: Samuel Says
   m_TagString: Untagged
@@ -1065,6 +1066,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HighlightScale: {x: 1, y: 1, z: 1}
   OutlineAmount: 0
+--- !u!114 &114747585429245628
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1937458754229008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 285296e084d4f0b4b8816cb9c7c64e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114826946302048122
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1077,7 +1089,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ModuleType: a
-  ModuleDisplayName: Technical Keypad
+  ModuleDisplayName: Samuel Says
   RequiresTimerVisibility: 0
 --- !u!114 &114850721653714740
 MonoBehaviour:

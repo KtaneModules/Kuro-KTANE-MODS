@@ -178,6 +178,7 @@ GameObject:
   - component: {fileID: 114105344726231176}
   - component: {fileID: 114363969307475320}
   - component: {fileID: 114044977907295058}
+  - component: {fileID: 114770015421776128}
   m_Layer: 0
   m_Name: Technical Keypad
   m_TagString: Untagged
@@ -1079,6 +1080,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HighlightScale: {x: 1, y: 1, z: 1}
   OutlineAmount: 0
+--- !u!114 &114770015421776128
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1444153582494482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 285296e084d4f0b4b8816cb9c7c64e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114893075142857812
 MonoBehaviour:
   m_ObjectHideFlags: 1

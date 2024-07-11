@@ -232,6 +232,7 @@ GameObject:
   - component: {fileID: 114177400561625984}
   - component: {fileID: 114284275894747956}
   - component: {fileID: 114211518133173366}
+  - component: {fileID: 114096549030801608}
   m_Layer: 0
   m_Name: Shy Guy Says
   m_TagString: Untagged
@@ -931,6 +932,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/Diffuse
+--- !u!114 &114096549030801608
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1735441679641570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 285296e084d4f0b4b8816cb9c7c64e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114107313210684012
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1038,7 +1050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ModuleType: a
-  ModuleDisplayName: Technical Keypad
+  ModuleDisplayName: Shy Guy Says
   RequiresTimerVisibility: 0
 --- !u!114 &114316326537615970
 MonoBehaviour:
