@@ -21,9 +21,10 @@ public class VoiceChannel
         highlight = gameObject.transform.Find("background").gameObject;
         people = new List<Person>();
 
-        peopleGameObjects = new GameObject[3];
+        int length = 4;
+        peopleGameObjects = new GameObject[length];
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < length; i++)
         {
             peopleGameObjects[i] = gameObject.transform.Find($"Person {i + 1}").gameObject;
         }
@@ -64,9 +65,9 @@ public class VoiceChannel
             textMesh.text = p.Name;
         }
 
-        for(int i = PeopleCount; i < 3; i++) 
+        for (int i = 0; i < peopleGameObjects.Length; i++)
         {
-            peopleGameObjects[i].SetActive(false);
+            peopleGameObjects[i].SetActive(i < PeopleCount);
         }
     }
 

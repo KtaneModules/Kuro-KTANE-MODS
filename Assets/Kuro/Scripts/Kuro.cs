@@ -76,13 +76,14 @@ public class Kuro : MonoBehaviour {
 
     #region voice/text channels
     private const float channelOffset = -0.0081f; //the amount of space something will move down in the list of voice channels
+    private Vector3[] vcOriginalPosition = new Vector3[] { new Vector3(0.0f, 0.0f, -0.1f) }; //bravo, charlie
     private List<VoiceChannel> voiceChannelList; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie
 
     private TextChannel generalTextChannel;
     private TextChannel modIdeasTextChannel;
     private TextChannel repoRequestTextChannel;
     private TextChannel voiceTextModdedTextChannel;
-    
+
     private List<TextChannel> textChannelList;
 
     public Material[] kuroMoods;
@@ -104,6 +105,7 @@ public class Kuro : MonoBehaviour {
     private Material currentKuroMood; //kuro's mood
     #endregion
 
+   
 
     private Enums.TextLocation currentTextLocation;
     private Enums.VoiceLocation currentVoiceLocation;
@@ -184,7 +186,7 @@ public class Kuro : MonoBehaviour {
         {
             dictionary[kv.Key] = kv.Value;
         }
-        
+
 
         currentSolvedModules = new List<string>();
 
@@ -203,46 +205,6 @@ public class Kuro : MonoBehaviour {
 
         loadingState.SetActive(false);
         moduleActiveState.SetActive(true);
-    }
-
-    void Update()
-    {
-        if (!RepoJSONGetter.LoadingDone || ModuleSolved || desiredTask != Enums.Task.CreateModule)
-            return;
-        List<string> solvedModules = BombInfo.GetSolvedModuleNames();
-
-        if (currentSolvedModules.Count != solvedModules.Count)
-        { 
-            string solvedModule = GetLatestSolve(solvedModules, currentSolvedModules);
-
-            if (onBombKuroModules.Contains(solvedModule))
-            {
-                if (currentVoiceLocation != Enums.VoiceLocation.ChillZoneAlfa)
-                {
-                    Strike($"You solved {solvedModule} before moving to Chill Zone Alfa. Strike!");
-                    MoveToChillZoneAlfa();
-                }
-
-                else
-                {
-                    onBombKuroModules.Remove(solvedModule);
-                    Log($"Solved {solvedModule}");
-                }
-            }
-        }
-    }
-
-    private string GetLatestSolve(List<string> solvedModules, List<string> currentSolves)
-    {
-        for (int i = 0; i < currentSolves.Count; i++)
-        {
-            solvedModules.Remove(currentSolves.ElementAt(i));
-        }
-        for (int i = 0; i < solvedModules.Count; i++)
-        {
-            currentSolvedModules.Add(solvedModules.ElementAt(i));
-        }
-        return solvedModules.ElementAt(0);
     }
 
     void SetUpModule()
@@ -316,14 +278,7 @@ public class Kuro : MonoBehaviour {
 
         voiceChannelList.ForEach(x => { x.DisplayPeople(); });
 
-        int alfaPeople = voiceChannelList[0].PeopleCount;
-        int bravoPeople = voiceChannelList[1].PeopleCount;
-
-        Vector3 bravoVector = chillZoneBravoTransform.localPosition;
-        chillZoneBravoTransform.localPosition = new Vector3(bravoVector.x, bravoVector.y, bravoVector.z + (channelOffset * alfaPeople));
-        Vector3 charlieVector = chillZoneCharlieTransform.localPosition;
-        chillZoneCharlieTransform.localPosition = new Vector3(charlieVector.x, charlieVector.y, charlieVector.z + (channelOffset * (alfaPeople + bravoPeople)));
-
+        ShiftChannels();
 
         //changing kuro pfp
         Transform textChannelsTransform = moduleActiveState.transform.Find("Text Channels");
@@ -381,6 +336,48 @@ public class Kuro : MonoBehaviour {
         }
     }
 
+    void Update()
+    {
+        if (!RepoJSONGetter.LoadingDone || ModuleSolved || desiredTask != Enums.Task.CreateModule)
+            return;
+        List<string> solvedModules = BombInfo.GetSolvedModuleNames();
+
+        if (currentSolvedModules.Count != solvedModules.Count)
+        {
+            string solvedModule = GetLatestSolve(solvedModules, currentSolvedModules);
+
+            if (onBombKuroModules.Contains(solvedModule))
+            {
+                if (currentVoiceLocation != Enums.VoiceLocation.ChillZoneAlfa)
+                {
+                    Strike($"You solved {solvedModule} before moving to Chill Zone Alfa. Strike!");
+                    MoveToChillZoneAlfa();
+                }
+
+                else
+                {
+                    onBombKuroModules.Remove(solvedModule);
+                    Log($"Solved {solvedModule}");
+                }
+            }
+        }
+    }
+
+    private string GetLatestSolve(List<string> solvedModules, List<string> currentSolves)
+    {
+        for (int i = 0; i < currentSolves.Count; i++)
+        {
+            solvedModules.Remove(currentSolves.ElementAt(i));
+        }
+        for (int i = 0; i < solvedModules.Count; i++)
+        {
+            currentSolvedModules.Add(solvedModules.ElementAt(i));
+        }
+        return solvedModules.ElementAt(0);
+    }
+
+
+
     void OnActivate()
     {
         currentTime = DateTime.Now;
@@ -399,7 +396,7 @@ public class Kuro : MonoBehaviour {
 
         //If the number of batteries is the highest, add 1 hour for each batteries
         if (batteryCount > indicatorCount && batteryCount > portCount)
-        { 
+        {
             minuteOffset = 60 * batteryCount;
             Log("Battery count is the highest. Minute offset is now " + minuteOffset);
         }
@@ -431,7 +428,7 @@ public class Kuro : MonoBehaviour {
                 }
 
                 else
-                { 
+                {
                     minuteOffset -= 30;
                     Log($"{c} is a consonant. Minute offset is now {minuteOffset}");
                 }
@@ -441,7 +438,7 @@ public class Kuro : MonoBehaviour {
         desiredTime = currentTime.AddMinutes(minuteOffset);
 
         desiredTime = new DateTime(2024, 1, 1, 9, 0, 0);
-        
+
         int fullMiutes = desiredTime.Hour * 60 + desiredTime.Minute;
 
         if (fullMiutes >= 540 && fullMiutes <= 779)
@@ -464,6 +461,22 @@ public class Kuro : MonoBehaviour {
         moduleActivated = true;
     }
 
+
+    private void ShiftChannels()
+    {
+        Transform voiceChannelTransform = moduleActiveState.transform.Find("Voice Channels");
+        Transform chillZoneAlfaTransform = voiceChannelTransform.Find("Chill Zone Alfa");
+        Transform chillZoneBravoTransform = voiceChannelTransform.Find("Chill Zone Bravo");
+        Transform chillZoneCharlieTransform = voiceChannelTransform.Find("Chill Zone Charlie");
+        Transform moddedAlfaTransform = voiceChannelTransform.Find("Modded Alfa");
+        int alfaPeople = voiceChannelList[0].PeopleCount;
+        int bravoPeople = voiceChannelList[1].PeopleCount;
+
+        Vector3 bravoVector = chillZoneBravoTransform.localPosition;
+        chillZoneBravoTransform.localPosition = new Vector3(bravoVector.x, bravoVector.y, -0.059f + (channelOffset * alfaPeople));
+        Vector3 charlieVector = chillZoneCharlieTransform.localPosition;
+        chillZoneCharlieTransform.localPosition = new Vector3(charlieVector.x, charlieVector.y, -0.0655f + (channelOffset * (alfaPeople + bravoPeople)));
+    }
 
 
     public TextChannel CreateTextChannel(GameObject gameObject)
@@ -663,14 +676,21 @@ public class Kuro : MonoBehaviour {
         return text;
     }
 
+    private void MoveKuroIcon()
+    { 
+        
+    }
+
     private void MoveToChillZoneAlfa()
     {
         pause = true;
         Audio.PlaySoundAtTransform(audioClips[0].name, transform);
-        VoiceChannel vc = voiceChannelList[3];
+        VoiceChannel vc = voiceChannelList[0];
         Person kuro = new Person(currentKuroMood);
         kuro.Name = "Kuro";
         vc.AddPerson(kuro);
+        ShiftChannels();
+        vc.DisplayPeople();
         pause = false;
     }
 
