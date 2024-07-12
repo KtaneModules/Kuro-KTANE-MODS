@@ -32,8 +32,6 @@ public class CustomSelectable : MonoBehaviour {
             textMesh.color = activeTextColor;
             _renderer.material.color = activeBackgroundColor;
             gameObject.SetActive(true);
-
-            //Debug.Log(1);
         };
         Selectable.OnHighlightEnded += () => 
         {
