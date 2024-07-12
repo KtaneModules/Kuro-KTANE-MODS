@@ -27,13 +27,13 @@ public class Kuro : MonoBehaviour {
     //todo -test in game if a module appears, the tolerance multiplies itself by 2
     //todo create a module
     //x todo - logging: if there are duplicate mods, put numbers in parentheses
-    //todo -test when there are modules kuro made on the bomb
-    //todo --make code that will put kuro into chill zone alfa
-    //todo --test to make sure on a strike, kuro will be moved to chill zone alfa on his own
+    //x todo -test when there are modules kuro made on the bomb
+    //x todo --make code that will put kuro into chill zone alfa
+    //x todo --test to make sure on a strike, kuro will be moved to chill zone alfa on his own
     //todo --test if loading fails, the hard coded list will be used instead
-    //todo --add a button where kuro can disconnect from the call
-    //todo ---if button is pressed before all modules are solved, strike
-    //todo ---if button is pressed after all modules are solved, solve
+    //x todo --add a button where kuro can disconnect from the call
+    //x todo ---if button is pressed before all modules are solved, strike
+    //x todo ---if button is pressed after all modules are solved, solve
     //todo -test when there aren't modules kuro made on the bomb
     //todo --create ideas for mod ideas
     //x todo -use souv's warning triangle to show that the loading failed
