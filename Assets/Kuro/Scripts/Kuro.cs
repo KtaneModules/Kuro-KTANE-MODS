@@ -6,7 +6,6 @@ using UnityEngine;
 using KModkit;
 using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
-using HarmonyLib;
 
 public class Kuro : MonoBehaviour {
 
@@ -544,6 +543,34 @@ public class Kuro : MonoBehaviour {
         if (currentTextLocation == Enums.TextLocation.None)
         {
             currentTextLocation = Enums.TextLocation.ModIdeas;
+
+            List<string> questions = new List<string>();
+
+            
+
+            //generating quesetions
+            for (int i = 0; i < 3; i++)
+            {
+                string moduleType = new string[] { "needy", "solvable", "boss" }.PickRandom();
+                int index = Rnd.Range(0, 4);
+                switch (index)
+                {
+                    case 0:
+                        questions.Add($"A {moduleType} module that is about the color {new string[] { "red", "orange", "yellow", "green", "blue", "purple" }.PickRandom()}");
+                        break;
+                    case 1:
+                        questions.Add($"A {moduleType} module that is about {new string[] { "running", "longboarding", "hockey", "curling", "biking", "skating" }.PickRandom()}");
+                        break;
+                    case 2:
+                        questions.Add($"A {moduleType} module that is about {new string[] { "German", "French", "Italian", "Spanish", "American", "Canadian", "Brazilian", "Chinese", "Indian", "Australian", "Polish"}.PickRandom()} music");
+                        break;
+                    case 3:
+                        questions.Add($"A {moduleType} module that is about {new string[] { "animating", "programming", "modeling", "writing", "composing" }.PickRandom()}");
+                        break;
+                }
+            }
+
+            questions.ForEach(q => Debug.Log(q));
         }
     }
 
