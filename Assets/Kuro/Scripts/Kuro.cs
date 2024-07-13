@@ -87,7 +87,7 @@ public class Kuro : MonoBehaviour {
 
     private List<Person> people; //acer, blaise, camia, ciel, curl, goodhood, hawker, hazel, kit, mar, piccolo, play
 
-    private Material currentKuroMood; //kuro's mood
+    private Enums.Mood currentMood;
     #endregion
 
    
@@ -168,6 +168,13 @@ public class Kuro : MonoBehaviour {
 
         switch (desiredTask)
         {
+            case Enums.Task.Eat:
+                
+                Log("You must join");
+
+                if (currentMood == Enums.Mood.Happy)
+                    Log("a");
+                break;
             case Enums.Task.MaintainRepo:
                 Log("You must look at #repo-requests");
                 break;
@@ -296,8 +303,9 @@ public class Kuro : MonoBehaviour {
         //changing kuro pfp
         Transform textChannelsTransform = transform.Find("Module Active State/Text Channels");
         MeshRenderer kuroPfp = transform.Find("Module Active State/Profile/PFP").GetComponent<MeshRenderer>();
-        currentKuroMood = kuroMoods.PickRandom();
-        kuroPfp.material = currentKuroMood;
+        int num = Rnd.Range(0, 5);
+        currentMood = (Enums.Mood)num;
+        kuroPfp.material = kuroMoods[num];
 
         //set locations
         currentTextLocation = Enums.TextLocation.None;
@@ -803,7 +811,7 @@ public class Kuro : MonoBehaviour {
         pause = true;
         Audio.PlaySoundAtTransform(audioClips[0].name, transform);
         VoiceChannel vc = voiceChannelList[0];
-        Person kuro = new Person(currentKuroMood);
+        Person kuro = new Person(kuroMoods[(int)currentMood]);
         kuro.Name = "Kuro";
         vc.AddPerson(kuro);
         ShiftChannels();

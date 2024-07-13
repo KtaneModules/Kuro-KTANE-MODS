@@ -13,6 +13,15 @@ public class Enums {
         Bed
     }
 
+    public enum Mood
+    {
+        Angry,
+        Curious,
+        Devious,
+        Happy,
+        Neutral
+    }
+
     public enum TextLocation
     { 
         General,
