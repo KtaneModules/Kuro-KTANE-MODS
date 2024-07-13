@@ -155,6 +155,48 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 57f67b63641fcd346af103994a6690f4, type: 2}
   m_IsPrefabParent: 0
+--- !u!1001 &387011243
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &666043070
 Prefab:
   m_ObjectHideFlags: 0
@@ -676,50 +718,4 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b123ca4964842614281e168d7595ef9c, type: 2}
-  m_IsPrefabParent: 0
---- !u!1001 &1985737481
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4647294770754098, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0

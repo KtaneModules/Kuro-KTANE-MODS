@@ -19,23 +19,23 @@ public class Kuro : MonoBehaviour {
     //todo - playing KTANE
     //todo - getting ready for bed
 
-    //todo maintaining the repo
+    //x todo maintaining the repo
     //x todo -get all modules from the repo
     //x todo --if json can't be gotten, have the people say to choose anyone to solve the module
     //x todo -add button interaction to profile pictures
     //x todo -test to see if the module solves if the loading fails and any pfp is pressed
-    //todo -test in game if a module appears, the tolerance multiplies itself by 2
-    //todo create a module
+    //x todo -test in game if a module appears, the tolerance multiplies itself by 2
+    //x todo create a module
     //x todo - logging: if there are duplicate mods, put numbers in parentheses
     //x todo -test when there are modules kuro made on the bomb
     //x todo --make code that will put kuro into chill zone alfa
     //x todo --test to make sure on a strike, kuro will be moved to chill zone alfa on his own
-    //todo --test if loading fails, the hard coded list will be used instead
+    //x todo --test if loading fails, the hard coded list will be used instead
     //x todo --add a button where kuro can disconnect from the call
     //x todo ---if button is pressed before all modules are solved, strike
     //x todo ---if button is pressed after all modules are solved, solve
-    //todo -test when there aren't modules kuro made on the bomb
-    //todo --create ideas for mod ideas
+    //x todo -test when there aren't modules kuro made on the bomb
+    //x todo --create ideas for mod ideas
     //x todo -use souv's warning triangle to show that the loading failed
     //todo eat
     //todo play ktane
@@ -58,22 +58,6 @@ public class Kuro : MonoBehaviour {
     #region Module States
     private GameObject loadingState, solvedState;
     #endregion
-
-    #region Repo Request
-    private int[] repoRequestValue = { 0, 0, 0 };
-
-    private bool repoRequestCalculatedValues = false; //tells if we are done calculating values'
-
-    private KMSelectable[] repoRequestPfpButtons;
-
-    private Person[] repoRequestPeople;
-    #endregion
-
-    #region Mod Idea
-    private Person[] modIdeaPeople;
-    private KMSelectable[] modIdeasPfpButtons;
-    #endregion
-
 
     #region voice/text channels
     private const float channelOffset = -0.0081f; //the amount of space something will move down in the list of voice channels
@@ -180,21 +164,23 @@ public class Kuro : MonoBehaviour {
             kuroModules = RepoJSONGetter.kuroModules;
         }
         onBombKuroModules = allModules.Where(mod => kuroModules.Contains(mod)).OrderBy(q => q).ToList();
-        
-
-
         currentSolvedModules = new List<string>();
 
-        if (desiredTask == Enums.Task.CreateModule)
+        switch (desiredTask)
         {
-            if (onBombKuroModules.Count > 0)
-            {
-                Log($"You must just Chill Zone Alfa. Then solve the following modules: {GetGroupModuleString()}");
-            }
-            else
-            {
-                Log($"You must join #mod-ideas");
-            }
+            case Enums.Task.MaintainRepo:
+                Log("You must look at #repo-requests");
+                break;
+            case Enums.Task.CreateModule:
+                if (onBombKuroModules.Count > 0)
+                {
+                    Log($"You must join Chill Zone Alfa. Then solve the following modules: {GetGroupModuleString()}");
+                }
+                else
+                {
+                    Log($"You must look at #mod-ideas");
+                }
+                break;
         }
 
         loadingState.SetActive(false);
@@ -364,14 +350,6 @@ public class Kuro : MonoBehaviour {
         {
             endCallButton.transform.GetComponent<SpriteRenderer>().color = Color.white;
         };
-        //repo request buttons
-        repoRequestPfpButtons = Enumerable.Range(1, 3).Select(i => transform.Find($"Module Active State/Repo Request/Person {i}/PFP").GetComponent<KMSelectable>()).ToArray();
-
-        for (int i = 0; i < 3; i++)
-        {
-            int dummy = i;
-            repoRequestPfpButtons[dummy].OnInteract += delegate () { OnRepoRequestProfilePic(dummy); return false; };
-        }
     }
 
     private string GetGroupModuleString()
@@ -492,8 +470,7 @@ public class Kuro : MonoBehaviour {
         }
 
         desiredTime = currentTime.AddMinutes(minuteOffset);
-
-        desiredTime = new DateTime(2024, 1, 1, 9, 0, 0);
+        people.ForEach(person => person.SetTolerance(desiredTime.DayOfWeek));
 
         int fullMiutes = desiredTime.Hour * 60 + desiredTime.Minute;
 
@@ -509,9 +486,8 @@ public class Kuro : MonoBehaviour {
             desiredTask = Enums.Task.Bed;
 
         if (debug)
-            desiredTask = Enums.Task.CreateModule;
+            desiredTask = Enums.Task.MaintainRepo;
 
-        people.ForEach(person => person.SetTolerance(desiredTime.DayOfWeek));
 
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
         moduleActivated = true;
@@ -554,7 +530,7 @@ public class Kuro : MonoBehaviour {
         }
 
         currentTextLocation = Enums.TextLocation.ModIdeas;
-
+        Person[] modIdeaPeople = new Person[3];
         string[] loves = new string[] { "Polish music", "skating", "yellow", "programming", "modeling" };
 
         List<string> requests = new List<string>();
@@ -719,6 +695,8 @@ public class Kuro : MonoBehaviour {
 
         if (currentTextLocation == Enums.TextLocation.None)
         {
+            Person[] repoRequestPeople;
+            int[] repoRequestValue = new int[3];
             generalTextChannel.Deactivate();
             repoRequestTextChannel.Activate();
 
@@ -733,12 +711,12 @@ public class Kuro : MonoBehaviour {
             };
 
             MeshRenderer[] pfpMeshRenderers = new MeshRenderer[3];
-            TextMesh[] requestsText = new TextMesh[3];
+            Text[] requestsText = new Text[3];
             TextMesh[] nameText = new TextMesh[3];
             for (int i = 0; i < 3; i++)
             {
                 Transform personTransform = transform.Find($"Module Active State/Repo Request/Person {i + 1}");
-                requestsText[i] = personTransform.Find("Request").GetComponent<TextMesh>();
+                requestsText[i] = personTransform.Find("Request/Text").GetComponent<Text>();
                 pfpMeshRenderers[i] = personTransform.Find("PFP").GetComponent<MeshRenderer>();
                 nameText[i] = personTransform.Find("Name").GetComponent<TextMesh>();
             }
@@ -748,10 +726,6 @@ public class Kuro : MonoBehaviour {
                 repoRequestPeople = Enumerable.Range(1, 3).Select(i => people.PickRandom()).ToArray();
             }
             while (repoRequestPeople.Distinct().Count() != 3);
-
-            int maxWidth = 1650;
-            int fontSize = requestsText[0].fontSize;
-
             for (int i = 0; i < 3; i++)
             {
                 //setting up request and people
@@ -762,7 +736,7 @@ public class Kuro : MonoBehaviour {
 
             if (!RepoJSONGetter.Success)
             {
-                requestsText[0].text = requestsText[1].text = requestsText[2].text = FormatText("Unable get data. Select any pfp to solve the module", fontSize, maxWidth);
+                requestsText[0].text = requestsText[1].text = requestsText[2].text = "Unable get data. Select any pfp to solve the module";
                 Log("Unable get data. Select any pfp to solve the module");
             }
 
@@ -774,7 +748,7 @@ public class Kuro : MonoBehaviour {
 
                     KeyValuePair<string, int> kv = dictionary.PickRandom();
                     string moduleName = RepoJSONGetter.ModuleNames.PickRandom();
-                    requestsText[i].text = FormatText($"{kv.Key} {moduleName}", fontSize, maxWidth);
+                    requestsText[i].text = $"{kv.Key} {moduleName}";
                     //calculating values
                     int tolerance = p.Tolerance;
 
@@ -796,90 +770,31 @@ public class Kuro : MonoBehaviour {
                             Log($"{moduleName} is on the bomb. Multiplying tolerance by 2");
                         }
                     }
-
                     Log($"{p.Name} has a total tolerance of {GetTolerance(tolerance)}");
-                    repoRequestValue[i] = tolerance;       
+                    repoRequestValue[i] = tolerance;
+                }
+                int maxValue = repoRequestValue.Max();
+                List<int> correctIndicies = repoRequestValue.Select((value, index) => value == maxValue ? index : -1).Where(index => index != -1).ToList();
+                Debug.Log($"You should choose: {correctIndicies.Select(i => repoRequestPeople[i].Name).ToArray().Join(", ")}");
+
+                for (int i = 0; i < 3; i++)
+                {
+                    int dummy = i;
+                    if (correctIndicies.Contains(i))
+                    {
+                        transform.Find($"Module Active State/Repo Request/Person {i + 1}/PFP").GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { Solve($"You chose {repoRequestPeople[dummy].Name}. That is correct"); } return false; };
+                    }
+
+                    else
+                    { 
+                        transform.Find($"Module Active State/Repo Request/Person {i + 1}/PFP").GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { Strike($"You chose {repoRequestPeople[dummy].Name}. That is incorrect"); } return false; };
+                    }
                 }
             }
+
             EnableRepoRequest(true);
             currentTextLocation = Enums.TextLocation.RepoRequest;
-            repoRequestCalculatedValues = true;
         }
-    }
-
-    public void OnRepoRequestProfilePic(int index)
-    {
-        if (ModuleSolved || !repoRequestCalculatedValues)
-            return;
-
-        Log($"You chose {repoRequestPeople[index].Name}");
-
-        //if the data could not be laoded properly
-        if (!RepoJSONGetter.Success)
-        {
-
-            Solve("Data could not be loaded. Solving module...");
-            return;
-        }
-
-        int max = repoRequestValue.Max();
-
-        //check to see this index is the max
-        if (repoRequestValue[index] == max)
-        {
-            //all the indicies that have the max value
-            List<int> maxIndex = new List<int>();
-
-            for (int i = 0; i < 3; i++)
-            {
-                if (max == repoRequestValue[i])
-                    maxIndex.Add(i);
-            }
-
-            if (maxIndex.Count != 1)
-            {
-                if (maxIndex[0] != index)
-                {
-                    Strike($"{repoRequestPeople[0]} was higher in the list. Strike!");
-                    return;
-                }
-            }
-
-            else
-            {
-                Solve("Solving module...");
-            }
-        }
-
-        else
-        {
-            Strike("Somoene had a higher value. Strike!");
-        }
-    }
-
-    private string FormatText(string request, int fontSize, int maxWidth)
-    {
-        string[] requestArr = request.Split(' ');
-        string text = "";
-        int currentSize = 0;
-
-        foreach (string s in requestArr)
-        {
-            currentSize += (s.Length + 1) * fontSize;
-
-            if (currentSize > maxWidth)
-            {
-                text += $"\n{s} ";
-                currentSize %= maxWidth;
-            }
-
-            else
-            {
-                text += $"{s} ";
-            }
-        }
-
-        return text;
     }
 
     private void MoveToChillZoneAlfa()
