@@ -39,6 +39,7 @@ public class Kuro : MonoBehaviour {
     //x todo -use souv's warning triangle to show that the loading failed
     //todo eat
     //todo play ktane
+    //todo bed
     //x todo fix the bug of the time not being displayed properly in the log
     //x todo figure out why you got an out of range error from just loading the module 
     //x todo have a set up module method that will deal with what is shown and the buttons. (Call it in start before module loading starts)
@@ -46,9 +47,7 @@ public class Kuro : MonoBehaviour {
     //x todo have a loading state (that doesn't break all the kms)
     //x todo when a channel is active, deactivate the other one (fix a bug where the gray highlighting disappears when the highlight event ends)
     //todo have a solved state where it shows people's game activity
-
-    //todo beta testing
-    //todo -maintaining the repo
+    //todo change the discord leaving sound
 
     [SerializeField]
     private AudioClip[] audioClips; //join, leave
@@ -57,12 +56,10 @@ public class Kuro : MonoBehaviour {
     private static RepoJSONGetter jsonData;
 
     #region Module States
-    private GameObject moduleActiveState, loadingState, solvedState;
+    private GameObject loadingState, solvedState;
     #endregion
 
     #region Repo Request
-    private GameObject repoRequestGameObject;
-
     private int[] repoRequestValue = { 0, 0, 0 };
 
     private bool repoRequestCalculatedValues = false; //tells if we are done calculating values'
@@ -70,6 +67,11 @@ public class Kuro : MonoBehaviour {
     private KMSelectable[] repoRequestPfpButtons;
 
     private Person[] repoRequestPeople;
+    #endregion
+
+    #region Mod Idea
+    private Person[] modIdeaPeople;
+    private KMSelectable[] modIdeasPfpButtons;
     #endregion
 
 
@@ -196,7 +198,7 @@ public class Kuro : MonoBehaviour {
         }
 
         loadingState.SetActive(false);
-        moduleActiveState.SetActive(true);
+        EnableModuleActive(true);
     }
 
     
@@ -237,14 +239,14 @@ public class Kuro : MonoBehaviour {
 
     void SetUpModule()
     {
-
         //get gameobjects
-        moduleActiveState = transform.Find("Module Active State").gameObject;
         loadingState = transform.Find("Loading State").gameObject;
         solvedState = transform.Find("Solved State").gameObject;
-        repoRequestGameObject = moduleActiveState.transform.Find("Repo Request").gameObject;
         EnableVoiceGameObject(false);
-        Transform voiceChannelTransform = moduleActiveState.transform.Find("Voice Channels");
+        //EnableModIdeas(false);
+        EnableRepoRequest(false);
+
+        Transform voiceChannelTransform = transform.Find("Module Active State/Voice Channels");
         Transform chillZoneAlfaTransform = voiceChannelTransform.Find("Chill Zone Alfa");
         Transform chillZoneBravoTransform = voiceChannelTransform.Find("Chill Zone Bravo");
         Transform chillZoneCharlieTransform = voiceChannelTransform.Find("Chill Zone Charlie");
@@ -274,11 +276,8 @@ public class Kuro : MonoBehaviour {
 
         //show the loading state
         solvedState.SetActive(false);
-        moduleActiveState.SetActive(false);
-
-        //hide reqo request
-        repoRequestGameObject.SetActive(false);
-
+        EnableModuleActive(false);
+        EnableModIdeas(false);
         //set people in vcs
 
         int[] vcCount = new int[3];
@@ -309,8 +308,8 @@ public class Kuro : MonoBehaviour {
         ShiftChannels();
 
         //changing kuro pfp
-        Transform textChannelsTransform = moduleActiveState.transform.Find("Text Channels");
-        MeshRenderer kuroPfp = moduleActiveState.transform.Find("Profile").Find("PFP").GetComponent<MeshRenderer>();
+        Transform textChannelsTransform = transform.Find("Module Active State/Text Channels");
+        MeshRenderer kuroPfp = transform.Find("Module Active State/Profile/PFP").GetComponent<MeshRenderer>();
         currentKuroMood = kuroMoods.PickRandom();
         kuroPfp.material = currentKuroMood;
 
@@ -366,7 +365,7 @@ public class Kuro : MonoBehaviour {
             endCallButton.transform.GetComponent<SpriteRenderer>().color = Color.white;
         };
         //repo request buttons
-        repoRequestPfpButtons = Enumerable.Range(1, 3).Select(i => repoRequestGameObject.transform.Find($"Person {i}").Find("PFP").GetComponent<KMSelectable>()).ToArray();
+        repoRequestPfpButtons = Enumerable.Range(1, 3).Select(i => transform.Find($"Module Active State/Repo Request/Person {i}/PFP").GetComponent<KMSelectable>()).ToArray();
 
         for (int i = 0; i < 3; i++)
         {
@@ -414,9 +413,23 @@ public class Kuro : MonoBehaviour {
         transform.Find("Module Active State/Call/Status").GetComponent<TextMesh>().text = $"{name} / KTANE";
     }
 
+    private void EnableModuleActive(bool enable)
+    {
+        transform.Find("Module Active State").gameObject.SetActive(enable);
+    }
+
     private void EnableVoiceGameObject(bool enable)
     {
         transform.Find("Module Active State/Call").gameObject.SetActive(enable);
+    }
+    private void EnableModIdeas(bool enable)
+    {
+        transform.Find("Module Active State/Mod Ideas").gameObject.SetActive(enable);
+    }
+
+    private void EnableRepoRequest(bool enable)
+    {
+        transform.Find("Module Active State/Repo Request").gameObject.SetActive(enable);
     }
 
 
@@ -507,7 +520,7 @@ public class Kuro : MonoBehaviour {
 
     private void ShiftChannels()
     {
-        Transform voiceChannelTransform = moduleActiveState.transform.Find("Voice Channels");
+        Transform voiceChannelTransform = transform.Find("Module Active State/Voice Channels");
         Transform chillZoneAlfaTransform = voiceChannelTransform.Find("Chill Zone Alfa");
         Transform chillZoneBravoTransform = voiceChannelTransform.Find("Chill Zone Bravo");
         Transform chillZoneCharlieTransform = voiceChannelTransform.Find("Chill Zone Charlie");
@@ -540,15 +553,20 @@ public class Kuro : MonoBehaviour {
             return;
         }
 
-        if (currentTextLocation == Enums.TextLocation.None)
+        currentTextLocation = Enums.TextLocation.ModIdeas;
+
+        string[] loves = new string[] { "Polish music", "skating", "yellow", "programming", "modeling" };
+
+        List<string> requests = new List<string>();
+        List<bool> isNeedy = new List<bool>();
+        List<bool> isLoved = new List<bool>();
+        List<bool> isCurl = new List<bool>();
+
+
+
+        do
         {
-            currentTextLocation = Enums.TextLocation.ModIdeas;
-
-            List<string> questions = new List<string>();
-
-            
-
-            //generating quesetions
+            //generating requests
             for (int i = 0; i < 3; i++)
             {
                 string moduleType = new string[] { "needy", "solvable", "boss" }.PickRandom();
@@ -556,22 +574,138 @@ public class Kuro : MonoBehaviour {
                 switch (index)
                 {
                     case 0:
-                        questions.Add($"A {moduleType} module that is about the color {new string[] { "red", "orange", "yellow", "green", "blue", "purple" }.PickRandom()}");
+                        requests.Add($"A {moduleType} module that is about the color {new string[] { "red", "orange", "yellow", "green", "blue", "purple" }.PickRandom()}");
                         break;
                     case 1:
-                        questions.Add($"A {moduleType} module that is about {new string[] { "running", "longboarding", "hockey", "curling", "biking", "skating" }.PickRandom()}");
+                        requests.Add($"A {moduleType} module that is about {new string[] { "running", "longboarding", "hockey", "curling", "biking", "skating" }.PickRandom()}");
                         break;
                     case 2:
-                        questions.Add($"A {moduleType} module that is about {new string[] { "German", "French", "Italian", "Spanish", "American", "Canadian", "Brazilian", "Chinese", "Indian", "Australian", "Polish"}.PickRandom()} music");
+                        requests.Add($"A {moduleType} module that is about {new string[] { "German", "French", "Italian", "Spanish", "Chinese", "Polish" }.PickRandom()} music");
                         break;
                     case 3:
-                        questions.Add($"A {moduleType} module that is about {new string[] { "animating", "programming", "modeling", "writing", "composing" }.PickRandom()}");
+                        requests.Add($"A {moduleType} module that is about {new string[] { "animating", "programming", "modeling", "writing", "composing" }.PickRandom()}");
                         break;
                 }
             }
 
-            questions.ForEach(q => Debug.Log(q));
+            if (requests.Distinct().Count() != 3)
+            { 
+                requests.Clear();
+            }
+
+        } while (requests.Count == 0);
+        
+
+        requests.ForEach(r => Debug.Log(r));
+
+
+        do
+        {
+            modIdeaPeople = new Person[] { people.PickRandom(), people.PickRandom(), people.PickRandom() };
+        } while (modIdeaPeople.Distinct().Count() != 3);
+
+
+        //todo 
+        for (int i = 0; i < 3; i++)
+        {
+            Person p = modIdeaPeople[i];
+            string request = requests[i];
+            Transform personTransform = transform.Find($"Module Active State/Mod Ideas/Person {i + 1}");
+            personTransform.Find("PFP").GetComponent<MeshRenderer>().material = p.ProfilePicture;
+            personTransform.Find("Name").GetComponent<TextMesh>().text = p.Name;
+            personTransform.Find("Request").GetComponent<TextMesh>().text = request;
+            Log($"{p.Name} requested: \"{request}\"");
+            isNeedy.Add(request.Contains("needy"));
+            isLoved.Add(loves.Any(l => request.Contains(l)));
+            isCurl.Add(p.Name == "CurlBot");
+
+
         }
+
+        List<int> correctIndex = new List<int>();
+        for (int i = 0; i < 3; i++)
+        {
+            if (!isNeedy[i] && isLoved[i] && !isCurl[i])
+            {
+                correctIndex.Add(i);
+            }
+        }
+
+        if (correctIndex.Count > 0)
+        {
+            if (correctIndex.Count == 1)
+            {
+                Log($"{modIdeaPeople[correctIndex[0]].Name} suggested an idea that Kuro loves and is not a needy. That is the desired request");
+
+            }
+
+            else
+            {
+                string[] names = correctIndex.Select(i => modIdeaPeople[i].Name).ToArray();
+                Log($"{string.Join(", ", names, 0, names.Length - 1)}, and {names.Last()} suggested ideas that Kuro loves and are not needies. Those are the desired requests");
+
+            }
+
+        }
+
+        else
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (!isNeedy[i] && !isCurl[i])
+                {
+                    correctIndex.Add(i);
+                }
+            }
+
+            if (correctIndex.Count > 0)
+            {
+                if (correctIndex.Count == 1)
+                {
+                    Log($"{modIdeaPeople[correctIndex[0]].Name} suggested an idea that is not a needy. That is the desired request");
+
+                }
+
+                else
+                {
+                    string[] names = correctIndex.Select(i => modIdeaPeople[i].Name).ToArray();
+                    Log($"{string.Join(", ", names, 0, names.Length - 1)} and {names.Last()} suggested ideas that are not needies. Those are the desired requests");
+                }
+
+            }
+
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    if (!isCurl[i])
+                    {
+                        correctIndex.Add(i);
+                    }
+                }
+
+                string[] names = correctIndex.Select(i => modIdeaPeople[i].Name).ToArray();
+                Log($"{string.Join(", ", names, 0, names.Length - 1)} and {names.Last()} are not CurlBot. Choose one of their requests");
+            }
+        }
+
+
+        for (int i = 0; i < 3; i++)
+        {
+            KMSelectable button = transform.Find($"Module Active State/Mod Ideas/Person {i + 1}/PFP").GetComponent<KMSelectable>();
+            int dummy = i;
+            if (correctIndex.Contains(i))
+            {
+                button.OnInteract += delegate () { if (moduleActivated && !pause) { Solve($"You chose {modIdeaPeople[dummy].Name}'s idea. This is correct"); } return false; };
+            }
+
+            else
+            {
+                button.OnInteract += delegate () { if (moduleActivated && !pause) { Strike($"You chose {modIdeaPeople[dummy].Name}'s idea. This is incorrect"); } return false; };
+            }
+        }
+
+        EnableModIdeas(true);
     }
 
     private void OnRepoRequest()
@@ -603,7 +737,7 @@ public class Kuro : MonoBehaviour {
             TextMesh[] nameText = new TextMesh[3];
             for (int i = 0; i < 3; i++)
             {
-                Transform personTransform = repoRequestGameObject.transform.Find($"Person {i + 1}");
+                Transform personTransform = transform.Find($"Module Active State/Repo Request/Person {i + 1}");
                 requestsText[i] = personTransform.Find("Request").GetComponent<TextMesh>();
                 pfpMeshRenderers[i] = personTransform.Find("PFP").GetComponent<MeshRenderer>();
                 nameText[i] = personTransform.Find("Name").GetComponent<TextMesh>();
@@ -667,7 +801,7 @@ public class Kuro : MonoBehaviour {
                     repoRequestValue[i] = tolerance;       
                 }
             }
-            repoRequestGameObject.SetActive(true);
+            EnableRepoRequest(true);
             currentTextLocation = Enums.TextLocation.RepoRequest;
             repoRequestCalculatedValues = true;
         }
@@ -852,7 +986,7 @@ public class Kuro : MonoBehaviour {
         if (s != "")
             Log(s);
 
-        moduleActiveState.SetActive(false);
+        EnableModuleActive(false);
         solvedState.SetActive(true);
         BombModule.HandlePass();
         ModuleSolved = true;
