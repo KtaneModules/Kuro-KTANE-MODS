@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class VoiceChannel 
 {
-    private List<Person> people;
+    public List<Person> people;
     private GameObject[] peopleGameObjects;
-    public int PeopleCount { get { return people.Count; } }
     private TextMesh textMesh;
     private GameObject highlight;
     private Color defaultColor = new Color(148f / 255, 155f / 255, 164f / 255);
-
+    public string Name { get; private set; }
     private bool active;
     public bool Active { get { return active; } }
 
-    public VoiceChannel(GameObject gameObject)
+    public VoiceChannel(GameObject gameObject, string name)
     {
+        Name = name;
         textMesh = gameObject.transform.Find("label").GetComponent<TextMesh>();
         highlight = gameObject.transform.Find("background").gameObject;
         people = new List<Person>();
@@ -42,11 +42,6 @@ public class VoiceChannel
         active = false;
     }
 
-    public void AddPerson(Person person)
-    {
-        people.Add(person);
-    }
-
     public override string ToString()
     {
         return $"This vc has {string.Join(", ", people.Select(x => x.Name).ToArray())}";
@@ -54,7 +49,7 @@ public class VoiceChannel
 
     public void DisplayPeople()
     {
-        for (int i = 0; i < PeopleCount; i++)
+        for (int i = 0; i < people.Count; i++)
         {
             Person p = people[i];
             GameObject gameObject = peopleGameObjects[i];
@@ -67,7 +62,7 @@ public class VoiceChannel
 
         for (int i = 0; i < peopleGameObjects.Length; i++)
         {
-            peopleGameObjects[i].SetActive(i < PeopleCount);
+            peopleGameObjects[i].SetActive(i < people.Count);
         }
     }
 

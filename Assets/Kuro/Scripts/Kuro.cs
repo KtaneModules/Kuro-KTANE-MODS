@@ -111,7 +111,6 @@ public class Kuro : MonoBehaviour {
     private List<string> currentSolvedModules; //modules that have been solved on the bomb
 
     private bool pause = false; //if this is true, something must finish before any interactions can be done
-    List<Person> notInVcsPeople;
 
     void Awake()
     {
@@ -169,12 +168,42 @@ public class Kuro : MonoBehaviour {
         switch (desiredTask)
         {
             case Enums.Task.Eat:
-                
-                Log("You must join");
+
+
+                VoiceChannel[] desiredVCs = new VoiceChannel[1];
+                VoiceChannel[] chillZones = voiceChannelList.Where(vc => vc.Name != "Modded Alfa").ToArray();
+                List<VoiceChannel> voiceChannelByOrder = voiceChannelList.Where(vc => vc.Name != "Modded Alfa").OrderByDescending(vc => vc.people.Count).ToList();
 
                 if (currentMood == Enums.Mood.Happy)
-                    Log("a");
+                {
+                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder[0] };
+                }
+                else if (currentMood == Enums.Mood.Neutral)
+                {
+                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder[1] };
+                }
+                else if (currentMood == Enums.Mood.Angry)
+                {
+                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder[2] };
+                }
+                else if (currentMood == Enums.Mood.Devious)
+                {
+                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder.First(vc => vc.people.Any(p => p.Name == "CurlBot")) };
+                }
+                else if (currentMood == Enums.Mood.Curious)
+                {
+                    desiredVCs = voiceChannelByOrder.ToArray();
+                }
+
+                if (currentMood != Enums.Mood.Devious && currentMood != Enums.Mood.Curious && desiredVCs[0].people.Any(p => p.Name == "CurlBot"))
+                { 
+                    desiredVCs[0] = chillZones[(Array.IndexOf(chillZones, desiredVCs[0]) + 1) % chillZones.Length];
+                }
+                Log($"You are {currentMood}. You are able to join {desiredVCs.Select(vc => vc.Name).Join(", ")}");
+
                 break;
+
+
             case Enums.Task.MaintainRepo:
                 Log("You must look at #repo-requests");
                 break;
@@ -263,7 +292,7 @@ public class Kuro : MonoBehaviour {
         };
 
         //create the vcs
-        voiceChannelList = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaTransform.gameObject), new VoiceChannel(chillZoneBravoTransform.gameObject), new VoiceChannel(chillZoneCharlieTransform.gameObject), new VoiceChannel(voiceChannelTransform.Find("Modded Alfa").gameObject) };
+        voiceChannelList = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaTransform.gameObject, "Chill Zone Alfa"), new VoiceChannel(chillZoneBravoTransform.gameObject, "Chill Zone Bravo"), new VoiceChannel(chillZoneCharlieTransform.gameObject, "Chill Zone Charlie"), new VoiceChannel(voiceChannelTransform.Find("Modded Alfa").gameObject, "Modded Alfa") };
 
         voiceChannelList.ForEach(t => t.Deactivate());
 
@@ -283,17 +312,18 @@ public class Kuro : MonoBehaviour {
             }
         } while (vcCount.Distinct().Count() != 3);
 
-        notInVcsPeople = people.Select(x => x).ToList();
+        List<Person> notInVcsPeople = people.Select(x => x).ToList();
 
         for (int i = 0; i < 3; i++)
         {
             VoiceChannel vc = voiceChannelList[i];
-            for (int j = 0; j < vcCount[i]; j++)
+            for (int j = 0; j < vcCount[i] -1; j++)
             {
                 Person p = notInVcsPeople.PickRandom();
                 notInVcsPeople.Remove(p);
-                vc.AddPerson(p);
+                vc.people.Add(p);
             }
+            vc.people.Add(people[4]);
         }
 
         voiceChannelList.ForEach(x => { x.DisplayPeople(); });
@@ -494,7 +524,7 @@ public class Kuro : MonoBehaviour {
             desiredTask = Enums.Task.Bed;
 
         if (debug)
-            desiredTask = Enums.Task.MaintainRepo;
+            desiredTask = Enums.Task.Eat;
 
 
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
@@ -509,8 +539,8 @@ public class Kuro : MonoBehaviour {
         Transform chillZoneBravoTransform = voiceChannelTransform.Find("Chill Zone Bravo");
         Transform chillZoneCharlieTransform = voiceChannelTransform.Find("Chill Zone Charlie");
         Transform moddedAlfaTransform = voiceChannelTransform.Find("Modded Alfa");
-        int alfaPeople = voiceChannelList[0].PeopleCount;
-        int bravoPeople = voiceChannelList[1].PeopleCount;
+        int alfaPeople = voiceChannelList[0].people.Count;
+        int bravoPeople = voiceChannelList[1].people.Count;
 
         Vector3 bravoVector = chillZoneBravoTransform.localPosition;
         chillZoneBravoTransform.localPosition = new Vector3(bravoVector.x, bravoVector.y, -0.059f + (channelOffset * alfaPeople));
@@ -813,7 +843,7 @@ public class Kuro : MonoBehaviour {
         VoiceChannel vc = voiceChannelList[0];
         Person kuro = new Person(kuroMoods[(int)currentMood]);
         kuro.Name = "Kuro";
-        vc.AddPerson(kuro);
+        vc.people.Add(kuro);
         ShiftChannels();
         vc.DisplayPeople();
         EnableVoiceGameObject(true);
