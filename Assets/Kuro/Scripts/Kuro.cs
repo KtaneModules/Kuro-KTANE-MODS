@@ -62,7 +62,7 @@ public class Kuro : MonoBehaviour {
     #region voice/text channels
     private const float channelOffset = -0.0081f; //the amount of space something will move down in the list of voice channels
     private Vector3[] vcOriginalPosition = new Vector3[] { new Vector3(0.0f, 0.0f, -0.1f) }; //bravo, charlie
-    private List<VoiceChannel> voiceChannelList; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie
+    private List<VoiceChannel> voiceChannelList; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie, modded alfa
 
     private TextChannel generalTextChannel;
     private TextChannel modIdeasTextChannel;
@@ -90,7 +90,7 @@ public class Kuro : MonoBehaviour {
     private Enums.Mood currentMood;
     #endregion
 
-   
+    VoiceChannel[] desiredVCs;
 
     private Enums.TextLocation currentTextLocation;
     private Enums.VoiceLocation currentVoiceLocation;
@@ -168,9 +168,7 @@ public class Kuro : MonoBehaviour {
         switch (desiredTask)
         {
             case Enums.Task.Eat:
-
-
-                VoiceChannel[] desiredVCs = new VoiceChannel[1];
+                desiredVCs = new VoiceChannel[1];
                 VoiceChannel[] chillZones = voiceChannelList.Where(vc => vc.Name != "Modded Alfa").ToArray();
                 List<VoiceChannel> voiceChannelByOrder = voiceChannelList.Where(vc => vc.Name != "Modded Alfa").OrderByDescending(vc => vc.people.Count).ToList();
 
@@ -241,7 +239,7 @@ public class Kuro : MonoBehaviour {
                 if (currentVoiceLocation != Enums.VoiceLocation.ChillZoneAlfa)
                 {
                     Strike($"You solved {solvedModule} before moving to Chill Zone Alfa. Strike!");
-                    MoveToChillZoneAlfa();
+                    MoveToVoiceChannel(voiceChannelList[0]);
                 }
 
                 else
@@ -293,9 +291,6 @@ public class Kuro : MonoBehaviour {
 
         //create the vcs
         voiceChannelList = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaTransform.gameObject, "Chill Zone Alfa"), new VoiceChannel(chillZoneBravoTransform.gameObject, "Chill Zone Bravo"), new VoiceChannel(chillZoneCharlieTransform.gameObject, "Chill Zone Charlie"), new VoiceChannel(voiceChannelTransform.Find("Modded Alfa").gameObject, "Modded Alfa") };
-
-        voiceChannelList.ForEach(t => t.Deactivate());
-
         //show the loading state
         solvedState.SetActive(false);
         EnableModuleActive(false);
@@ -317,16 +312,17 @@ public class Kuro : MonoBehaviour {
         for (int i = 0; i < 3; i++)
         {
             VoiceChannel vc = voiceChannelList[i];
-            for (int j = 0; j < vcCount[i] -1; j++)
+            for (int j = 0; j < vcCount[i]; j++)
             {
                 Person p = notInVcsPeople.PickRandom();
                 notInVcsPeople.Remove(p);
                 vc.people.Add(p);
             }
-            vc.people.Add(people[4]);
         }
 
-        voiceChannelList.ForEach(x => { x.DisplayPeople(); });
+        voiceChannelList.ForEach(t => { t.DisplayPeople(); t.Deactivate(); });
+        voiceChannelList.Where(t => t.Name != "Modded Alfa").ToList().ForEach(t => { Log(t.ToString()); });
+        
 
         ShiftChannels();
 
@@ -334,8 +330,14 @@ public class Kuro : MonoBehaviour {
         Transform textChannelsTransform = transform.Find("Module Active State/Text Channels");
         MeshRenderer kuroPfp = transform.Find("Module Active State/Profile/PFP").GetComponent<MeshRenderer>();
         int num = Rnd.Range(0, 5);
+        if (debug)
+        {
+            num = 0;
+        }
         currentMood = (Enums.Mood)num;
         kuroPfp.material = kuroMoods[num];
+
+        
 
         //set locations
         currentTextLocation = Enums.TextLocation.None;
@@ -399,15 +401,24 @@ public class Kuro : MonoBehaviour {
     {
         if (ModuleSolved) return;
 
-        if (onBombKuroModules.Count > 0)
+        switch (desiredTask)
         {
-            Strike("Tried to leave the call before all modules were solved");
-        }
+            case Enums.Task.CreateModule:
+                if (onBombKuroModules.Count > 0)
+                {
+                    Strike("Tried to leave the call before all modules were solved");
+                }
 
-        else
-        {
-            Audio.PlaySoundAtTransform(audioClips[1].name, transform);
-            Solve("Left call after solving all required modules. Solving module...");
+                else
+                {
+                    Audio.PlaySoundAtTransform(audioClips[1].name, transform);
+                    Solve("Left call after solving all required modules. Solving module...");
+                }
+                break;
+
+            case Enums.Task.Eat:
+
+                break;
         }
     }
 
@@ -524,7 +535,9 @@ public class Kuro : MonoBehaviour {
             desiredTask = Enums.Task.Bed;
 
         if (debug)
+        {
             desiredTask = Enums.Task.Eat;
+        }
 
 
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
@@ -609,10 +622,6 @@ public class Kuro : MonoBehaviour {
 
         } while (requests.Count == 0);
         
-
-        requests.ForEach(r => Debug.Log(r));
-
-
         do
         {
             modIdeaPeople = new Person[] { people.PickRandom(), people.PickRandom(), people.PickRandom() };
@@ -835,20 +844,17 @@ public class Kuro : MonoBehaviour {
         }
     }
 
-    private void MoveToChillZoneAlfa()
+    private void MoveToVoiceChannel(VoiceChannel vc)
     {
-        if (currentVoiceLocation == Enums.VoiceLocation.ChillZoneAlfa) return;
         pause = true;
         Audio.PlaySoundAtTransform(audioClips[0].name, transform);
-        VoiceChannel vc = voiceChannelList[0];
         Person kuro = new Person(kuroMoods[(int)currentMood]);
         kuro.Name = "Kuro";
         vc.people.Add(kuro);
         ShiftChannels();
         vc.DisplayPeople();
         EnableVoiceGameObject(true);
-        ChangeVoiceChannelText("Chill Zone Alfa");
-        currentVoiceLocation = Enums.VoiceLocation.ChillZoneAlfa;
+        ChangeVoiceChannelText(vc.Name);
         pause = false;
     }
 
@@ -868,6 +874,8 @@ public class Kuro : MonoBehaviour {
 
     private void OnModdedAlfa()
     {
+        Debug.Log("modded");
+
         if (desiredTask != Enums.Task.PlayKTANE)
         {
             WrongChannel("Modded Alfa");
@@ -877,31 +885,33 @@ public class Kuro : MonoBehaviour {
 
     private void OnChillZoneAlfa()
     {
-        if (desiredTask != Enums.Task.Eat && !(desiredTask == Enums.Task.CreateModule && onBombKuroModules.Count > 0))
+        if (!(desiredTask == Enums.Task.Eat && desiredVCs.Contains(voiceChannelList[0])) && !(desiredTask == Enums.Task.CreateModule && onBombKuroModules.Count > 0))
         {
             WrongChannel("Chill Zone Alfa");
             return;
         }
 
-        MoveToChillZoneAlfa();
+        MoveToVoiceChannel(voiceChannelList[0]);
     }
 
     private void OnChillZoneBravo()
     {
-        if (desiredTask != Enums.Task.Eat)
+        if (!(desiredTask == Enums.Task.Eat && desiredVCs.Contains(voiceChannelList[1])))
         {
             WrongChannel("Chill Zone Bravo");
             return;
         }
+        MoveToVoiceChannel(voiceChannelList[1]);
     }
 
     private void OnChillZoneCharlie()
     {
-        if (desiredTask != Enums.Task.Eat)
+        if (!(desiredTask == Enums.Task.Eat && desiredVCs.Contains(voiceChannelList[2])))
         {
             WrongChannel("Chill Zone Charlie");
             return;
         }
+        MoveToVoiceChannel(voiceChannelList[2]);
     }
 
     private string FormatHourMinute(DateTime dateTime)

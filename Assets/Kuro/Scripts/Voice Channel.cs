@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using UnityEngine;
 
 public class VoiceChannel 
@@ -44,7 +45,7 @@ public class VoiceChannel
 
     public override string ToString()
     {
-        return $"This vc has {string.Join(", ", people.Select(x => x.Name).ToArray())}";
+        return $"{Name} has {string.Join(", ", people.Select(x => x.Name).ToArray())}";
     }
 
     public void DisplayPeople()
@@ -65,5 +66,4 @@ public class VoiceChannel
             peopleGameObjects[i].SetActive(i < people.Count);
         }
     }
-
 }
