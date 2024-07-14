@@ -6,6 +6,7 @@ using UnityEngine;
 using KModkit;
 using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class Kuro : MonoBehaviour {
 
@@ -38,6 +39,9 @@ public class Kuro : MonoBehaviour {
     //x todo --create ideas for mod ideas
     //x todo -use souv's warning triangle to show that the loading failed
     //todo eat
+    //todo - make it so a green circle appears when kuro is speaking
+    //todo - make it so when someone clcks on kuro, he will repeat what he said
+    //todo - put british flags on fab lollies
     //todo play ktane
     //todo bed
     //x todo fix the bug of the time not being displayed properly in the log
@@ -50,7 +54,7 @@ public class Kuro : MonoBehaviour {
     //todo change the discord leaving sound
 
     [SerializeField]
-    private AudioClip[] audioClips; //join, leave
+    private AudioClip[] audioClips; //join, leave, eggs, fab lolly, pasta
     [SerializeField]
     private GameObject wariningSign;
     private static RepoJSONGetter jsonData;
@@ -59,9 +63,12 @@ public class Kuro : MonoBehaviour {
     private GameObject loadingState, solvedState;
     #endregion
 
+    #region Food
+    [SerializeField]
+    private Material[] eggs, fabLollies, pasta, others;
+    #endregion
     #region voice/text channels
     private const float channelOffset = -0.0081f; //the amount of space something will move down in the list of voice channels
-    private Vector3[] vcOriginalPosition = new Vector3[] { new Vector3(0.0f, 0.0f, -0.1f) }; //bravo, charlie
     private List<VoiceChannel> voiceChannelList; //chillZoneAlfa, chillZoneBravo, chillZoneCharlie, modded alfa
 
     private TextChannel generalTextChannel;
@@ -263,8 +270,10 @@ public class Kuro : MonoBehaviour {
         loadingState = transform.Find("Loading State").gameObject;
         solvedState = transform.Find("Solved State").gameObject;
         EnableVoiceGameObject(false);
-        //EnableModIdeas(false);
+        EnableModIdeas(false);
         EnableRepoRequest(false);
+        EnableFood(false);
+        EnableModuleActive(false);
 
         Transform voiceChannelTransform = transform.Find("Module Active State/Voice Channels");
         Transform chillZoneAlfaTransform = voiceChannelTransform.Find("Chill Zone Alfa");
@@ -293,8 +302,6 @@ public class Kuro : MonoBehaviour {
         voiceChannelList = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaTransform.gameObject, "Chill Zone Alfa"), new VoiceChannel(chillZoneBravoTransform.gameObject, "Chill Zone Bravo"), new VoiceChannel(chillZoneCharlieTransform.gameObject, "Chill Zone Charlie"), new VoiceChannel(voiceChannelTransform.Find("Modded Alfa").gameObject, "Modded Alfa") };
         //show the loading state
         solvedState.SetActive(false);
-        EnableModuleActive(false);
-        EnableModIdeas(false);
         //set people in vcs
 
         int[] vcCount = new int[3];
@@ -457,6 +464,60 @@ public class Kuro : MonoBehaviour {
     private void EnableRepoRequest(bool enable)
     {
         transform.Find("Module Active State/Repo Request").gameObject.SetActive(enable);
+    }
+    private void EnableFood(bool enable) {
+        transform.Find("Module Active State/Eat").gameObject.SetActive(enable);
+    }
+
+    private IEnumerator GetFood()
+    {
+        yield return new WaitForSeconds(audioClips[0].length); //wait for join sound to end
+        string[] foods = new string[] { "eggs", "a fab lolly", "pasta" };
+        AudioClip[] foodClips = new AudioClip[] { audioClips[2], audioClips[3], audioClips[4] }; //eggs , fab lolly, pasta
+        int foodIndex = Rnd.Range(0, 3);
+        int correctIndex = Rnd.Range(0, 3);
+
+        Audio.PlaySoundAtTransform(foodClips[foodIndex].name, transform);
+        yield return new WaitForSeconds(foodClips[foodIndex].length);
+        KMSelectable[] foodButtons = new KMSelectable[] { transform.GetComponent<KMSelectable>().Children[14], transform.GetComponent<KMSelectable>().Children[15], transform.GetComponent<KMSelectable>().Children[16] };
+        Material correctMaterial = null;
+        Material[] wrongMaterials = null;
+        switch (foodIndex)
+        {
+            case 0:
+                correctMaterial = eggs.PickRandom();
+                wrongMaterials = others.Concat(fabLollies).Concat(pasta).ToArray();
+                break;
+            case 1:
+                correctMaterial = fabLollies.PickRandom();
+                wrongMaterials = others.Concat(eggs).Concat(pasta).ToArray();
+
+                break;
+            case 2:
+                correctMaterial = pasta.PickRandom();
+                wrongMaterials = others.Concat(eggs).Concat(fabLollies).ToArray();
+                break;
+        }
+        wrongMaterials = wrongMaterials.Shuffle().Take(3).ToArray();
+        for (int i = 0; i < 3; i++)
+        {
+            int dummy = i;
+            if (correctIndex == dummy)
+            {
+                foodButtons[dummy].GetComponent<MeshRenderer>().sharedMaterial = correctMaterial;
+                foodButtons[dummy].OnInteract += delegate () { if (moduleActivated && !pause) { Solve($"You chose {foodButtons[dummy].name}. This is correct"); } return false; };
+
+            }
+            else
+            {
+                foodButtons[dummy].GetComponent<MeshRenderer>().sharedMaterial = wrongMaterials[dummy];
+                foodButtons[dummy].OnInteract += delegate () { if (moduleActivated && !pause) { Strike($"You chose {foodButtons[dummy].name}. This is incorrect"); } return false; };
+            }
+        }
+
+        Log($"Kuro wants {foods[foodIndex]}");
+        Log($"The displayed foods are {foodButtons.Select(f => f.GetComponent<MeshRenderer>().sharedMaterial.name).Join(", ")}");
+        EnableFood(true);
     }
 
 
@@ -892,6 +953,11 @@ public class Kuro : MonoBehaviour {
         }
 
         MoveToVoiceChannel(voiceChannelList[0]);
+        if (desiredTask == Enums.Task.Eat)
+        {
+            StartCoroutine(GetFood());
+        }
+
     }
 
     private void OnChillZoneBravo()
@@ -902,6 +968,7 @@ public class Kuro : MonoBehaviour {
             return;
         }
         MoveToVoiceChannel(voiceChannelList[1]);
+        StartCoroutine(GetFood());
     }
 
     private void OnChillZoneCharlie()
@@ -912,6 +979,7 @@ public class Kuro : MonoBehaviour {
             return;
         }
         MoveToVoiceChannel(voiceChannelList[2]);
+        StartCoroutine(GetFood());
     }
 
     private string FormatHourMinute(DateTime dateTime)
