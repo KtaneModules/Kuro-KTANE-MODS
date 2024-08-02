@@ -269,6 +269,7 @@ public class Kuro : MonoBehaviour {
         //get gameobjects
         loadingState = transform.Find("Loading State").gameObject;
         solvedState = transform.Find("Solved State").gameObject;
+        EnableSpeaking(false);
         EnableVoiceGameObject(false);
         EnableModIdeas(false);
         EnableRepoRequest(false);
@@ -478,8 +479,10 @@ public class Kuro : MonoBehaviour {
         int correctIndex = Rnd.Range(0, 3);
         Audio.PlaySoundAtTransform(foodClips[foodIndex].name, transform);
         vc.EnableSpeaking(true);
+        EnableSpeaking(true);
         yield return new WaitForSeconds(foodClips[foodIndex].length);
         vc.EnableSpeaking(false);
+        EnableSpeaking(false);
         KMSelectable[] foodButtons = new KMSelectable[] { transform.GetComponent<KMSelectable>().Children[14], transform.GetComponent<KMSelectable>().Children[15], transform.GetComponent<KMSelectable>().Children[16] };
         Material correctMaterial = null;
         Material[] wrongMaterials = null;
@@ -1005,6 +1008,11 @@ public class Kuro : MonoBehaviour {
         }
 
         return "ERROR";
+    }
+
+    private void EnableSpeaking(bool enabled)
+    {
+        transform.Find("Module Active State/Profile/Call Background").gameObject.SetActive(enabled);
     }
 
     private void WrongChannel(string location)
