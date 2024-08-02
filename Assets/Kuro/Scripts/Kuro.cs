@@ -41,7 +41,7 @@ public class Kuro : MonoBehaviour {
     //todo eat
     //x todo- make it so a green circle appears when kuro is speaking
     //todo - make it so when someone clcks on kuro, he will repeat what he said (stretch goal)
-    //todo - put british flags on fab lollies
+    //x todo - put british flags on fab lollies
     //todo play ktane
     //todo bed
     //x todo fix the bug of the time not being displayed properly in the log
