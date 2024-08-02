@@ -39,8 +39,8 @@ public class Kuro : MonoBehaviour {
     //x todo --create ideas for mod ideas
     //x todo -use souv's warning triangle to show that the loading failed
     //todo eat
-    //todo - make it so a green circle appears when kuro is speaking
-    //todo - make it so when someone clcks on kuro, he will repeat what he said
+    //x todo- make it so a green circle appears when kuro is speaking
+    //todo - make it so when someone clcks on kuro, he will repeat what he said (stretch goal)
     //todo - put british flags on fab lollies
     //todo play ktane
     //todo bed
@@ -51,7 +51,8 @@ public class Kuro : MonoBehaviour {
     //x todo have a loading state (that doesn't break all the kms)
     //x todo when a channel is active, deactivate the other one (fix a bug where the gray highlighting disappears when the highlight event ends)
     //todo have a solved state where it shows people's game activity
-    //todo change the discord leaving sound
+    //todo change the discord leaving sound (stretch goal)
+    //todo have people in vcs be in alphabetical order
 
     [SerializeField]
     private AudioClip[] audioClips; //join, leave, eggs, fab lolly, pasta
