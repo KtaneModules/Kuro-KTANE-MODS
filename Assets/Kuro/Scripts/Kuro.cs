@@ -469,16 +469,17 @@ public class Kuro : MonoBehaviour {
         transform.Find("Module Active State/Eat").gameObject.SetActive(enable);
     }
 
-    private IEnumerator GetFood()
+    private IEnumerator GetFood(VoiceChannel vc)
     {
         yield return new WaitForSeconds(audioClips[0].length); //wait for join sound to end
         string[] foods = new string[] { "eggs", "a fab lolly", "pasta" };
         AudioClip[] foodClips = new AudioClip[] { audioClips[2], audioClips[3], audioClips[4] }; //eggs , fab lolly, pasta
         int foodIndex = Rnd.Range(0, 3);
         int correctIndex = Rnd.Range(0, 3);
-
         Audio.PlaySoundAtTransform(foodClips[foodIndex].name, transform);
+        vc.EnableSpeaking(true);
         yield return new WaitForSeconds(foodClips[foodIndex].length);
+        vc.EnableSpeaking(false);
         KMSelectable[] foodButtons = new KMSelectable[] { transform.GetComponent<KMSelectable>().Children[14], transform.GetComponent<KMSelectable>().Children[15], transform.GetComponent<KMSelectable>().Children[16] };
         Material correctMaterial = null;
         Material[] wrongMaterials = null;
@@ -689,7 +690,6 @@ public class Kuro : MonoBehaviour {
         } while (modIdeaPeople.Distinct().Count() != 3);
 
 
-        //todo 
         for (int i = 0; i < 3; i++)
         {
             Person p = modIdeaPeople[i];
@@ -955,7 +955,7 @@ public class Kuro : MonoBehaviour {
         MoveToVoiceChannel(voiceChannelList[0]);
         if (desiredTask == Enums.Task.Eat)
         {
-            StartCoroutine(GetFood());
+            StartCoroutine(GetFood(voiceChannelList[0]));
         }
 
     }
@@ -968,7 +968,7 @@ public class Kuro : MonoBehaviour {
             return;
         }
         MoveToVoiceChannel(voiceChannelList[1]);
-        StartCoroutine(GetFood());
+        StartCoroutine(GetFood(voiceChannelList[1]));
     }
 
     private void OnChillZoneCharlie()
@@ -979,7 +979,7 @@ public class Kuro : MonoBehaviour {
             return;
         }
         MoveToVoiceChannel(voiceChannelList[2]);
-        StartCoroutine(GetFood());
+        StartCoroutine(GetFood(voiceChannelList[2]));
     }
 
     private string FormatHourMinute(DateTime dateTime)

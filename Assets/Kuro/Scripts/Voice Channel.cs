@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -53,9 +54,10 @@ public class VoiceChannel
         for (int i = 0; i < people.Count; i++)
         {
             Person p = people[i];
-            GameObject gameObject = peopleGameObjects[i];
-            MeshRenderer meshRenderer = gameObject.transform.Find("PFP").GetComponent<MeshRenderer>();
-            TextMesh textMesh = gameObject.transform.Find("Name").GetComponent<TextMesh>();
+            Transform transform = peopleGameObjects[i].transform;
+            MeshRenderer meshRenderer = transform.Find("PFP").GetComponent<MeshRenderer>();
+            TextMesh textMesh = transform.Find("Name").GetComponent<TextMesh>();
+            transform.Find("Call Background").gameObject.SetActive(false);
 
             meshRenderer.material = p.ProfilePicture;
             textMesh.text = p.Name;
@@ -65,5 +67,11 @@ public class VoiceChannel
         {
             peopleGameObjects[i].SetActive(i < people.Count);
         }
+    }
+
+    public void EnableSpeaking(bool speaking)
+    {
+        GameObject kuroGameObject = peopleGameObjects.First(obj => obj.transform.Find("Name").GetComponent<TextMesh>().text == "Kuro");
+        kuroGameObject.transform.Find("Call Background").gameObject.SetActive(speaking);
     }
 }
