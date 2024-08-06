@@ -39,8 +39,10 @@ public class Kuro : MonoBehaviour {
     //x todo --create ideas for mod ideas
     //x todo -use souv's warning triangle to show that the loading failed
     //todo eat
+    //todo fix the logging with there being numbers for the food (stretch goal)
     //x todo- make it so a green circle appears when kuro is speaking
     //todo - make it so when someone clcks on kuro, he will repeat what he said (stretch goal)
+    //todo - add kuro voice lines (stretch goal)
     //x todo - put british flags on fab lollies
     //todo play ktane
     //todo bed
@@ -50,9 +52,10 @@ public class Kuro : MonoBehaviour {
     //x todo have the custom highlighting work with all voice / text channels
     //x todo have a loading state (that doesn't break all the kms)
     //x todo when a channel is active, deactivate the other one (fix a bug where the gray highlighting disappears when the highlight event ends)
-    //todo have a solved state where it shows people's game activity
+    //todo have a solved state where it shows people's game activity (stretch goal)
     //todo change the discord leaving sound (stretch goal)
-    //todo have people in vcs be in alphabetical order
+    //todo have people in vcs be in alphabetical order (stretch goal)
+    //todo have the highlight/on hover work for all the voice/text channels (stretch goal)
 
     [SerializeField]
     private AudioClip[] audioClips; //join, leave, eggs, fab lolly, pasta
@@ -338,12 +341,16 @@ public class Kuro : MonoBehaviour {
         //changing kuro pfp
         Transform textChannelsTransform = transform.Find("Module Active State/Text Channels");
         MeshRenderer kuroPfp = transform.Find("Module Active State/Profile/PFP").GetComponent<MeshRenderer>();
-        int num = Rnd.Range(0, 5);
-        if (debug)
+
+        int num;
+        //reroll for devious is Curl is not there
+        bool foundCurl = voiceChannelList.Any(vc => vc.people.Any(person => person.Name == "CurlBot"));
+        Debug.Log("Found curl: " + foundCurl);
+        do
         {
-            num = 0;
-        }
-        currentMood = (Enums.Mood)num;
+            num = Rnd.Range(0, 5);
+            currentMood = (Enums.Mood)num;
+        } while (currentMood == Enums.Mood.Devious && !foundCurl);
         kuroPfp.material = kuroMoods[num];
 
         
