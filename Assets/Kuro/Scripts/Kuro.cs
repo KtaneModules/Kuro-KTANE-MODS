@@ -45,6 +45,9 @@ public class Kuro : MonoBehaviour {
     //todo - add kuro voice lines (stretch goal)
     //x todo - put british flags on fab lollies
     //todo play ktane
+    //todo - strike if voice-text-modded is pressed first
+    //todo - kuro joins call
+    //todo - two people (who are not in other voice calls) join call
     //todo bed
     //x todo fix the bug of the time not being displayed properly in the log
     //x todo figure out why you got an out of range error from just loading the module 
@@ -175,7 +178,7 @@ public class Kuro : MonoBehaviour {
         }
         onBombKuroModules = allModules.Where(mod => kuroModules.Contains(mod)).OrderBy(q => q).ToList();
         currentSolvedModules = new List<string>();
-
+        Debug.Log(voiceChannelList.Select(x => x.Name).ToArray().Join(", "));
         switch (desiredTask)
         {
             case Enums.Task.Eat:
@@ -225,6 +228,10 @@ public class Kuro : MonoBehaviour {
                 {
                     Log($"You must look at #mod-ideas");
                 }
+                break;
+
+            case Enums.Task.PlayKTANE:
+                Log("You must play join Modded Alfa and look at #voice-text-modded in that order");
                 break;
         }
 
@@ -609,7 +616,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Enums.Task.Eat;
+            desiredTask = Enums.Task.PlayKTANE;
         }
 
 
@@ -625,13 +632,16 @@ public class Kuro : MonoBehaviour {
         Transform chillZoneBravoTransform = voiceChannelTransform.Find("Chill Zone Bravo");
         Transform chillZoneCharlieTransform = voiceChannelTransform.Find("Chill Zone Charlie");
         Transform moddedAlfaTransform = voiceChannelTransform.Find("Modded Alfa");
+        int moddedPeople = voiceChannelList[3].people.Count;
         int alfaPeople = voiceChannelList[0].people.Count;
         int bravoPeople = voiceChannelList[1].people.Count;
 
+        Vector3 alfaVector = chillZoneAlfaTransform.localPosition;
+        chillZoneAlfaTransform.localPosition = new Vector3(alfaVector.x, alfaVector.y, -0.0531f + (channelOffset * moddedPeople));
         Vector3 bravoVector = chillZoneBravoTransform.localPosition;
-        chillZoneBravoTransform.localPosition = new Vector3(bravoVector.x, bravoVector.y, -0.059f + (channelOffset * alfaPeople));
+        chillZoneBravoTransform.localPosition = new Vector3(bravoVector.x, bravoVector.y, -0.059f + (channelOffset * (moddedPeople + alfaPeople)));
         Vector3 charlieVector = chillZoneCharlieTransform.localPosition;
-        chillZoneCharlieTransform.localPosition = new Vector3(charlieVector.x, charlieVector.y, -0.0655f + (channelOffset * (alfaPeople + bravoPeople)));
+        chillZoneCharlieTransform.localPosition = new Vector3(charlieVector.x, charlieVector.y, -0.0655f + (channelOffset * (moddedPeople + alfaPeople + bravoPeople)));
     }
 
 
@@ -953,6 +963,9 @@ public class Kuro : MonoBehaviour {
             WrongChannel("Modded Alfa");
             return;
         }
+
+        MoveToVoiceChannel(voiceChannelList[3]);
+        
     }
 
     private void OnChillZoneAlfa()
