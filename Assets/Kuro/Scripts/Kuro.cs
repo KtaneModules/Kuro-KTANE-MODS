@@ -7,6 +7,7 @@ using KModkit;
 using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using UnityEditor;
 
 public class Kuro : MonoBehaviour {
 
@@ -48,6 +49,7 @@ public class Kuro : MonoBehaviour {
     //todo - strike if voice-text-modded is pressed first
     //todo - kuro joins call
     //todo - two people (who are not in other voice calls) join call
+    //todo - strike when trying to leave
     //todo bed
     //x todo fix the bug of the time not being displayed properly in the log
     //x todo figure out why you got an out of range error from just loading the module 
@@ -401,7 +403,7 @@ public class Kuro : MonoBehaviour {
         chillZoneCharlieTransform.GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { OnChillZoneCharlie(); } return false; };
 
         moddedAlfaTransform.GetComponent<CustomSelectable>().SetVoiceChannel(voiceChannelList[3]);
-        moddedAlfaTransform.GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { OnModdedAlfa(); } return false; };
+        moddedAlfaTransform.GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { StartCoroutine(OnModdedAlfa()); } return false; };
 
         KMSelectable endCallButton = transform.Find("Module Active State/Call/end call").GetComponent<KMSelectable>();
         endCallButton.OnInteract += delegate () { if (moduleActivated && !pause) { CallButtonClicK(); } return false; };
@@ -616,7 +618,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Enums.Task.PlayKTANE;
+            desiredTask = Enums.Task.Eat;
         }
 
 
@@ -926,13 +928,24 @@ public class Kuro : MonoBehaviour {
         }
     }
 
-    private void MoveToVoiceChannel(VoiceChannel vc)
+    private void MoveToVoiceChannel(VoiceChannel vc, string name = "Kuro")
     {
         pause = true;
         Audio.PlaySoundAtTransform(audioClips[0].name, transform);
-        Person kuro = new Person(kuroMoods[(int)currentMood]);
-        kuro.Name = "Kuro";
-        vc.people.Add(kuro);
+        if (name == "Kuro")
+        {
+            Person kuro = new Person(kuroMoods[(int)currentMood]);
+            kuro.Name = "Kuro";
+            vc.people.Add(kuro);
+        }
+
+        else
+        {
+            Person person = people.First(p => p.Name == name);
+            people.Remove(person);
+            vc.people.Add(person);
+        }
+
         ShiftChannels();
         vc.DisplayPeople();
         EnableVoiceGameObject(true);
@@ -954,18 +967,22 @@ public class Kuro : MonoBehaviour {
         }
     }
 
-    private void OnModdedAlfa()
+    private IEnumerator OnModdedAlfa()
     {
-        Debug.Log("modded");
-
+        float time = 1f;
         if (desiredTask != Enums.Task.PlayKTANE)
         {
             WrongChannel("Modded Alfa");
-            return;
+            yield break;
         }
 
-        MoveToVoiceChannel(voiceChannelList[3]);
-        
+        VoiceChannel vc = voiceChannelList[3];
+        MoveToVoiceChannel(vc, people.PickRandom().Name);
+            for (int i = 0; i < 2; i++)
+            {
+                yield return new WaitForSeconds(time);
+                MoveToVoiceChannel(vc, people.PickRandom().Name);
+            }
     }
 
     private void OnChillZoneAlfa()
@@ -981,7 +998,6 @@ public class Kuro : MonoBehaviour {
         {
             StartCoroutine(GetFood(voiceChannelList[0]));
         }
-
     }
 
     private void OnChillZoneBravo()
