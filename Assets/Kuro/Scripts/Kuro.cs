@@ -7,9 +7,7 @@ using KModkit;
 using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
-using UnityEditor;
 using static Enums;
-using static UnityEngine.UI.Navigation;
 
 public class Kuro : MonoBehaviour {
 
@@ -110,7 +108,7 @@ public class Kuro : MonoBehaviour {
     #endregion
 
     VoiceChannel[] desiredVCs;
-
+    Person[] moddedAlfaPeople;
     private TextLocation currentTextLocation;
     private VoiceLocation currentVoiceLocation;
     private DateTime currentTime; //the time the bomb was activated
@@ -1005,6 +1003,18 @@ public class Kuro : MonoBehaviour {
             return;
         }
 
+        Transform[] people = new Transform[2];
+
+        for (int i = 0; i < 2; i++)
+        {
+            Transform person = transform.Find("Module Active State/Play KTANE").GetChild(i).Find($"Person {i + 1}");
+            person.Find("PFP").GetComponent<MeshRenderer>().material = moddedAlfaPeople[i].ProfilePicture;
+            person.Find("Name").GetComponent<TextMesh>().text = moddedAlfaPeople[i].Name;
+
+            people[i] = person;
+
+        }
+
         EnablePlayKTANE(true);
 
     }
@@ -1032,9 +1042,9 @@ public class Kuro : MonoBehaviour {
             MoveToVoiceChannel(vc, people.PickRandom().Name);
         }
 
-        string[] otherPeople = vc.people.Select(p => p.Name).Where(n => n != "Kuro").ToArray();
+        moddedAlfaPeople = vc.people.Where(p => p.Name != "Kuro").ToArray();
 
-        Log($"{otherPeople[0]} and {otherPeople[1]} have joined the call");
+        Log($"{moddedAlfaPeople[0].Name} and {moddedAlfaPeople[1].Name} have joined the call");
     }
 
     private void OnChillZoneAlfa()
