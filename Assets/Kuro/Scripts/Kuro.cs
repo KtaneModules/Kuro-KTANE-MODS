@@ -290,6 +290,7 @@ public class Kuro : MonoBehaviour {
         EnableRepoRequest(false);
         EnableFood(false);
         EnableModuleActive(false);
+        EnablePlayKTANE(false);
 
         Transform voiceChannelTransform = transform.Find("Module Active State/Voice Channels");
         Transform chillZoneAlfaTransform = voiceChannelTransform.Find("Chill Zone Alfa");
@@ -453,6 +454,10 @@ public class Kuro : MonoBehaviour {
             case Task.Eat:
 
                 break;
+
+            case Task.PlayKTANE:
+                Strike("Can't leave the call yet");
+                break;
         }
     }
 
@@ -494,6 +499,11 @@ public class Kuro : MonoBehaviour {
     }
     private void EnableFood(bool enable) {
         transform.Find("Module Active State/Eat").gameObject.SetActive(enable);
+    }
+
+    private void EnablePlayKTANE(bool enable)
+    { 
+        transform.Find("Module Active State/Play KTANE").gameObject.SetActive(enable);
     }
 
     private IEnumerator GetFood(VoiceChannel vc)
@@ -627,7 +637,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Task.Eat;
+            desiredTask = Task.PlayKTANE;
         }
 
 
@@ -988,11 +998,15 @@ public class Kuro : MonoBehaviour {
     {
         if (currentTextLocation == TextLocation.VoiceTextModded)
             return;
-        if (desiredTask != Task.PlayKTANE)
+        Log("You pressed #voice-text-modded");
+        if (desiredTask != Task.PlayKTANE || currentVoiceLocation != VoiceLocation.ModdedAlfa)
         {
             WrongChannel("#voice-text-modded");
             return;
         }
+
+        EnablePlayKTANE(true);
+
     }
 
     private IEnumerator OnModdedAlfa()
@@ -1008,13 +1022,19 @@ public class Kuro : MonoBehaviour {
             yield break;
         }
 
+        pause = true;
         VoiceChannel vc = voiceChannelList[3];
         MoveToVoiceChannel(vc);
         for (int i = 0; i < 2; i++)
         {
+            pause = true;
             yield return new WaitForSeconds(time);
             MoveToVoiceChannel(vc, people.PickRandom().Name);
         }
+
+        string[] otherPeople = vc.people.Select(p => p.Name).Where(n => n != "Kuro").ToArray();
+
+        Log($"{otherPeople[0]} and {otherPeople[1]} have joined the call");
     }
 
     private void OnChillZoneAlfa()
