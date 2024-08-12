@@ -123,7 +123,7 @@ public class Kuro : MonoBehaviour {
     static int ModuleIdCounter = 1;
     int ModuleId;
     private bool ModuleSolved, moduleActivated = false;
-    private bool debug = false;
+    private bool debug = true;
 
     private List<string> onBombKuroModules = new List<string>(); //all the modules on the bomb made by Kuro
     private List<string> currentSolvedModules; //modules that have been solved on the bomb
@@ -391,6 +391,7 @@ public class Kuro : MonoBehaviour {
             case Task.PlayKTANE:
                 if (currentTextLocation != TextLocation.VoiceTextModded || (currentTextLocation == TextLocation.VoiceTextModded && correctRole != Role.None))
                 {
+                    Debug.Log(correctRole);
                     Strike("Can't leave the call yet");
                 }
                 else
@@ -595,7 +596,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Task.CreateModule;
+            desiredTask = Task.PlayKTANE;
         }
 
 
@@ -1053,7 +1054,6 @@ public class Kuro : MonoBehaviour {
             return;
         }
 
-        
         Role kuroDesiredRole = currentMood == Mood.Happy || currentMood == Mood.Neutral ? Role.Defuse : Role.Expert;
         moddedAlfaPeople[0].Role = Rnd.Range(0, 2) == 0 ? Role.Defuse : Role.Expert;
         moddedAlfaPeople[1].Role = moddedAlfaPeople[0].Role == Role.Defuse ? Role.Expert : Role.Defuse;
@@ -1082,7 +1082,7 @@ public class Kuro : MonoBehaviour {
             Log($"{moddedAlfaPeople[i].Name} would like to {moddedAlfaPeople[i].Role} with a tolerance of {GetTolerance(moddedAlfaPeople[i].Tolerance)}");
         }
 
-        Person moreToleratedPerson = moddedAlfaPeople.OrderBy(p => p.Tolerance).First();
+        Person moreToleratedPerson = moddedAlfaPeople.OrderByDescending(p => p.Tolerance).First();
 
         //check if curlbot is in the call
         if (HasCurlBot(moddedAlfaPeople.ToList()))
