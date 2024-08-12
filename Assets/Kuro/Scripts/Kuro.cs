@@ -574,7 +574,23 @@ public class Kuro : MonoBehaviour {
         }
 
         Log($"Kuro wants {foods[foodIndex]}");
-        Log($"The displayed foods are {foodButtons.Select(f => f.GetComponent<MeshRenderer>().sharedMaterial.name).Join(", ")}");
+        List<string> newNames = new List<string>();
+
+        for(int i = 0; i < foodButtons.Length; i++)
+        {
+            string oldName = foodButtons[i].GetComponent<MeshRenderer>().sharedMaterial.name;
+            string newName = "";
+            foreach (char c in oldName)
+            {
+                if (!Char.IsDigit(c))
+                {
+                    newName += c;
+                }
+            }
+
+            newNames.Add(newName.Trim());
+        }
+        Log($"The displayed foods are {newNames.Join(", ")}");
         EnableFood(true);
     }
 
@@ -655,7 +671,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Task.Bed;
+            desiredTask = Task.Eat;
         }
 
 
