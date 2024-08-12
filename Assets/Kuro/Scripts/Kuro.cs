@@ -109,6 +109,7 @@ public class Kuro : MonoBehaviour {
 
     VoiceChannel[] desiredVCs;
     Person[] moddedAlfaPeople;
+    Role correctRole = Role.None;
     private TextLocation currentTextLocation;
     private VoiceLocation currentVoiceLocation;
     private DateTime currentTime; //the time the bomb was activated
@@ -202,14 +203,14 @@ public class Kuro : MonoBehaviour {
                 }
                 else if (currentMood == Mood.Devious)
                 {
-                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder.First(vc => vc.people.Any(p => p.Name == "CurlBot")) };
+                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder.First(vc => HasCurlBot(vc.people)) };
                 }
                 else if (currentMood == Mood.Curious)
                 {
                     desiredVCs = voiceChannelByOrder.ToArray();
                 }
 
-                if (currentMood != Mood.Devious && currentMood != Mood.Curious && desiredVCs[0].people.Any(p => p.Name == "CurlBot"))
+                if (currentMood != Mood.Devious && currentMood != Mood.Curious && HasCurlBot(desiredVCs[0].people))
                 { 
                     desiredVCs[0] = chillZones[(Array.IndexOf(chillZones, desiredVCs[0]) + 1) % chillZones.Length];
                 }
@@ -364,8 +365,8 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            currentMood = Mood.Curious;
-            num = (int)currentMood;
+            //currentMood = Mood.Curious;
+            //num = (int)currentMood;
         }
 
         kuroPfp.material = kuroMoods[num];
@@ -413,6 +414,9 @@ public class Kuro : MonoBehaviour {
         moddedAlfaTransform.GetComponent<CustomSelectable>().SetVoiceChannel(voiceChannelList[3]);
         moddedAlfaTransform.GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { StartCoroutine(OnModdedAlfa()); } return false; };
 
+
+
+
         KMSelectable endCallButton = transform.Find("Module Active State/Call/end call").GetComponent<KMSelectable>();
         endCallButton.OnInteract += delegate () { if (moduleActivated && !pause) { CallButtonClicK(); } return false; };
         endCallButton.OnHighlight += () =>
@@ -454,7 +458,14 @@ public class Kuro : MonoBehaviour {
                 break;
 
             case Task.PlayKTANE:
-                Strike("Can't leave the call yet");
+                if (currentTextLocation != TextLocation.VoiceTextModded || (currentTextLocation == TextLocation.VoiceTextModded && correctRole != Role.None))
+                {
+                    Strike("Can't leave the call yet");
+                }
+                else
+                {
+                    Solve("Left the call since CurlBot wanted to play. Solving module...");
+                }
                 break;
         }
     }
@@ -1003,20 +1014,108 @@ public class Kuro : MonoBehaviour {
             return;
         }
 
-        Transform[] people = new Transform[2];
+        
+        Role kuroDesiredRole = currentMood == Mood.Happy || currentMood == Mood.Neutral ? Role.Defuse : Role.Expert;
+        moddedAlfaPeople[0].Role = Rnd.Range(0, 2) == 0 ? Role.Defuse : Role.Expert;
+        moddedAlfaPeople[1].Role = moddedAlfaPeople[0].Role == Role.Defuse ? Role.Expert : Role.Defuse;
 
         for (int i = 0; i < 2; i++)
         {
-            Transform person = transform.Find("Module Active State/Play KTANE").GetChild(i).Find($"Person {i + 1}");
+            Transform person = transform.Find($"Module Active State/Play KTANE/Person {i + 1}");
             person.Find("PFP").GetComponent<MeshRenderer>().material = moddedAlfaPeople[i].ProfilePicture;
             person.Find("Name").GetComponent<TextMesh>().text = moddedAlfaPeople[i].Name;
 
-            people[i] = person;
+            Text request = person.Find("Request/Text").GetComponent<Text>();
+            if (moddedAlfaPeople[i].Role == Role.Defuse)
+            {
+                request.text = "I would like to defuse";
+            }
 
+            else
+            { 
+                request.text = "I would like to expert";
+            }
         }
 
-        EnablePlayKTANE(true);
+        Log($"Kuro would like to {kuroDesiredRole}");
+        for (int i = 0; i < 2; i++)
+        {
+            Log($"{moddedAlfaPeople[i].Name} would like to {moddedAlfaPeople[i].Role} with a tolerance of {GetTolerance(moddedAlfaPeople[i].Tolerance)}");
+        }
 
+        Person moreToleratedPerson = moddedAlfaPeople.OrderBy(p => p.Tolerance).First();
+
+        //check if curlbot is in the call
+        if (HasCurlBot(moddedAlfaPeople.ToList()))
+        {
+            correctRole = Role.None;
+        }
+
+        //If there is a tie, pick your desired role
+        else if (moddedAlfaPeople.Count(p => p.Tolerance == moddedAlfaPeople[0].Tolerance) == 2)
+        {
+            correctRole = kuroDesiredRole;
+        }
+
+        //If the person you tolerate more prefers do the same role as you, pick the opposite role
+        else if (moreToleratedPerson.Role == kuroDesiredRole)
+        {
+            correctRole = kuroDesiredRole == Role.Defuse ? Role.Expert : Role.Defuse;
+        }
+
+        //Otherwise, pick your desired role.
+        else
+        {
+            correctRole = kuroDesiredRole;
+        }
+
+        string s = "";
+        switch (correctRole)
+        { 
+            case Role.None:
+                s = "leave the call";
+                break;
+            case Role.Expert:
+                s = "expert";
+                break;
+            case Role.Defuse:
+                s = "defuse";
+                break;
+        }
+
+        Log($"You should {s}");
+
+        transform.Find("Module Active State/Play KTANE/Defuse Button").GetComponent<KMSelectable>().OnInteract += delegate 
+        { 
+            Log("You pressed defuse");
+            if (correctRole == Role.Defuse)
+            {
+                Solve("This is correct. Solving module...");
+            }
+            else
+            {
+                Strike("This is incorrect.");
+            } 
+            return false; 
+        };
+
+        transform.Find("Module Active State/Play KTANE/Expert Button").GetComponent<KMSelectable>().OnInteract += delegate
+        {
+            Log("You pressed expert");
+            if (correctRole == Role.Expert)
+            {
+                Solve("This is correct. Solving module...");
+            }
+            else
+            {
+                Strike("This is incorrect.");
+            }
+            return false;
+        };
+
+
+        EnablePlayKTANE(true);
+        currentTextLocation = TextLocation.VoiceTextModded;
     }
 
     private IEnumerator OnModdedAlfa()
@@ -1141,6 +1240,11 @@ public class Kuro : MonoBehaviour {
     private void Log(string s)
     {
         Debug.Log($"[Kuro #{ModuleId}] {s}");
+    }
+
+    private bool HasCurlBot(List<Person> people)
+    {
+        return people.Any(p => p.Name == "CurlBot");
     }
 
 #pragma warning disable 414

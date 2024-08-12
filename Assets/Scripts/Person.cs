@@ -7,11 +7,14 @@ using UnityEngine;
 public class Person {
     public string Name { get; set; }
     public Material ProfilePicture { get; private set; }
-    public int Tolerance { get; private set;  }
+    public int Tolerance { get; private set; }
+
+    public Enums.Role Role { get; set; }
     public Person(Material picture)
     {
         Name = picture.name;
         ProfilePicture = picture;
+        Role = Enums.Role.None;
     }
 
     public void SetTolerance(DayOfWeek day)

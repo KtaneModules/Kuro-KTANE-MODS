@@ -39,4 +39,11 @@ public class Enums {
         ChillZoneCharlie,
         None
     }
+
+    public enum Role
+    { 
+        Defuse,
+        Expert,
+        None
+    }
 }
