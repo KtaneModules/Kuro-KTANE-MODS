@@ -123,7 +123,7 @@ public class Kuro : MonoBehaviour {
     static int ModuleIdCounter = 1;
     int ModuleId;
     private bool ModuleSolved, moduleActivated = false;
-    private bool debug = true;
+    private bool debug = false;
 
     private List<string> onBombKuroModules = new List<string>(); //all the modules on the bomb made by Kuro
     private List<string> currentSolvedModules; //modules that have been solved on the bomb
