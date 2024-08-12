@@ -123,7 +123,7 @@ public class Kuro : MonoBehaviour {
     static int ModuleIdCounter = 1;
     int ModuleId;
     private bool ModuleSolved, moduleActivated = false;
-    private bool debug = true;
+    private bool debug = false;
 
     private List<string> onBombKuroModules = new List<string>(); //all the modules on the bomb made by Kuro
     private List<string> currentSolvedModules; //modules that have been solved on the bomb
@@ -144,7 +144,7 @@ public class Kuro : MonoBehaviour {
 
     IEnumerator Start()
     {
-        BombModule.OnActivate += OnActivate;
+        BombModule.OnActivate += delegate { StartCoroutine(OnActivate()); };
 
         SetUpModule();
 
@@ -167,31 +167,13 @@ public class Kuro : MonoBehaviour {
                 } while (!RepoJSONGetter.LoadingDone);
             }
         }
-
-        //get all the modules made by kuro
-        List<string> allModules = BombInfo.GetSolvableModuleNames();
-        List<string> kuroModules;
-        if (!RepoJSONGetter.Success)
-        {
-            kuroModules = "Technical Keypad|Procedural Maze|Blank Slate|Orientation Hypercube|Shy Guy Says|Samuel Says|Coloured Cubes".Split('|').ToList();
-            Log("Data failed to load. List of Kuro modules: " + string.Join(", ", kuroModules.ToArray()));
-            wariningSign.SetActive(true);
-        }
-        else
-        {
-            Log("Got data successfully");
-            wariningSign.SetActive(false);
-            kuroModules = RepoJSONGetter.kuroModules;
-        }
-        onBombKuroModules = allModules.Where(mod => kuroModules.Contains(mod)).OrderBy(q => q).ToList();
-        currentSolvedModules = new List<string>();
     }
 
     
 
     void Update()
     {
-        if (!RepoJSONGetter.LoadingDone || ModuleSolved || desiredTask != Task.CreateModule)
+        if (!RepoJSONGetter.LoadingDone || ModuleSolved || desiredTask != Task.CreateModule || !moduleActivated)
             return;
         List<string> solvedModules = BombInfo.GetSolvedModuleNames();
 
@@ -536,7 +518,7 @@ public class Kuro : MonoBehaviour {
     }
 
 
-    void OnActivate()
+    IEnumerator OnActivate()
     {
         currentTime = DateTime.Now;
 
@@ -618,6 +600,32 @@ public class Kuro : MonoBehaviour {
 
 
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
+
+        //get all the modules made by kuro
+        List<string> allModules = BombInfo.GetSolvableModuleNames();
+        List<string> kuroModules;
+
+
+        do
+        {
+            yield return new WaitForSeconds(0.1f);
+
+        } while (!RepoJSONGetter.LoadingDone);
+
+        if (!RepoJSONGetter.Success)
+        {
+            kuroModules = "Technical Keypad|Procedural Maze|Blank Slate|Orientation Hypercube|Shy Guy Says|Samuel Says|Coloured Cubes".Split('|').ToList();
+            Log("Data failed to load. List of Kuro modules: " + string.Join(", ", kuroModules.ToArray()));
+            wariningSign.SetActive(true);
+        }
+        else
+        {
+            Log("Got data successfully. Using repositry to get a list of kuro modules");
+            wariningSign.SetActive(false);
+            kuroModules = RepoJSONGetter.kuroModules;
+        }
+        onBombKuroModules = allModules.Where(mod => kuroModules.Contains(mod)).OrderBy(q => q).ToList();
+        currentSolvedModules = new List<string>();
 
         switch (desiredTask)
         {
