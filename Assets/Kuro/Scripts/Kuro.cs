@@ -236,6 +236,11 @@ public class Kuro : MonoBehaviour {
             case Task.PlayKTANE:
                 Log("You must play join Modded Alfa and look at #voice-text-modded in that order");
                 break;
+
+            case Task.Bed:
+                desiredVCs = voiceChannelList.Where(vc => vc.Name != "Modded Alfa" && vc.people.All(p => p.Name != "CurlBot")).ToArray();
+                Log($"You are able to join {desiredVCs.Select(vc => vc.Name).Join(", ")}");
+                break;
         }
 
         loadingState.SetActive(false);
@@ -447,12 +452,17 @@ public class Kuro : MonoBehaviour {
                 else
                 {
                     Audio.PlaySoundAtTransform(audioClips[1].name, transform);
-                    Solve("Left call after solving all required modules. Solving module...");
+                    Solve("Left call after solving all required modules.");
                 }
                 break;
 
             case Task.Eat:
+                Strike("Can't leave the call yet");
+                break;
 
+            case Task.Bed:
+                Audio.PlaySoundAtTransform(audioClips[1].name, transform);
+                Solve("Left the call.");
                 break;
 
             case Task.PlayKTANE:
@@ -462,7 +472,8 @@ public class Kuro : MonoBehaviour {
                 }
                 else
                 {
-                    Solve("Left the call since CurlBot wanted to play. Solving module...");
+                    Audio.PlaySoundAtTransform(audioClips[1].name, transform);
+                    Solve("Left the call since CurlBot wanted to play.");
                 }
                 break;
         }
@@ -644,7 +655,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Task.PlayKTANE;
+            desiredTask = Task.Bed;
         }
 
 
@@ -1088,7 +1099,7 @@ public class Kuro : MonoBehaviour {
             Log("You pressed defuse");
             if (correctRole == Role.Defuse)
             {
-                Solve("This is correct. Solving module...");
+                Solve("This is correct.");
             }
             else
             {
@@ -1102,7 +1113,7 @@ public class Kuro : MonoBehaviour {
             Log("You pressed expert");
             if (correctRole == Role.Expert)
             {
-                Solve("This is correct. Solving module...");
+                Solve("This is correct.");
             }
             else
             {
@@ -1175,7 +1186,7 @@ public class Kuro : MonoBehaviour {
 
         Log($"You pressed {name}");
 
-        if ((!(desiredTask == Task.Eat && desiredVCs.Contains(vc)) && !(desiredTask == Task.CreateModule && onBombKuroModules.Count > 0)) || currentVoiceLocation != VoiceLocation.None)
+        if ((!((desiredTask == Task.Eat || desiredTask == Task.Bed) && desiredVCs.Contains(vc)) && !(desiredTask == Task.CreateModule && onBombKuroModules.Count > 0)) || currentVoiceLocation != VoiceLocation.None)
         {
             WrongChannel(name);
             return;
@@ -1226,7 +1237,7 @@ public class Kuro : MonoBehaviour {
     private void Solve(string s)
     {
         if (s != "")
-            Log(s);
+            Log(s + " Solving module...");
 
         EnableModuleActive(false);
         solvedState.SetActive(true);
