@@ -51,6 +51,7 @@ public class VoiceChannel
 
     public void DisplayPeople()
     {
+        people = people.OrderBy(p => p.Name).ToList();
         for (int i = 0; i < people.Count; i++)
         {
             Person p = people[i];
