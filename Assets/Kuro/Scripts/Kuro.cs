@@ -1147,9 +1147,6 @@ public class Kuro : MonoBehaviour {
             nonModdedPeople.AddRange(voiceChannelList[i].people);
         }
 
-        Debug.Log("People in other channels: " + nonModdedPeople.Select(p => p.Name).ToArray().Join(", "));
-        Debug.Log("People in modded alfa " + moddedAlfaPeople.Select(p => p.Name).Join(", "));
-
         Log($"{moddedAlfaPeople[0].Name} and {moddedAlfaPeople[1].Name} have joined the call");
     }
 
