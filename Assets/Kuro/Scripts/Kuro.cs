@@ -125,8 +125,11 @@ public class Kuro : MonoBehaviour {
     private bool ModuleSolved, moduleActivated = false;
     private bool debug = true;
 
-    private List<string> onBombKuroModules; //all the modules on the bomb made by Kuro
+    private List<string> onBombKuroModules = new List<string>(); //all the modules on the bomb made by Kuro
     private List<string> currentSolvedModules; //modules that have been solved on the bomb
+    
+
+    
 
     private bool pause = false; //if this is true, something must finish before any interactions can be done
 
@@ -182,69 +185,6 @@ public class Kuro : MonoBehaviour {
         }
         onBombKuroModules = allModules.Where(mod => kuroModules.Contains(mod)).OrderBy(q => q).ToList();
         currentSolvedModules = new List<string>();
-        switch (desiredTask)
-        {
-            case Task.Eat:
-                desiredVCs = new VoiceChannel[1];
-                VoiceChannel[] chillZones = voiceChannelList.Where(vc => vc.Name != "Modded Alfa").ToArray();
-                List<VoiceChannel> voiceChannelByOrder = voiceChannelList.Where(vc => vc.Name != "Modded Alfa").OrderByDescending(vc => vc.people.Count).ToList();
-
-                if (currentMood == Mood.Happy)
-                {
-                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder[0] };
-                }
-                else if (currentMood == Mood.Neutral)
-                {
-                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder[1] };
-                }
-                else if (currentMood == Mood.Angry)
-                {
-                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder[2] };
-                }
-                else if (currentMood == Mood.Devious)
-                {
-                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder.First(vc => HasCurlBot(vc.people)) };
-                }
-                else if (currentMood == Mood.Curious)
-                {
-                    desiredVCs = voiceChannelByOrder.ToArray();
-                }
-
-                if (currentMood != Mood.Devious && currentMood != Mood.Curious && HasCurlBot(desiredVCs[0].people))
-                { 
-                    desiredVCs[0] = chillZones[(Array.IndexOf(chillZones, desiredVCs[0]) + 1) % chillZones.Length];
-                }
-                Log($"You are {currentMood}. You are able to join {desiredVCs.Select(vc => vc.Name).Join(", ")}");
-
-                break;
-
-
-            case Task.MaintainRepo:
-                Log("You must look at #repo-requests");
-                break;
-            case Task.CreateModule:
-                if (onBombKuroModules.Count > 0)
-                {
-                    Log($"You must join Chill Zone Alfa. Then solve the following modules: {GetGroupModuleString()}");
-                }
-                else
-                {
-                    Log($"You must look at #mod-ideas");
-                }
-                break;
-
-            case Task.PlayKTANE:
-                Log("You must play join Modded Alfa and look at #voice-text-modded in that order");
-                break;
-
-            case Task.Bed:
-                desiredVCs = voiceChannelList.Where(vc => vc.Name != "Modded Alfa" && vc.people.All(p => p.Name != "CurlBot")).ToArray();
-                Log($"You are able to join {desiredVCs.Select(vc => vc.Name).Join(", ")}");
-                break;
-        }
-
-        loadingState.SetActive(false);
-        EnableModuleActive(true);
     }
 
     
@@ -295,6 +235,8 @@ public class Kuro : MonoBehaviour {
         EnableFood(false);
         EnableModuleActive(false);
         EnablePlayKTANE(false);
+
+        
 
         Transform voiceChannelTransform = transform.Find("Module Active State/Voice Channels");
         Transform chillZoneAlfaTransform = voiceChannelTransform.Find("Chill Zone Alfa");
@@ -359,7 +301,6 @@ public class Kuro : MonoBehaviour {
         int num;
         //reroll for devious is Curl is not there
         bool foundCurl = voiceChannelList.Any(vc => vc.people.Any(person => person.Name == "CurlBot"));
-        Debug.Log("Found curl: " + foundCurl);
         do
         {
             num = Rnd.Range(0, 5);
@@ -599,6 +540,7 @@ public class Kuro : MonoBehaviour {
     {
         currentTime = DateTime.Now;
 
+
         //Take the highest out of batteries, indicators and ports
         int batteryCount = BombInfo.GetBatteryCount();
         int indicatorCount = BombInfo.GetIndicators().Count();
@@ -629,7 +571,7 @@ public class Kuro : MonoBehaviour {
         else
         {
             minuteOffset = 15 * portCount;
-            Log("Port count is the highest. Minute offset is now " + minuteOffset);
+            Log("Neither indicator nor battery count were the highest. Minute offset is now " + minuteOffset);
         }
 
         string serialNumber = BombInfo.GetSerialNumber().ToUpper();
@@ -671,11 +613,75 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Task.Eat;
+            desiredTask = Task.CreateModule;
         }
 
 
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
+
+        switch (desiredTask)
+        {
+            case Task.Eat:
+                desiredVCs = new VoiceChannel[1];
+                VoiceChannel[] chillZones = voiceChannelList.Where(vc => vc.Name != "Modded Alfa").ToArray();
+                List<VoiceChannel> voiceChannelByOrder = voiceChannelList.Where(vc => vc.Name != "Modded Alfa").OrderByDescending(vc => vc.people.Count).ToList();
+
+                if (currentMood == Mood.Happy)
+                {
+                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder[0] };
+                }
+                else if (currentMood == Mood.Neutral)
+                {
+                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder[1] };
+                }
+                else if (currentMood == Mood.Angry)
+                {
+                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder[2] };
+                }
+                else if (currentMood == Mood.Devious)
+                {
+                    desiredVCs = new VoiceChannel[] { voiceChannelByOrder.First(vc => HasCurlBot(vc.people)) };
+                }
+                else if (currentMood == Mood.Curious)
+                {
+                    desiredVCs = voiceChannelByOrder.ToArray();
+                }
+
+                if (currentMood != Mood.Devious && currentMood != Mood.Curious && HasCurlBot(desiredVCs[0].people))
+                {
+                    desiredVCs[0] = chillZones[(Array.IndexOf(chillZones, desiredVCs[0]) + 1) % chillZones.Length];
+                }
+                Log($"You are {currentMood}. You are able to join {desiredVCs.Select(vc => vc.Name).Join(", ")}");
+
+                break;
+
+
+            case Task.MaintainRepo:
+                Log("You must look at #repo-requests");
+                break;
+            case Task.CreateModule:
+                if (onBombKuroModules.Count > 0)
+                {
+                    Log($"You must join Chill Zone Alfa. Then solve the following modules: {GetGroupModuleString()}");
+                }
+                else
+                {
+                    Log($"You must look at #mod-ideas");
+                }
+                break;
+
+            case Task.PlayKTANE:
+                Log("You must play join Modded Alfa and look at #voice-text-modded in that order");
+                break;
+
+            case Task.Bed:
+                desiredVCs = voiceChannelList.Where(vc => vc.Name != "Modded Alfa" && vc.people.All(p => p.Name != "CurlBot")).ToArray();
+                Log($"You are able to join {desiredVCs.Select(vc => vc.Name).Join(", ")}");
+                break;
+        }
+
+        loadingState.SetActive(false);
+        EnableModuleActive(true);
         moduleActivated = true;
     }
 
@@ -773,7 +779,7 @@ public class Kuro : MonoBehaviour {
             Transform personTransform = transform.Find($"Module Active State/Mod Ideas/Person {i + 1}");
             personTransform.Find("PFP").GetComponent<MeshRenderer>().material = p.ProfilePicture;
             personTransform.Find("Name").GetComponent<TextMesh>().text = p.Name;
-            personTransform.Find("Request").GetComponent<TextMesh>().text = request;
+            personTransform.Find("Request/Text").GetComponent<Text>().text = request;
             Log($"{p.Name} requested: \"{request}\"");
             isNeedy.Add(request.Contains("needy"));
             isLoved.Add(loves.Any(l => request.Contains(l)));
