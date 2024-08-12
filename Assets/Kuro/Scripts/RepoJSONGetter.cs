@@ -1,10 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditorInternal;
 using UnityEngine;
-using static UnityEngine.UI.Navigation;
 
 public class RepoJSONGetter : MonoBehaviour {
 
