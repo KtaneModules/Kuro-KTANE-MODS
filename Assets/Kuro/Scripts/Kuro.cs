@@ -330,15 +330,13 @@ public class Kuro : MonoBehaviour {
             }
         } while (vcCount.Distinct().Count() != 3);
 
-        List<Person> notInVcsPeople = people.Select(x => x).ToList();
-
         for (int i = 0; i < 3; i++)
         {
             VoiceChannel vc = voiceChannelList[i];
             for (int j = 0; j < vcCount[i]; j++)
             {
-                Person p = notInVcsPeople.PickRandom();
-                notInVcsPeople.Remove(p);
+                Person p = people.PickRandom();
+                people.Remove(p);
                 vc.people.Add(p);
             }
         }
@@ -1140,8 +1138,17 @@ public class Kuro : MonoBehaviour {
             yield return new WaitForSeconds(time);
             MoveToVoiceChannel(vc, people.PickRandom().Name);
         }
-
         moddedAlfaPeople = vc.people.Where(p => p.Name != "Kuro").ToArray();
+
+        List<Person> nonModdedPeople = new List<Person>();
+
+        for (int i = 0; i < 3; i++)
+        {
+            nonModdedPeople.AddRange(voiceChannelList[i].people);
+        }
+
+        Debug.Log("People in other channels: " + nonModdedPeople.Select(p => p.Name).ToArray().Join(", "));
+        Debug.Log("People in modded alfa " + moddedAlfaPeople.Select(p => p.Name).Join(", "));
 
         Log($"{moddedAlfaPeople[0].Name} and {moddedAlfaPeople[1].Name} have joined the call");
     }
