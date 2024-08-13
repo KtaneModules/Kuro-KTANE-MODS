@@ -8,9 +8,11 @@ using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using static Enums;
+using System.Reflection;
 
 public class Kuro : MonoBehaviour {
-
+    [SerializeField]
+    private bool debug;
     //x todo make text on module a bit bigger
     //x todo calcuate the correct time
     //todo fix pfps looking the opposite way
@@ -116,6 +118,9 @@ public class Kuro : MonoBehaviour {
     private DateTime desiredTime; //th time used to figure out what to do
     private Task desiredTask; //the task needed to get done
 
+    AudioClip[] foodClips;
+    int foodIndex = -1; //the index of the food kuro wants
+
     private KMBombInfo BombInfo;
     private KMAudio Audio;
     private KMBombModule BombModule;
@@ -123,14 +128,8 @@ public class Kuro : MonoBehaviour {
     static int ModuleIdCounter = 1;
     int ModuleId;
     private bool ModuleSolved, moduleActivated = false;
-    private bool debug = false;
-
     private List<string> onBombKuroModules = new List<string>(); //all the modules on the bomb made by Kuro
     private List<string> currentSolvedModules; //modules that have been solved on the bomb
-    
-
-    
-
     private bool pause = false; //if this is true, something must finish before any interactions can be done
 
     void Awake()
@@ -169,7 +168,7 @@ public class Kuro : MonoBehaviour {
         }
     }
 
-    
+
 
     void Update()
     {
@@ -218,7 +217,7 @@ public class Kuro : MonoBehaviour {
         EnableModuleActive(false);
         EnablePlayKTANE(false);
 
-        
+
 
         Transform voiceChannelTransform = transform.Find("Module Active State/Voice Channels");
         Transform chillZoneAlfaTransform = voiceChannelTransform.Find("Chill Zone Alfa");
@@ -272,7 +271,7 @@ public class Kuro : MonoBehaviour {
 
         voiceChannelList.ForEach(t => { t.DisplayPeople(); t.Deactivate(); });
         voiceChannelList.Where(t => t.Name != "Modded Alfa").ToList().ForEach(t => { Log(t.ToString()); });
-        
+
 
         ShiftChannels();
 
@@ -297,7 +296,7 @@ public class Kuro : MonoBehaviour {
 
         kuroPfp.material = kuroMoods[num];
 
-        
+
 
         //set locations
         currentTextLocation = TextLocation.None;
@@ -353,6 +352,8 @@ public class Kuro : MonoBehaviour {
         {
             endCallButton.transform.GetComponent<SpriteRenderer>().color = Color.white;
         };
+
+        foodClips = new AudioClip[] { audioClips[2], audioClips[3], audioClips[4] }; //eggs , fab lolly, pasta
     }
 
     private string GetGroupModuleString()
@@ -443,7 +444,7 @@ public class Kuro : MonoBehaviour {
     }
 
     private void EnablePlayKTANE(bool enable)
-    { 
+    {
         transform.Find("Module Active State/Play KTANE").gameObject.SetActive(enable);
     }
 
@@ -451,8 +452,7 @@ public class Kuro : MonoBehaviour {
     {
         yield return new WaitForSeconds(audioClips[0].length); //wait for join sound to end
         string[] foods = new string[] { "eggs", "a fab lolly", "pasta" };
-        AudioClip[] foodClips = new AudioClip[] { audioClips[2], audioClips[3], audioClips[4] }; //eggs , fab lolly, pasta
-        int foodIndex = Rnd.Range(0, 3);
+        foodIndex = Rnd.Range(0, 3);
         int correctIndex = Rnd.Range(0, 3);
         Audio.PlaySoundAtTransform(foodClips[foodIndex].name, transform);
         vc.EnableSpeaking(true);
@@ -499,7 +499,7 @@ public class Kuro : MonoBehaviour {
         Log($"Kuro wants {foods[foodIndex]}");
         List<string> newNames = new List<string>();
 
-        for(int i = 0; i < foodButtons.Length; i++)
+        for (int i = 0; i < foodButtons.Length; i++)
         {
             string oldName = foodButtons[i].GetComponent<MeshRenderer>().sharedMaterial.name;
             string newName = "";
@@ -513,10 +513,41 @@ public class Kuro : MonoBehaviour {
 
             newNames.Add(newName.Trim());
         }
+        SetUpPfpButtons();
         Log($"The displayed foods are {newNames.Join(", ")}");
         EnableFood(true);
     }
 
+    private void SetUpPfpButtons()
+    {
+        KMSelectable[] buttons = GetComponent<KMSelectable>().Children.Where((_, index) => index >= 19 && index <= 30).ToArray();
+        Debug.Log(buttons.Length);
+        foreach (KMSelectable b in buttons)
+        {
+            b.OnInteract += delegate { StartCoroutine(PfpButton(b)); return false; };
+        }
+
+    }
+
+
+    private IEnumerator PfpButton(KMSelectable b)
+    {
+        Debug.Log("Click");
+        if (pause || b.transform.parent.Find("Name").GetComponent<TextMesh>().text != "Kuro")
+            yield break;
+
+        pause = true;
+        if (foodIndex < 0 || foodIndex >= foodClips.Length)
+        { 
+            pause = false;
+            yield break;
+        }
+        EnableSpeaking(true);
+        Audio.PlaySoundAtTransform(foodClips[foodIndex].name, transform);
+        yield return new WaitForSeconds(foodClips[foodIndex].length);
+        EnableSpeaking(false);
+        pause = false;
+    }
 
     IEnumerator OnActivate()
     {
