@@ -13,6 +13,8 @@ using System.Reflection;
 public class Kuro : MonoBehaviour {
     [SerializeField]
     private bool debug;
+    [SerializeField]
+    private Sprite spotifyLogo;
     //x todo make text on module a bit bigger
     //x todo calcuate the correct time
     //todo fix pfps looking the opposite way
@@ -624,7 +626,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Task.Eat;
+            desiredTask = Task.Bed;
         }
 
 
@@ -1300,48 +1302,101 @@ public class Kuro : MonoBehaviour {
         //choose 3 random vcs that have people inside of them
         VoiceChannel[] populatedVCs = voiceChannelList.Where(vc => vc.people.Count > 0).ToArray().Shuffle();
 
+
+        /* sierra system
+         * outer wilds
+         * rabbit and steel
+         * celeste
+         * 
+         * 
+         */
         for (int i = 0; i < 3; i++)
         {
-            Transform activity = transform.Find($"Solved State/Activity {i + 1}");
-            string inVCName = "";
-            //change the name of the people in the vc
+            if (i == 1)
+                break;
             VoiceChannel vc = populatedVCs[i];
+            Transform activity = transform.Find($"Solved State/Activity {i + 1}");
+            //randomize what to show
+            Activity selectedActivity;
+            selectedActivity = new Activity[] { Activity.VC, Activity.Game, Activity.Song }.Shuffle()[0];
+            selectedActivity  = Activity.Song;
 
             Person[] peopleArr = vc.people.Where(p => p.Name != "Kuro").OrderBy(p => p.Name).ToArray();
-            switch (peopleArr.Length)
+
+            switch (selectedActivity)
             {
-                case 1:
-                    inVCName = peopleArr[0].Name;
+                case Activity.VC:
+                    string inVCName = "";
+                    //change the name of the people in the vc
+
+                    switch (peopleArr.Length)
+                    {
+                        case 1:
+                            inVCName = peopleArr[0].Name;
+                            break;
+                        case 2:
+                            inVCName = $"{peopleArr[0].Name} and {peopleArr[1].Name}";
+                            break;
+                        case 3:
+                            inVCName = $"{peopleArr[0].Name}, {peopleArr[1].Name}, and {peopleArr[2].Name}";
+                            break;
+                    }
+
+                    activity.Find("Canvas/Name").GetComponent<Text>().text = inVCName;
+
+                    //change name of the vc that people are in
+                    activity.Find("Canvas/Sub Text").GetComponent<Text>().text = vc.Name;
+
+                    //change the material
+                    activity.Find("PFP").GetComponent<MeshRenderer>().material = peopleArr[0].ProfilePicture;
+
+                    //change the pfp in the activity
+                    for (int j = 0; j < 3; j++)
+                    {
+                        Transform t = activity.Find($"Detailed Activity/small pfp {j + 1}");
+                        if (j >= peopleArr.Length)
+                        {
+                            t.gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            t.GetComponent<MeshRenderer>().material = peopleArr[j].ProfilePicture;
+                        }
+                    }
                     break;
-                case 2:
-                    inVCName = $"{peopleArr[0].Name} and {peopleArr[1].Name}";
+                case Activity.Game:
                     break;
-                case 3:
-                    inVCName = $"{peopleArr[0].Name}, {peopleArr[1].Name}, and {peopleArr[2].Name}";
+                case Activity.Song:
+
+                    //select a person 
+                    Person person = peopleArr.Shuffle()[0];
+
+                    //change activity name
+                    activity.Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - {Rnd.Range(0,60)}m";
+
+                    //change the person's material
+                    activity.Find("PFP").GetComponent<MeshRenderer>().material = person.ProfilePicture;
+                    
+                    //change the person's Name
+                    activity.Find("Canvas/Name").GetComponent<Text>().text = person.Name;
+
+                    //change the name of the song and the artist
+                    activity.Find("Canvas/Main Text").GetComponent<Text>().text = "Song name";
+                    activity.Find("Canvas/Sub Text").GetComponent<Text>().text = "Author name";
+
+                    //disable the small pfps
+                    Enumerable.Range(1, 3).ToList().ForEach(ix => activity.Find($"Detailed Activity/small pfp {ix}").gameObject.SetActive(false));
+
+                    //change the small sprite to be spotify
+                    activity.Find("Detailed Activity/Media Image").GetComponent<SpriteRenderer>().sprite = spotifyLogo;
+
+                    
+
+
                     break;
             }
-
-            activity.Find("Canvas/Name").GetComponent<Text>().text = inVCName;
-
-            //change name of the vc that people are in
-            activity.Find("Canvas/Channel Name").GetComponent<Text>().text = vc.Name;
-
-            //change the material
-            activity.Find("PFP").GetComponent<MeshRenderer>().material = peopleArr[0].ProfilePicture;
-
-            //change the pfp in the activity
-            for (int j = 0; j < 3; j++)
-            {
-                Transform t = activity.Find($"In VC/small pfp {j + 1}");
-                if (j >= peopleArr.Length)
-                {
-                    t.gameObject.SetActive(false);
-                }
-                else
-                {
-                    t.GetComponent<MeshRenderer>().material = peopleArr[j].ProfilePicture;
-                }
-            }
+            
+            //enable big spotify logo depending on if it's the song
 
         }
 

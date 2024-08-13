@@ -46,4 +46,11 @@ public class Enums {
         Expert,
         None
     }
+
+    public enum Activity
+    {
+        VC,
+        Game,
+        Song
+    }
 }
