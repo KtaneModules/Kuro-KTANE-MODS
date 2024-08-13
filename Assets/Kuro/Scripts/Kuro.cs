@@ -1297,6 +1297,36 @@ public class Kuro : MonoBehaviour {
         if (s != "")
             Log(s + " Solving module...");
 
+        //choose 3 random vcs that have people inside of them
+        VoiceChannel[] populatedVCs = voiceChannelList.Where(vc => vc.people.Count > 0).ToArray().Shuffle();
+
+        for (int i = 0; i < 3; i++)
+        {
+            Transform activity = transform.Find($"Solved State/Activity {i + 1}");
+            string inVCName = "";
+            //change the name of the people in the vc
+            VoiceChannel vc = populatedVCs[i];
+
+            Person[] peopleArr = vc.people.Where(p => p.Name != "Kuro").OrderBy(p => p.Name).ToArray();
+            switch (peopleArr.Length)
+            {
+                case 1:
+                    inVCName = vc.people[0].Name;
+                    break;
+                case 2:
+                    inVCName = $"{people[0].Name} and {people[1].Name}";
+                    break;
+                case 3:
+                    inVCName = $"{people[0].Name}, {people[1].Name}, and {people[2].Name}";
+                    break;
+            }
+
+            activity.Find("Canvas/Name").GetComponent<Text>().text = inVCName;
+        }
+
+        
+        
+
         EnableModuleActive(false);
         solvedState.SetActive(true);
         BombModule.HandlePass();
