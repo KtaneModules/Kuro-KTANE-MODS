@@ -1311,21 +1311,42 @@ public class Kuro : MonoBehaviour {
             switch (peopleArr.Length)
             {
                 case 1:
-                    inVCName = vc.people[0].Name;
+                    inVCName = peopleArr[0].Name;
                     break;
                 case 2:
-                    inVCName = $"{people[0].Name} and {people[1].Name}";
+                    inVCName = $"{peopleArr[0].Name} and {peopleArr[1].Name}";
                     break;
                 case 3:
-                    inVCName = $"{people[0].Name}, {people[1].Name}, and {people[2].Name}";
+                    inVCName = $"{peopleArr[0].Name}, {peopleArr[1].Name}, and {peopleArr[2].Name}";
                     break;
             }
 
             activity.Find("Canvas/Name").GetComponent<Text>().text = inVCName;
+
+            //change name of the vc that people are in
+            activity.Find("Canvas/Channel Name").GetComponent<Text>().text = vc.Name;
+
+            //change the material
+            activity.Find("PFP").GetComponent<MeshRenderer>().material = peopleArr[0].ProfilePicture;
+
+            //change the pfp in the activity
+            for (int j = 0; j < 3; j++)
+            {
+                Transform t = activity.Find($"In VC/small pfp {j + 1}");
+                if (j >= peopleArr.Length)
+                {
+                    t.gameObject.SetActive(false);
+                }
+                else
+                {
+                    t.GetComponent<MeshRenderer>().material = peopleArr[j].ProfilePicture;
+                }
+            }
+
         }
 
-        
-        
+
+
 
         EnableModuleActive(false);
         solvedState.SetActive(true);
