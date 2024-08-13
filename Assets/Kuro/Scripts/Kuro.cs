@@ -521,7 +521,6 @@ public class Kuro : MonoBehaviour {
     private void SetUpPfpButtons()
     {
         KMSelectable[] buttons = GetComponent<KMSelectable>().Children.Where((_, index) => index >= 19 && index <= 30).ToArray();
-        Debug.Log(buttons.Length);
         foreach (KMSelectable b in buttons)
         {
             b.OnInteract += delegate { StartCoroutine(PfpButton(b)); return false; };
@@ -532,7 +531,6 @@ public class Kuro : MonoBehaviour {
 
     private IEnumerator PfpButton(KMSelectable b)
     {
-        Debug.Log("Click");
         if (pause || b.transform.parent.Find("Name").GetComponent<TextMesh>().text != "Kuro")
             yield break;
 
