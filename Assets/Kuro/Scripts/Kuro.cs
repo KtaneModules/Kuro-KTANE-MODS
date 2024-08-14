@@ -249,11 +249,11 @@ public class Kuro : MonoBehaviour {
 
         //add songs to people
         //acer, blaise, camia, ciel, hazel. kit, mar, piccolo
-        people.Where(p => p.Name == "Acer" || p.Name == "Blaise" || p.Name == "Camia" || p.Name == "Ciel" || p.Name == "Hazel" || p.Name == "Kit" || p.Name == "Mar" || p.Name == "Piccolo").ToList().ForEach(p => p.Songs.AddRange(new Song[] { new Song("It Should've Been Me", "Riproducer", songs[6]), new Song("Collared", "Vane Lily", songs[1]), new Song("Golden Afternoon", "CircusP", songs[5]) }));
-        people.First(p => p.Name == "Hawker").Songs.AddRange(new Song[] { new Song("Alors on danse", "Stromae", songs[0]), new Song("Poplar St", "Glass Animals", songs[4]), new Song("Pork Soda", "Glass Animals", songs[4]) });
-        people.First(p => p.Name == "GoodHood").Songs.AddRange(new Song[] { new Song("Funky Town", "Lipps Inc.", songs[3]) });
-        people.First(p => p.Name == "Play").Songs.AddRange(new Song[] { new Song("Paint It, Black", "The Rolling Stones", songs[7]), new Song("Die In A Fire", "Living Tombstone", songs[2]), new Song("Wavetapper", "Frums", songs[8]) });
-        people.First(p => p.Name == "CurlBot").Songs.AddRange(new Song[] { new Song("Crazy", "Creo", songs[0]), new Song("Ordinary Day", "The Great Big Sea", songs[0]), new Song("Death By Glamour", "Toby Foxx", songs[0]) });
+        people.Where(p => p.Name == "Acer" || p.Name == "Blaise" || p.Name == "Camia" || p.Name == "Ciel" || p.Name == "Hazel" || p.Name == "Kit" || p.Name == "Mar" || p.Name == "Piccolo").ToList().ForEach(p => p.Songs.AddRange(new Song[] { new Song("It Should've Been Me", "Riproducer", songs[8]), new Song("Collared", "Vane Lily", songs[1]), new Song("Golden Afternoon", "CircusP", songs[6]) }));
+        people.First(p => p.Name == "Hawker").Songs.AddRange(new Song[] { new Song("Alors on danse", "Stromae", songs[0]), new Song("Poplar St", "Glass Animals", songs[5]), new Song("Pork Soda", "Glass Animals", songs[5]) });
+        people.First(p => p.Name == "GoodHood").Songs.AddRange(new Song[] { new Song("Funky Town", "Lipps Inc.", songs[4]) });
+        people.First(p => p.Name == "Play").Songs.AddRange(new Song[] { new Song("Paint It, Black", "The Rolling Stones", songs[9]), new Song("Die In A Fire", "Living Tombstone", songs[3]), new Song("Wavetapper", "Frums", songs[11]) });
+        people.First(p => p.Name == "CurlBot").Songs.AddRange(new Song[] { new Song("Crazy", "Creo", songs[2]), new Song("Ordinary Day", "The Great Big Sea", songs[7]), new Song("Death By Glamour", "Toby Foxx", songs[10]) });
 
         //create the vcs
         voiceChannelList = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaTransform.gameObject, "Chill Zone Alfa"), new VoiceChannel(chillZoneBravoTransform.gameObject, "Chill Zone Bravo"), new VoiceChannel(chillZoneCharlieTransform.gameObject, "Chill Zone Charlie"), new VoiceChannel(voiceChannelTransform.Find("Modded Alfa").gameObject, "Modded Alfa") };
