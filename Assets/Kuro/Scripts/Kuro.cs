@@ -106,7 +106,7 @@ public class Kuro : MonoBehaviour {
 
     #region Food
     [SerializeField]
-    private Material[] eggs, fabLollies, pasta, others;
+    private Texture2D[] eggs, fabLollies, pasta, others;
     #endregion
     #region voice/text channels
     private const float channelOffset = -0.0081f; //the amount of space something will move down in the list of voice channels
@@ -119,19 +119,19 @@ public class Kuro : MonoBehaviour {
 
     private List<TextChannel> textChannelList;
 
-    public Material[] kuroMoods;
-    public Material acerPfp;
-    public Material blaisePfp;
-    public Material camiaPfp;
-    public Material cielPfp;
-    public Material curlPfp;
-    public Material goodhoodPfp;
-    public Material hawkerPfp;
-    public Material hazelPfp;
-    public Material kitPfp;
-    public Material marPfp;
-    public Material piccoloPfp;
-    public Material playPfp;
+    public Texture2D[] kuroMoods;
+    public Texture2D acerPfp;
+    public Texture2D blaisePfp;
+    public Texture2D camiaPfp;
+    public Texture2D cielPfp;
+    public Texture2D curlPfp;
+    public Texture2D goodhoodPfp;
+    public Texture2D hawkerPfp;
+    public Texture2D hazelPfp;
+    public Texture2D kitPfp;
+    public Texture2D marPfp;
+    public Texture2D piccoloPfp;
+    public Texture2D playPfp;
 
     private List<Person> people; //acer, blaise, camia, ciel, curl, goodhood, hawker, hazel, kit, mar, piccolo, play
 
@@ -353,7 +353,7 @@ public class Kuro : MonoBehaviour {
             //num = (int)currentMood;
         }
 
-        kuroPfp.material = kuroMoods[num];
+        kuroPfp.material.mainTexture = kuroMoods[num];
 
 
 
@@ -520,37 +520,37 @@ public class Kuro : MonoBehaviour {
         vc.EnableSpeaking(false);
         EnableSpeaking(false);
         KMSelectable[] foodButtons = new KMSelectable[] { transform.GetComponent<KMSelectable>().Children[14], transform.GetComponent<KMSelectable>().Children[15], transform.GetComponent<KMSelectable>().Children[16] };
-        Material correctMaterial = null;
-        Material[] wrongMaterials = null;
+        Texture2D correctTexture = null;
+        Texture2D[] wrongTextures = null;
         switch (foodIndex)
         {
             case 0:
-                correctMaterial = eggs.PickRandom();
-                wrongMaterials = others.Concat(fabLollies).Concat(pasta).ToArray();
+                correctTexture = eggs.PickRandom();
+                wrongTextures = others.Concat(fabLollies).Concat(pasta).ToArray();
                 break;
             case 1:
-                correctMaterial = fabLollies.PickRandom();
-                wrongMaterials = others.Concat(eggs).Concat(pasta).ToArray();
+                correctTexture = fabLollies.PickRandom();
+                wrongTextures = others.Concat(eggs).Concat(pasta).ToArray();
 
                 break;
             case 2:
-                correctMaterial = pasta.PickRandom();
-                wrongMaterials = others.Concat(eggs).Concat(fabLollies).ToArray();
+                correctTexture = pasta.PickRandom();
+                wrongTextures = others.Concat(eggs).Concat(fabLollies).ToArray();
                 break;
         }
-        wrongMaterials = wrongMaterials.Shuffle().Take(3).ToArray();
+        wrongTextures = wrongTextures.Shuffle().Take(3).ToArray();
         for (int i = 0; i < 3; i++)
         {
             int dummy = i;
             if (correctIndex == dummy)
             {
-                foodButtons[dummy].GetComponent<MeshRenderer>().sharedMaterial = correctMaterial;
+                foodButtons[dummy].GetComponent<MeshRenderer>().material.mainTexture = correctTexture;
                 foodButtons[dummy].OnInteract += delegate () { if (moduleActivated && !pause) { Solve($"You chose {foodButtons[dummy].name}. This is correct"); } return false; };
 
             }
             else
             {
-                foodButtons[dummy].GetComponent<MeshRenderer>().sharedMaterial = wrongMaterials[dummy];
+                foodButtons[dummy].GetComponent<MeshRenderer>().material.mainTexture = wrongTextures[dummy];
                 foodButtons[dummy].OnInteract += delegate () { if (moduleActivated && !pause) { Strike($"You chose {foodButtons[dummy].name}. This is incorrect"); } return false; };
             }
         }
@@ -873,7 +873,7 @@ public class Kuro : MonoBehaviour {
             Person p = modIdeaPeople[i];
             string request = requests[i];
             Transform personTransform = transform.Find($"Module Active State/Mod Ideas/Person {i + 1}");
-            personTransform.Find("PFP").GetComponent<MeshRenderer>().material = p.ProfilePicture;
+            personTransform.Find("PFP").GetComponent<MeshRenderer>().material.mainTexture = p.ProfilePicture;
             personTransform.Find("Name").GetComponent<TextMesh>().text = p.Name;
             personTransform.Find("Request/Text").GetComponent<Text>().text = request;
             Log($"{p.Name} requested: \"{request}\"");
@@ -1021,7 +1021,7 @@ public class Kuro : MonoBehaviour {
             {
                 //setting up request and people
                 Person p = repoRequestPeople[i];
-                pfpMeshRenderers[i].material = p.ProfilePicture;
+                pfpMeshRenderers[i].material.mainTexture = p.ProfilePicture;
                 nameText[i].text = p.Name;
             }
 
@@ -1148,7 +1148,7 @@ public class Kuro : MonoBehaviour {
         for (int i = 0; i < 2; i++)
         {
             Transform person = transform.Find($"Module Active State/Play KTANE/Person {i + 1}");
-            person.Find("PFP").GetComponent<MeshRenderer>().material = moddedAlfaPeople[i].ProfilePicture;
+            person.Find("PFP").GetComponent<MeshRenderer>().material.mainTexture = moddedAlfaPeople[i].ProfilePicture;
             person.Find("Name").GetComponent<TextMesh>().text = moddedAlfaPeople[i].Name;
 
             Text request = person.Find("Request/Text").GetComponent<Text>();
@@ -1379,7 +1379,7 @@ public class Kuro : MonoBehaviour {
             //randomize what to show
             Activity selectedActivity;
             selectedActivity = new Activity[] { Activity.VC, Activity.Game, Activity.Song }.Shuffle()[0];
-            selectedActivity  = Activity.Song;
+            selectedActivity  = Activity.Game;
             activities[i] = selectedActivity;
             Person selectedPerson;
             Person[] peopleArr = vc.people.Where(p => p.Name != "Kuro").OrderBy(p => p.Name).ToArray();
@@ -1409,7 +1409,7 @@ public class Kuro : MonoBehaviour {
                     activity.Find("Canvas/Sub Text").GetComponent<Text>().text = vc.Name;
 
                     //change the material
-                    activity.Find("PFP").GetComponent<MeshRenderer>().material = peopleArr[0].ProfilePicture;
+                    activity.Find("PFP").GetComponent<MeshRenderer>().material.mainTexture = peopleArr[0].ProfilePicture;
 
                     //change the pfp in the activity
                     for (int j = 0; j < 3; j++)
@@ -1421,37 +1421,46 @@ public class Kuro : MonoBehaviour {
                         }
                         else
                         {
-                            t.GetComponent<MeshRenderer>().material = peopleArr[j].ProfilePicture;
+                            t.GetComponent<MeshRenderer>().material.mainTexture = peopleArr[j].ProfilePicture;
                         }
                     }
                     break;
                 case Activity.Game:
+
                     //select a person
                     selectedPerson = peopleArr.Shuffle()[0];
                     //select game here
 
                     //disable Background
-                    activity.Find("Canvas/Background").gameObject.SetActive(false);
+                    activity.Find("Background").gameObject.SetActive(false);
 
                     //disable pfp
-                    activity.Find("Canvas/PFP").gameObject.SetActive(false);
+                    activity.Find("PFP").gameObject.SetActive(false);
 
                     //Disable online
-                    activity.Find("Canvas/Online").gameObject.SetActive(false);
+                    activity.Find("Online").gameObject.SetActive(false);
 
                     //disable small pfps
                     Enumerable.Range(1, 3).ToList().ForEach(ix => activity.Find($"Detailed Activity/small pfp {ix}").gameObject.SetActive(false));
 
                     //disable spotify logo
-                    activity.Find("Canvas/Spotify Logo").gameObject.SetActive(false);
+                    activity.Find("Spotify Logo").gameObject.SetActive(false);
 
-                    //change media image to pfp
                     //disable name
+                    activity.Find("Canvas/Name").gameObject.SetActive(false);
                     //disable activity
+                    activity.Find("Canvas/Activity").gameObject.SetActive(false);
 
                     //display name
+                    activity.Find("Canvas/Main Text").GetComponent<Text>().text = selectedPerson.Name;
                     //display time activity
+                    activity.Find("Canvas/Sub Text").GetComponent<Text>().text = $"Game Name - just now";
+
                     //display game image
+
+                    //change media image to pfp
+                    Texture2D texture = selectedPerson.ProfilePicture;
+                    activity.Find("Detailed Activity/Media Image").GetComponent<SpriteRenderer>().sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
 
                     break;
                 case Activity.Song:
@@ -1461,10 +1470,10 @@ public class Kuro : MonoBehaviour {
                     Song selectedSong = selectedPerson.Songs.Shuffle()[0];
 
                     //change activity name
-                    activity.Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - {GetActivityTime()}";
+                    activity.Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - just now";
 
                     //change the person's material
-                    activity.Find("PFP").GetComponent<MeshRenderer>().material = selectedPerson.ProfilePicture;
+                    activity.Find("PFP").GetComponent<MeshRenderer>().material.mainTexture = selectedPerson.ProfilePicture;
                     
                     //change the person's Name
                     activity.Find("Canvas/Name").GetComponent<Text>().text = selectedPerson.Name;
@@ -1495,9 +1504,7 @@ public class Kuro : MonoBehaviour {
     private string GetActivityTime()
     {
         TimeSpan diffTime = DateTime.Now - solveTime;
-
-        Debug.Log(diffTime);
-
+        
         if (diffTime.Days >= 1)
         {
             return $"{diffTime.Days}d";

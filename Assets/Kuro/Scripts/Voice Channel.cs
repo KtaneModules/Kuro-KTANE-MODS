@@ -60,7 +60,7 @@ public class VoiceChannel
             TextMesh textMesh = transform.Find("Name").GetComponent<TextMesh>();
             transform.Find("Call Background").gameObject.SetActive(false);
 
-            meshRenderer.material = p.ProfilePicture;
+            meshRenderer.material.mainTexture = p.ProfilePicture;
             textMesh.text = p.Name;
         }
 

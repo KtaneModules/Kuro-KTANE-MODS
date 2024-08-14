@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class Person {
     public string Name { get; set; }
-    public Material ProfilePicture { get; private set; }
+    public Texture2D ProfilePicture { get; private set; }
     public int Tolerance { get; private set; }
     public List<Song> Songs { get;  }
 
     public Enums.Role Role { get; set; }
-    public Person(Material picture)
+    public Person(Texture2D picture)
     {
         Name = picture.name;
         ProfilePicture = picture;
