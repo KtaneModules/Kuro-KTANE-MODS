@@ -11,69 +11,6 @@ using static Enums;
 public class Kuro : MonoBehaviour {
 
     //todo fix pfps looking the opposite way
-    //x todo make text on module a bit bigger
-    //x todo calcuate the correct time
-    //x todo based on the correct time, make them do the correct thing
-    //x todo - maintaining the repo
-    //x todo - creating a module
-    //x todo - eating
-    //x todo - playing KTANE
-    //x todo - getting ready for bed
-
-    //x todo maintaining the repo
-    //x todo -get all modules from the repo
-    //x todo --if json can't be gotten, have the people say to choose anyone to solve the module
-    //x todo -add button interaction to profile pictures
-    //x todo -test to see if the module solves if the loading fails and any pfp is pressed
-    //x todo -test in game if a module appears, the tolerance multiplies itself by 2
-    //x todo create a module
-    //x todo - logging: if there are duplicate mods, put numbers in parentheses
-    //x todo -test when there are modules kuro made on the bomb
-    //x todo --make code that will put kuro into chill zone alfa
-    //x todo --test to make sure on a strike, kuro will be moved to chill zone alfa on his own
-    //x todo --test if loading fails, the hard coded list will be used instead
-    //x todo --add a button where kuro can disconnect from the call
-    //x todo ---if button is pressed before all modules are solved, strike
-    //x todo ---if button is pressed after all modules are solved, solve
-    //x todo -test when there aren't modules kuro made on the bomb
-    //x todo --create ideas for mod ideas
-    //x todo -use souv's warning triangle to show that the loading failed
-    //x todo eat
-    //x todo fix the logging with there being numbers for the food (stretch goal)
-    //x todo- make it so a green circle appears when kuro is speaking
-    //x todo - make it so when someone clicks on kuro, he will repeat what he said (stretch goal)
-    //x todo - add kuro voice lines (stretch goal)
-    //x todo - if call button is press prematurely, strike
-    //x todo - put british flags on fab lollies
-    //x todo play ktane
-    //x todo - strike if voice-text-modded is pressed first
-    //x todo - generate people wanting to play
-    //x todo - fix bug in which people from other vcs go into modded alfa
-    //x todo - fix bug where chill zones go overs the call
-    //x todo - curl unicorn
-    //x todo - kuro wants to defuse
-    //x todo - kuro wants to expert
-    //x todo - same role, less tolerance
-    //x todo - same role, more tolerance
-    //x todo - fix bug where kuro can join vc multiple times
-    //x todo - kuro joins call
-    //x todo - two people (who are not in other voice calls) join call
-    //x todo - if call button is press prematurely, strike
-    //x todo bed
-    //x todo fix the bug of the time not being displayed properly in the log
-    //x todo figure out why you got an out of range error from just loading the module 
-    //x todo have a set up module method that will deal with what is shown and the buttons. (Call it in start before module loading starts)
-    //x todo have the custom highlighting work with all voice / text channels
-    //x todo have a loading state (that doesn't break all the kms)
-    //x todo when a channel is active, deactivate the other one (fix a bug where the gray highlighting disappears when the highlight event ends)
-    //x todo have people in vcs be in alphabetical order (stretch goal)
-
-    //todo have a solved state where it shows people's game activity (stretch goal)
-    //! todo - play a game
-    //x todo - spotify
-    //x todo - add curlbot images for spotify
-    //x todo - make it so the spotify and game time shows how many minutes/hours it's been since the mod solved (stretch goal)
-    //x todo - vc
     //todo change the discord leaving sound (stretch goal)
     //todo have the highlight/on hover work for all the voice/text channels (stretch goal)
     //todo fix text/voice channel highlights (stretch goal)
@@ -199,8 +136,6 @@ public class Kuro : MonoBehaviour {
         }
     }
 
-
-
     void Update()
     {
         if (!RepoJSONGetter.LoadingDone || !moduleActivated)
@@ -270,8 +205,6 @@ public class Kuro : MonoBehaviour {
         EnableFood(false);
         EnableModuleActive(false);
         EnablePlayKTANE(false);
-
-
 
         Transform voiceChannelTransform = transform.Find("Module Active State/Voice Channels");
         Transform chillZoneAlfaTransform = voiceChannelTransform.Find("Chill Zone Alfa");
@@ -343,7 +276,6 @@ public class Kuro : MonoBehaviour {
         voiceChannelList.ForEach(t => { t.DisplayPeople(); t.Deactivate(); });
         voiceChannelList.Where(t => t.Name != "Modded Alfa").ToList().ForEach(t => { Log(t.ToString()); });
 
-
         ShiftChannels();
 
         //changing kuro pfp
@@ -361,13 +293,11 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            //currentMood = Mood.Curious;
-            //num = (int)currentMood;
+            currentMood = Mood.Curious;
+            num = (int)currentMood;
         }
 
         kuroPfp.material.mainTexture = kuroMoods[num];
-
-
 
         //set locations
         currentTextLocation = TextLocation.None;
@@ -409,9 +339,6 @@ public class Kuro : MonoBehaviour {
 
         moddedAlfaTransform.GetComponent<CustomSelectable>().SetVoiceChannel(voiceChannelList[3]);
         moddedAlfaTransform.GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { StartCoroutine(OnModdedAlfa()); } return false; };
-
-
-
 
         KMSelectable endCallButton = transform.Find("Module Active State/Call/end call").GetComponent<KMSelectable>();
         endCallButton.OnInteract += delegate () { if (moduleActivated && !pause) { CallButtonClicK(); } return false; };
@@ -599,7 +526,6 @@ public class Kuro : MonoBehaviour {
 
     }
 
-
     private IEnumerator PfpButton(KMSelectable b)
     {
         if (pause || b.transform.parent.Find("Name").GetComponent<TextMesh>().text != "Kuro")
@@ -617,11 +543,9 @@ public class Kuro : MonoBehaviour {
         EnableSpeaking(false);
         pause = false;
     }
-
     IEnumerator OnActivate()
     {
         currentTime = DateTime.Now;
-
 
         //Take the highest out of batteries, indicators and ports
         int batteryCount = BombInfo.GetBatteryCount();
@@ -698,13 +622,11 @@ public class Kuro : MonoBehaviour {
             desiredTask = Task.Bed;
         }
 
-
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
 
         //get all the modules made by kuro
         List<string> allModules = BombInfo.GetSolvableModuleNames();
         List<string> kuroModules;
-
 
         do
         {
@@ -763,7 +685,6 @@ public class Kuro : MonoBehaviour {
 
                 break;
 
-
             case Task.MaintainRepo:
                 Log("You must look at #repo-requests");
                 break;
@@ -793,7 +714,6 @@ public class Kuro : MonoBehaviour {
         moduleActivated = true;
     }
 
-
     private void ShiftChannels()
     {
         Transform voiceChannelTransform = transform.Find("Module Active State/Voice Channels");
@@ -812,7 +732,6 @@ public class Kuro : MonoBehaviour {
         Vector3 charlieVector = chillZoneCharlieTransform.localPosition;
         chillZoneCharlieTransform.localPosition = new Vector3(charlieVector.x, charlieVector.y, -0.0655f + (channelOffset * (moddedPeople + alfaPeople + bravoPeople)));
     }
-
 
     public TextChannel CreateTextChannel(GameObject gameObject)
     {
@@ -840,8 +759,6 @@ public class Kuro : MonoBehaviour {
         List<bool> isNeedy = new List<bool>();
         List<bool> isLoved = new List<bool>();
         List<bool> isCurl = new List<bool>();
-
-
 
         do
         {
@@ -919,7 +836,6 @@ public class Kuro : MonoBehaviour {
                 Log($"{string.Join(", ", names, 0, names.Length - 1)}, and {names.Last()} suggested ideas that Kuro loves and are not needies. Those are the desired requests");
 
             }
-
         }
 
         else
@@ -945,7 +861,6 @@ public class Kuro : MonoBehaviour {
                     string[] names = correctIndex.Select(i => modIdeaPeople[i].Name).ToArray();
                     Log($"{string.Join(", ", names, 0, names.Length - 1)} and {names.Last()} suggested ideas that are not needies. Those are the desired requests");
                 }
-
             }
 
             else
@@ -1136,12 +1051,10 @@ public class Kuro : MonoBehaviour {
             return VoiceLocation.ChillZoneCharlie;
         return VoiceLocation.ModdedAlfa;
     }
-
     private string GetTolerance(int num)
     {
         return num == int.MinValue ? "Skull" : num.ToString();
     }
-
     private void OnVoiceTextModded()
     {
         if (currentTextLocation == TextLocation.VoiceTextModded)
@@ -1289,7 +1202,6 @@ public class Kuro : MonoBehaviour {
 
         Log($"{moddedAlfaPeople[0].Name} and {moddedAlfaPeople[1].Name} have joined the call");
     }
-
     private void OnChillZoneAlfa()
     {
         OnChillZone(VoiceLocation.ChillZoneAlfa);
@@ -1333,7 +1245,6 @@ public class Kuro : MonoBehaviour {
         return $"{dateTime.DayOfWeek}, {dateTime.Hour:00}:{dateTime.Minute:00}";
     }
 
-
     private string GetTask(Task task) 
     {
         switch (task) 
@@ -1374,7 +1285,6 @@ public class Kuro : MonoBehaviour {
 
         activities = new Activity[3];
 
-
         for (int i = 0; i < 3; i++)
         {
             VoiceChannel vc = populatedVCs[i];
@@ -1404,7 +1314,6 @@ public class Kuro : MonoBehaviour {
                             inVCName = $"{peopleArr[0].Name}, {peopleArr[1].Name}, and {peopleArr[2].Name}";
                             break;
                     }
-
                     //disable spotify logo
                     activity.Find("Spotify Logo").gameObject.SetActive(false);
 
@@ -1499,14 +1408,7 @@ public class Kuro : MonoBehaviour {
                     Enumerable.Range(1, 3).ToList().ForEach(ix => activity.Find($"Detailed Activity/small pfp {ix}").gameObject.SetActive(false));
                     break;
             }
-            
-            //enable big spotify logo depending on if it's the song
-
         }
-
-
-
-
         EnableModuleActive(false);
         solvedState.SetActive(true);
         BombModule.HandlePass();
