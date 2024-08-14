@@ -156,6 +156,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -201,6 +206,11 @@ Prefab:
     - target: {fileID: 1727479147321450, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_Name
       value: Kuro (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -248,6 +258,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -289,6 +304,11 @@ Prefab:
     - target: {fileID: 4905393475700690, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -336,6 +356,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -381,6 +406,11 @@ Prefab:
     - target: {fileID: 1727479147321450, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_Name
       value: Kuro (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -428,6 +458,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (19)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -473,6 +508,11 @@ Prefab:
     - target: {fileID: 1727479147321450, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_Name
       value: Kuro (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -520,6 +560,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (18)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -565,6 +610,11 @@ Prefab:
     - target: {fileID: 1727479147321450, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_Name
       value: Kuro (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -612,6 +662,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -657,6 +712,11 @@ Prefab:
     - target: {fileID: 1727479147321450, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_Name
       value: Kuro (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -704,6 +764,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -745,11 +810,6 @@ Prefab:
     - target: {fileID: 439642, guid: 8814ea52310d2614a9feda02ec355ae4, type: 2}
       propertyPath: m_RootOrder
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114848120511536268, guid: 8814ea52310d2614a9feda02ec355ae4,
-        type: 2}
-      propertyPath: TwitchPlaysActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8814ea52310d2614a9feda02ec355ae4, type: 2}
@@ -796,6 +856,11 @@ Prefab:
     - target: {fileID: 1727479147321450, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_Name
       value: Kuro (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -907,6 +972,11 @@ Prefab:
     - target: {fileID: 1727479147321450, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_Name
       value: Kuro (13)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -1035,6 +1105,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (16)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -1080,6 +1155,11 @@ Prefab:
     - target: {fileID: 1727479147321450, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_Name
       value: Kuro (17)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -1127,6 +1207,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -1173,6 +1258,11 @@ Prefab:
       propertyPath: m_Name
       value: Kuro (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -1218,6 +1308,11 @@ Prefab:
     - target: {fileID: 1727479147321450, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
       propertyPath: m_Name
       value: Kuro (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debug
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}

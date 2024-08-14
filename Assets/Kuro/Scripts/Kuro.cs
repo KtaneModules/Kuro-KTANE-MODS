@@ -18,10 +18,13 @@ public class Kuro : MonoBehaviour {
     //todo tp (stretch goal)
     //todo - regular (stretch goal)
     //todo - autosolve (stretch goal)
+    //todo change logging for when eating food
 
     private string[] gameNames = new string[3];
     private Activity[] activities;
-    
+
+    [SerializeField]
+    private Task debugDesiredTask;
     [SerializeField]
     private bool debug;
     [SerializeField]
@@ -620,7 +623,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Task.Bed;
+            desiredTask = debugDesiredTask;
         }
 
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
@@ -1513,6 +1516,7 @@ public class Kuro : MonoBehaviour {
                     break;
 
             }
+            yield break;
         }
 
         //end call
@@ -1526,6 +1530,7 @@ public class Kuro : MonoBehaviour {
                 yield break;
             }
             CallButtonClick();
+            yield break;
         }
 
         //repeat food
@@ -1535,7 +1540,7 @@ public class Kuro : MonoBehaviour {
             //check if food options are open
             if (!transform.Find("Module Active State/Eat").gameObject.activeInHierarchy)
             { 
-                yield return "sendtochaterror Can't repeat food options since options are not available yet";
+                yield return "sendtochaterror Can't repeat food options since options are not available";
                 yield break;
             }
 
@@ -1558,7 +1563,7 @@ public class Kuro : MonoBehaviour {
             //check if food options are open
             if (!transform.Find("Module Active State/Eat").gameObject.activeInHierarchy)
             { 
-                yield return "sendtochaterror Can't choose a food option since options are not available yet";
+                yield return "sendtochaterror Can't choose a food option since options are not available";
                 yield break;
             }
 
@@ -1578,15 +1583,15 @@ public class Kuro : MonoBehaviour {
                 yield break;
             }
 
-            //captailzie name of person
-            string name = char.ToUpper(match.Groups[1].Value[0]) + match.Groups[1].Value.Substring(1);
+            //lower case name
+            string name = match.Groups[1].Value.ToLower();
 
 
             //verify the person the ask for exists
             for (int i = 0; i < 3; i++)
             {
                 Transform person = transform.Find($"Module Active State/Repo Request/Person {i + 1}");
-                if (person.Find("Name").GetComponent<TextMesh>().text == name)
+                if (person.Find("Name").GetComponent<TextMesh>().text.ToLower() == name.ToLower())
                 {
                     person.Find("PFP").GetComponent<KMSelectable>().OnInteract();
                     yield break;
@@ -1609,13 +1614,13 @@ public class Kuro : MonoBehaviour {
             }
 
             //captailzie name of person
-            string name = char.ToUpper(match.Groups[1].Value[0]) + match.Groups[1].Value.Substring(1);
+            string name = match.Groups[1].Value.ToLower();
 
             //verify the person the ask for exists
             for (int i = 0; i < 3; i++)
             {
                 Transform person = transform.Find($"Module Active State/Mod Ideas/Person {i + 1}");
-                if (person.Find("Name").GetComponent<TextMesh>().text == name)
+                if (person.Find("Name").GetComponent<TextMesh>().text.ToLower() == name)
                 {
                     person.Find("PFP").GetComponent<KMSelectable>().OnInteract();
                     yield break;
