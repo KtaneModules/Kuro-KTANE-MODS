@@ -7,11 +7,14 @@ using KModkit;
 using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
 using static Enums;
+using static UnityEditor.Experimental.Build.AssetBundle.BuildCommandSet;
+using System.Text.RegularExpressions;
+using UnityEngine.Experimental.UIElements;
 
 public class Kuro : MonoBehaviour {
 
     //x todo fix pfps looking the opposite way
-    //todo change the discord leaving sound (stretch goal)
+    //x todo change the discord leaving sound (stretch goal)
     //todo tp (stretch goal)
     //todo - regular (stretch goal)
     //todo - autosolve (stretch goal)
@@ -339,7 +342,7 @@ public class Kuro : MonoBehaviour {
         moddedAlfaTransform.GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { StartCoroutine(OnModdedAlfa()); } return false; };
 
         KMSelectable endCallButton = transform.Find("Module Active State/Call/end call").GetComponent<KMSelectable>();
-        endCallButton.OnInteract += delegate () { if (moduleActivated && !pause) { CallButtonClicK(); } return false; };
+        endCallButton.OnInteract += delegate () { if (moduleActivated && !pause) { CallButtonClick(); } return false; };
         endCallButton.OnHighlight += () =>
         {
             endCallButton.transform.GetComponent<SpriteRenderer>().color = Color.red;
@@ -357,7 +360,7 @@ public class Kuro : MonoBehaviour {
         return onBombKuroModules.GroupBy(name => name).Select(kv => $"{kv.Key} ({kv.Count()})").Join(", ");
     }
 
-    private void CallButtonClicK()
+    private void CallButtonClick()
     {
         if (ModuleSolved) return;
 
@@ -1459,14 +1462,172 @@ public class Kuro : MonoBehaviour {
     }
 
 #pragma warning disable 414
-   private readonly string TwitchHelpMessage = @"Use !{0} to do something.";
+   private readonly string TwitchHelpMessage = "Use \"!{0} join\" followed by any of these channels \"mod ideas\", \"repo requests\", \"voice text modded\", \"modded alfa\", \"chill zone alfa\", \"chill zone bravo\", or \"chill zone charlie\" to join that channel.\nUse \"!{0} end call\" in order to leave the call.\nIf the desired task is eating, use \"!{0} repeat\" to repeat what Kuro wants to eat. Use \"!{0} eat\" following by the number 1, 2 or 3 to choose that food option in reading order.\nIf the desired task is mataining the repo, use \"!{0} claim\" followed by the request author's name to claim that request. If the desired task is creating a module, use \"!{0} choose\" followed by the mod idea's author's name in order to choose their idea.\nIf the desired task is playing KTANE, use \"!{0} expert/defuse\" in order to choose that role.";
 #pragma warning restore 414
 
-   IEnumerator ProcessTwitchCommand (string Command) {
-      yield return null;
-   }
+    IEnumerator ProcessTwitchCommand (string Command) 
+    {
+        Command = Command.ToLower().Trim();
+        yield return null;
 
-   IEnumerator TwitchHandleForcedSolve () {
+        if (!RepoJSONGetter.LoadingDone || !moduleActivated)
+            yield return "sendtochaterror Please wait until module is done loading";
+
+        //verify pausing is false
+        if(pause)
+            yield return "sendtochaterror Interactions are paused right now. Please wait until previous interaction is finished and try again.";
+
+
+        //join voice / text channel
+        Match match = Regex.Match(Command, @"^join (mod ideas|repo requests|voice text modded|modded alfa|chill zone alfa|chill zone bravo|chill zone charlie)$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            switch (match.Groups[1].Value)
+            {
+                case "mod ideas":
+                    OnModIdeas();
+                    break;
+                case "repo requests":
+                    OnRepoRequest();
+                    break;
+                case "voice text modded":
+                    OnVoiceTextModded();
+                    break;
+                case "modded alfa":
+                    StartCoroutine(OnModdedAlfa());
+                    break;
+                case "chill zone alfa":
+                    OnChillZoneAlfa();
+                    break;
+                case "chill zone bravo":
+                    OnChillZoneBravo();
+                    break;
+                case "chill zone charlie":
+                    OnChillZoneCharlie();
+                    break;
+
+            }
+        }
+
+        //end call
+        match = Regex.Match(Command, @"^end call$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            //check if a person is in a vc
+            if (currentVoiceLocation == VoiceLocation.None)
+                yield return "sendtochaterror Can't leave a call since you're not in a call";
+            CallButtonClick();
+        }
+
+        //repeat food
+        match = Regex.Match(Command, @"^repeat$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            //check if food options are open
+            if (!transform.Find("Module Active State/Eat").gameObject.activeInHierarchy)
+                yield return "sendtochaterror Can't repeat food options since options are not available yet";
+
+            //find where kuro is and have him repeat
+            Transform vcTransform = transform.Find($"Module Active State/Voice Channels/Chill Zone {currentVoiceLocation.ToString().Substring(9)}");
+            for (int i = 0; i < 4; i++)
+            {
+                if (vcTransform.Find($"Person {i + 1}/Name").GetComponent<TextMesh>().text == "Kuro")
+                {
+                    vcTransform.Find($"Person {i + 1}/PFP").GetComponent<KMSelectable>().OnInteract();
+                    yield break;
+                }
+            }                
+        }
+
+        //choose food option
+        match = Regex.Match(Command, @"^eat (1|2|3)$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            //check if food options are open
+            if (!transform.Find("Module Active State/Eat").gameObject.activeInHierarchy)
+                yield return "sendtochaterror Can't choose a food option since options are not available yet";
+
+            //choose the food option
+            transform.Find($"Module Active State/Eat/Food {match.Groups[1].Value}").GetComponent<KMSelectable>().OnInteract();
+            yield break;
+        }
+
+        //claim a request
+        match = Regex.Match(Command, @"^claim (.+)$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            //verify repo requests is active
+            if (!transform.Find("Module Active State/Repo Request").gameObject.activeInHierarchy)
+                yield return "sendtochaterror Can't claim a request since you are not in repo requests";
+            
+            //captailzie name of person
+            string name = char.ToUpper(match.Groups[1].Value[0]) + match.Groups[1].Value.Substring(1);
+
+
+            //verify the person the ask for exists
+            for (int i = 0; i < 3; i++)
+            {
+                Transform person = transform.Find($"Module Active State/Repo Request/Person {i + 1}");
+                if (person.Find("Name").GetComponent<TextMesh>().text == name)
+                {
+                    person.Find("PFP").GetComponent<KMSelectable>().OnInteract();
+                    yield break;
+                }
+            }
+
+            yield return $"sendtochaterror No person with the name \"{name}\" exists";
+        }
+
+        //choose mod idea
+        match = Regex.Match(Command, @"^choose (.+)$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            //verify repo requests is active
+            if (!transform.Find("Module Active State/Mod Ideas").gameObject.activeInHierarchy)
+                yield return "sendtochaterror Can't choose an idea since you are not in mod ideas";
+
+            //captailzie name of person
+            string name = char.ToUpper(match.Groups[1].Value[0]) + match.Groups[1].Value.Substring(1);
+
+            //verify the person the ask for exists
+            for (int i = 0; i < 3; i++)
+            {
+                Transform person = transform.Find($"Module Active State/Mod Ideas/Person {i + 1}");
+                if (person.Find("Name").GetComponent<TextMesh>().text == name)
+                {
+                    person.Find("PFP").GetComponent<KMSelectable>().OnInteract();
+                    yield break;
+                }
+            }
+
+            yield return $"sendtochaterror No person with the name \"{name}\" exists";
+        }
+
+        //choose expert/defuse
+        match = Regex.Match(Command, @"^(expert|defuse)$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        if(match.Success) 
+        {
+            if (!transform.Find("Module Active State/Play KTANE").gameObject.activeInHierarchy)
+                yield return "sendtochaterror Can't choose a role since you are not in voice text modded";
+
+            if (match.Groups[1].Value == "defuse")
+            {
+                transform.Find("Module Active State/Play KTANE/Defuse Button").GetComponent<KMSelectable>().OnInteract();
+            }
+
+            else
+            { 
+                transform.Find("Module Active State/Play KTANE/Expert Button").GetComponent<KMSelectable>().OnInteract();
+            }
+
+            yield break;
+
+        }
+
+        yield return $"sendtochaterror Don't understand the command \"{Command}\"";
+    }
+
+    IEnumerator TwitchHandleForcedSolve () {
       yield return null;
    }
 }
