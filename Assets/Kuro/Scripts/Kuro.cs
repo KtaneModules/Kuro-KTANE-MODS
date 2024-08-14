@@ -10,10 +10,8 @@ using static Enums;
 
 public class Kuro : MonoBehaviour {
 
-    //todo fix pfps looking the opposite way
+    //x todo fix pfps looking the opposite way
     //todo change the discord leaving sound (stretch goal)
-    //todo have the highlight/on hover work for all the voice/text channels (stretch goal)
-    //todo fix text/voice channel highlights (stretch goal)
     //todo tp (stretch goal)
     //todo - regular (stretch goal)
     //todo - autosolve (stretch goal)
@@ -619,7 +617,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Task.PlayKTANE;
+            desiredTask = Task.Bed;
         }
 
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
