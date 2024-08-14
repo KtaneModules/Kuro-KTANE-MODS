@@ -6,24 +6,19 @@ using UnityEngine;
 using KModkit;
 using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
-using System.Text.RegularExpressions;
 using static Enums;
-using System.Reflection;
 
 public class Kuro : MonoBehaviour {
-    [SerializeField]
-    private bool debug;
-    [SerializeField]
-    private Sprite spotifyLogo;
+
+    //todo fix pfps looking the opposite way
     //x todo make text on module a bit bigger
     //x todo calcuate the correct time
-    //todo fix pfps looking the opposite way
-    //todo based on the correct time, make them do the correct thing
-    //todo - maintaining the repo
-    //todo - creating a module
-    //todo - eating
-    //todo - playing KTANE
-    //todo - getting ready for bed
+    //x todo based on the correct time, make them do the correct thing
+    //x todo - maintaining the repo
+    //x todo - creating a module
+    //x todo - eating
+    //x todo - playing KTANE
+    //x todo - getting ready for bed
 
     //x todo maintaining the repo
     //x todo -get all modules from the repo
@@ -43,29 +38,55 @@ public class Kuro : MonoBehaviour {
     //x todo -test when there aren't modules kuro made on the bomb
     //x todo --create ideas for mod ideas
     //x todo -use souv's warning triangle to show that the loading failed
-    //todo eat
-    //todo fix the logging with there being numbers for the food (stretch goal)
+    //x todo eat
+    //x todo fix the logging with there being numbers for the food (stretch goal)
     //x todo- make it so a green circle appears when kuro is speaking
-    //todo - make it so when someone clcks on kuro, he will repeat what he said (stretch goal)
-    //todo - add kuro voice lines (stretch goal)
+    //x todo - make it so when someone clicks on kuro, he will repeat what he said (stretch goal)
+    //x todo - add kuro voice lines (stretch goal)
+    //x todo - if call button is press prematurely, strike
     //x todo - put british flags on fab lollies
-    //todo play ktane
-    //todo - strike if voice-text-modded is pressed first
-    //todo - kuro joins call
-    //todo - two people (who are not in other voice calls) join call
-    //todo - strike when trying to leave
-    //todo bed
+    //x todo play ktane
+    //x todo - strike if voice-text-modded is pressed first
+    //x todo - generate people wanting to play
+    //x todo - fix bug in which people from other vcs go into modded alfa
+    //x todo - fix bug where chill zones go overs the call
+    //x todo - curl unicorn
+    //x todo - kuro wants to defuse
+    //x todo - kuro wants to expert
+    //x todo - same role, less tolerance
+    //x todo - same role, more tolerance
+    //x todo - fix bug where kuro can join vc multiple times
+    //x todo - kuro joins call
+    //x todo - two people (who are not in other voice calls) join call
+    //x todo - if call button is press prematurely, strike
+    //x todo bed
     //x todo fix the bug of the time not being displayed properly in the log
     //x todo figure out why you got an out of range error from just loading the module 
     //x todo have a set up module method that will deal with what is shown and the buttons. (Call it in start before module loading starts)
     //x todo have the custom highlighting work with all voice / text channels
     //x todo have a loading state (that doesn't break all the kms)
     //x todo when a channel is active, deactivate the other one (fix a bug where the gray highlighting disappears when the highlight event ends)
+    //x todo have people in vcs be in alphabetical order (stretch goal)
+
     //todo have a solved state where it shows people's game activity (stretch goal)
+    //! todo - play a game
+    //x todo - spotify
+    //x todo - add curlbot images for spotify
+    //x todo - make it so the spotify and game time shows how many minutes/hours it's been since the mod solved (stretch goal)
+    //x todo - vc
     //todo change the discord leaving sound (stretch goal)
-    //todo have people in vcs be in alphabetical order (stretch goal)
     //todo have the highlight/on hover work for all the voice/text channels (stretch goal)
+    //todo fix text/voice channel highlights (stretch goal)
     //todo tp (stretch goal)
+    //todo - regular (stretch goal)
+    //todo - autosolve (stretch goal)
+
+    private Activity[] activities;
+    
+    [SerializeField]
+    private bool debug;
+    [SerializeField]
+    private Sprite spotifyLogo;
 
     [SerializeField]
     private Sprite[] songs; //alors, collared, die in a fire, funkytown, glass animals, golden afternoon, i should've known, paint it black, wavetapper
@@ -75,6 +96,8 @@ public class Kuro : MonoBehaviour {
     [SerializeField]
     private GameObject wariningSign;
     private static RepoJSONGetter jsonData;
+
+    DateTime solveTime;
 
     #region Module States
     private GameObject loadingState, solvedState;
@@ -177,32 +200,54 @@ public class Kuro : MonoBehaviour {
 
     void Update()
     {
-        if (!RepoJSONGetter.LoadingDone || ModuleSolved || desiredTask != Task.CreateModule || !moduleActivated)
+        if (!RepoJSONGetter.LoadingDone || !moduleActivated)
             return;
-        List<string> solvedModules = BombInfo.GetSolvedModuleNames();
-
-        if (currentSolvedModules.Count != solvedModules.Count)
+        if (ModuleSolved)
         {
-            string solvedModule = GetLatestSolve(solvedModules, currentSolvedModules);
+            string actiityTime = GetActivityTime();
 
-            if (onBombKuroModules.Contains(solvedModule))
+            for (int i = 0; i < 3; i++)
             {
-                onBombKuroModules.Remove(solvedModule);
-                if (currentVoiceLocation != VoiceLocation.ChillZoneAlfa)
+                switch (activities[i])
                 {
-                    Strike($"You solved {solvedModule} before moving to Chill Zone Alfa. Strike!");
-                    MoveToVoiceChannel(voiceChannelList[0]);
+                    case Activity.VC:
+                        continue;
+                    case Activity.Game:
+                        continue;
+                    case Activity.Song:
+                        transform.Find($"Solved State/Activity {i + 1}").Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - {GetActivityTime()}";
+                        break;
                 }
+            }
+        }
 
-                else
+        else if (desiredTask == Task.CreateModule)
+        {
+            List<string> solvedModules = BombInfo.GetSolvedModuleNames();
+
+            if (currentSolvedModules.Count != solvedModules.Count)
+            {
+                string solvedModule = GetLatestSolve(solvedModules, currentSolvedModules);
+
+                if (onBombKuroModules.Contains(solvedModule))
                 {
-                    if (onBombKuroModules.Count == 0)
+                    onBombKuroModules.Remove(solvedModule);
+                    if (currentVoiceLocation != VoiceLocation.ChillZoneAlfa)
                     {
-                        Log($"Solved {solvedModule}. Leave the call to solve the module");
+                        Strike($"You solved {solvedModule} before moving to Chill Zone Alfa. Strike!");
+                        MoveToVoiceChannel(voiceChannelList[0]);
                     }
+
                     else
                     {
-                        Log($"Solved {solvedModule}. Need to solve: {GetGroupModuleString()}");
+                        if (onBombKuroModules.Count == 0)
+                        {
+                            Log($"Solved {solvedModule}. Leave the call to solve the module");
+                        }
+                        else
+                        {
+                            Log($"Solved {solvedModule}. Need to solve: {GetGroupModuleString()}");
+                        }
                     }
                 }
             }
@@ -1307,11 +1352,14 @@ public class Kuro : MonoBehaviour {
 
     private void Solve(string s)
     {
+        solveTime = DateTime.Now;
         if (s != "")
             Log(s + " Solving module...");
 
         //choose 3 random vcs that have people inside of them
         VoiceChannel[] populatedVCs = voiceChannelList.Where(vc => vc.people.Count > 0).ToArray().Shuffle();
+
+        activities = new Activity[3];
 
 
         /* sierra system
@@ -1331,6 +1379,7 @@ public class Kuro : MonoBehaviour {
             Activity selectedActivity;
             selectedActivity = new Activity[] { Activity.VC, Activity.Game, Activity.Song }.Shuffle()[0];
             selectedActivity  = Activity.Song;
+            activities[i] = selectedActivity;
 
             Person[] peopleArr = vc.people.Where(p => p.Name != "Kuro").OrderBy(p => p.Name).ToArray();
 
@@ -1384,7 +1433,7 @@ public class Kuro : MonoBehaviour {
                     Song selectedSong = person.Songs.Shuffle()[0];
 
                     //change activity name
-                    activity.Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - {Rnd.Range(0,60)}m";
+                    activity.Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - {GetActivityTime()}";
 
                     //change the person's material
                     activity.Find("PFP").GetComponent<MeshRenderer>().material = person.ProfilePicture;
@@ -1413,6 +1462,30 @@ public class Kuro : MonoBehaviour {
         solvedState.SetActive(true);
         BombModule.HandlePass();
         ModuleSolved = true;
+    }
+
+    private string GetActivityTime()
+    {
+        TimeSpan diffTime = DateTime.Now - solveTime;
+
+        Debug.Log(diffTime);
+
+        if (diffTime.Days >= 1)
+        {
+            return $"{diffTime.Days}d";
+        }
+
+        if (diffTime.Hours >= 1)
+        {
+            return $"{diffTime.Hours}h";
+        }
+
+        if (diffTime.Minutes >= 1)
+        {
+            return $"{diffTime.Minutes}m";
+        }
+
+        return "just now";
     }
 
     private void Strike(string s)
