@@ -1382,7 +1382,7 @@ public class Kuro : MonoBehaviour {
             //randomize what to show
             Activity selectedActivity;
             selectedActivity = new Activity[] { Activity.VC, Activity.Game, Activity.Song }.Shuffle()[0];
-            selectedActivity  = Activity.Game;
+            selectedActivity  = Activity.Song;
             activities[i] = selectedActivity;
             Person selectedPerson;
             Person[] peopleArr = vc.people.Where(p => p.Name != "Kuro").OrderBy(p => p.Name).ToArray();
