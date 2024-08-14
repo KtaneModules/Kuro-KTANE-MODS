@@ -7,6 +7,7 @@ using KModkit;
 using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
 using static Enums;
+using System.Xml.Linq;
 
 public class Kuro : MonoBehaviour {
 
@@ -1380,7 +1381,7 @@ public class Kuro : MonoBehaviour {
             selectedActivity = new Activity[] { Activity.VC, Activity.Game, Activity.Song }.Shuffle()[0];
             selectedActivity  = Activity.Song;
             activities[i] = selectedActivity;
-
+            Person selectedPerson;
             Person[] peopleArr = vc.people.Where(p => p.Name != "Kuro").OrderBy(p => p.Name).ToArray();
 
             switch (selectedActivity)
@@ -1425,21 +1426,48 @@ public class Kuro : MonoBehaviour {
                     }
                     break;
                 case Activity.Game:
+                    //select a person
+                    selectedPerson = peopleArr.Shuffle()[0];
+                    //select game here
+
+                    //disable Background
+                    activity.Find("Canvas/Background").gameObject.SetActive(false);
+
+                    //disable pfp
+                    activity.Find("Canvas/PFP").gameObject.SetActive(false);
+
+                    //Disable online
+                    activity.Find("Canvas/Online").gameObject.SetActive(false);
+
+                    //disable small pfps
+                    Enumerable.Range(1, 3).ToList().ForEach(ix => activity.Find($"Detailed Activity/small pfp {ix}").gameObject.SetActive(false));
+
+                    //disable spotify logo
+                    activity.Find("Canvas/Spotify Logo").gameObject.SetActive(false);
+
+                    //change media image to pfp
+                    //disable name
+                    //disable activity
+
+                    //display name
+                    //display time activity
+                    //display game image
+
                     break;
                 case Activity.Song:
 
                     //select a person 
-                    Person person = peopleArr.Shuffle()[0];
-                    Song selectedSong = person.Songs.Shuffle()[0];
+                    selectedPerson = peopleArr.Shuffle()[0];
+                    Song selectedSong = selectedPerson.Songs.Shuffle()[0];
 
                     //change activity name
                     activity.Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - {GetActivityTime()}";
 
                     //change the person's material
-                    activity.Find("PFP").GetComponent<MeshRenderer>().material = person.ProfilePicture;
+                    activity.Find("PFP").GetComponent<MeshRenderer>().material = selectedPerson.ProfilePicture;
                     
                     //change the person's Name
-                    activity.Find("Canvas/Name").GetComponent<Text>().text = person.Name;
+                    activity.Find("Canvas/Name").GetComponent<Text>().text = selectedPerson.Name;
 
                     //change the name of the song, the artist, and the cover
                     activity.Find("Canvas/Main Text").GetComponent<Text>().text = selectedSong.Name;
