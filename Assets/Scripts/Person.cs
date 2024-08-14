@@ -7,9 +7,9 @@ public class Person {
     public string Name { get; set; }
     public Texture2D ProfilePicture { get; private set; }
     public int Tolerance { get; private set; }
-    public List<Song> Songs { get;  }
+    public List<Song> Songs { get; }
     public List<Texture2D> Games { get; }
-
+    public Texture2D SelectedGame { get; set; }
     public Enums.Role Role { get; set; }
     public Person(Texture2D picture)
     {

@@ -7,7 +7,6 @@ using KModkit;
 using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
 using static Enums;
-using System.Xml.Linq;
 
 public class Kuro : MonoBehaviour {
 
@@ -82,6 +81,7 @@ public class Kuro : MonoBehaviour {
     //todo - regular (stretch goal)
     //todo - autosolve (stretch goal)
 
+    private string[] gameNames = new string[3];
     private Activity[] activities;
     
     [SerializeField]
@@ -216,9 +216,10 @@ public class Kuro : MonoBehaviour {
                     case Activity.VC:
                         continue;
                     case Activity.Game:
-                        continue;
+                        transform.Find($"Solved State/Activity {i + 1}").Find("Canvas/Sub Text").GetComponent<Text>().text = $"{gameNames[i]} - {actiityTime}";
+                        break;
                     case Activity.Song:
-                        transform.Find($"Solved State/Activity {i + 1}").Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - {GetActivityTime()}";
+                        transform.Find($"Solved State/Activity {i + 1}").Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - {actiityTime}";
                         break;
                 }
             }
@@ -296,22 +297,21 @@ public class Kuro : MonoBehaviour {
         };
 
         //add songs and games to people
-        //acer, blaise, camia, ciel, hazel. kit, mar, piccolo
         people.Where(p => p.Name == "Acer" || p.Name == "Blaise" || p.Name == "Camia" || p.Name == "Ciel" || p.Name == "Hazel" || p.Name == "Kit" || p.Name == "Mar" || p.Name == "Piccolo").ToList().ForEach(p => p.Songs.AddRange(new Song[] { new Song("It Should've Been Me", "Riproducer", songs[8]), new Song("Collared", "Vane Lily", songs[1]), new Song("Golden Afternoon", "CircusP", songs[6]) }));
-        people.Where(p => p.Name == "Acer" || p.Name == "Blaise" || p.Name == "Camia" || p.Name == "Ciel" || p.Name == "Hazel" || p.Name == "Kit" || p.Name == "Mar" || p.Name == "Piccolo").ToList().ForEach(p => p.Games.AddRange(new Texture2D[] { games[0] }));
+        people.Where(p => p.Name == "Acer" || p.Name == "Blaise" || p.Name == "Camia" || p.Name == "Ciel" || p.Name == "Hazel" || p.Name == "Kit" || p.Name == "Mar" || p.Name == "Piccolo").ToList().ForEach(p => p.Games.AddRange(new Texture2D[] { games[1], games[5], games[6] }));
 
 
         people.First(p => p.Name == "Hawker").Songs.AddRange(new Song[] { new Song("Alors on danse", "Stromae", songs[0]), new Song("Poplar St", "Glass Animals", songs[5]), new Song("Pork Soda", "Glass Animals", songs[5]) });
-        people.First(p => p.Name == "Hawker").Games.AddRange(new Texture2D[] { games[0] });
+        people.First(p => p.Name == "Hawker").Games.AddRange(new Texture2D[] { games[8] });
 
         people.First(p => p.Name == "GoodHood").Songs.AddRange(new Song[] { new Song("Funky Town", "Lipps Inc.", songs[4]) });
-        people.First(p => p.Name == "GoodHood").Games.AddRange(new Texture2D[] { games[0] });
+        people.First(p => p.Name == "GoodHood").Games.AddRange(new Texture2D[] { games[7], games[2], games[1] });
 
         people.First(p => p.Name == "Play").Songs.AddRange(new Song[] { new Song("Paint It, Black", "The Rolling Stones", songs[9]), new Song("Die In A Fire", "Living Tombstone", songs[3]), new Song("Wavetapper", "Frums", songs[11]) });
-        people.First(p => p.Name == "Play").Games.AddRange(new Texture2D[] { games[0] });
+        people.First(p => p.Name == "Play").Games.AddRange(new Texture2D[] { games[1], games[0], games[2] });
 
         people.First(p => p.Name == "CurlBot").Songs.AddRange(new Song[] { new Song("Crazy", "Creo", songs[2]), new Song("Ordinary Day", "The Great Big Sea", songs[7]), new Song("Death By Glamour", "Toby Foxx", songs[10]) });
-        people.First(p => p.Name == "CurlBot").Games.AddRange(new Texture2D[] { games[0] });
+        people.First(p => p.Name == "CurlBot").Games.AddRange(new Texture2D[] { games[3], games[4], games[9] });
 
         //create the vcs
         voiceChannelList = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaTransform.gameObject, "Chill Zone Alfa"), new VoiceChannel(chillZoneBravoTransform.gameObject, "Chill Zone Bravo"), new VoiceChannel(chillZoneCharlieTransform.gameObject, "Chill Zone Charlie"), new VoiceChannel(voiceChannelTransform.Find("Modded Alfa").gameObject, "Modded Alfa") };
@@ -1375,17 +1375,8 @@ public class Kuro : MonoBehaviour {
         activities = new Activity[3];
 
 
-        /* sierra system
-         * outer wilds
-         * rabbit and steel
-         * celeste
-         * 
-         * 
-         */
         for (int i = 0; i < 3; i++)
         {
-            if (i == 1)
-                break;
             VoiceChannel vc = populatedVCs[i];
             Transform activity = transform.Find($"Solved State/Activity {i + 1}");
             //randomize what to show
@@ -1467,6 +1458,7 @@ public class Kuro : MonoBehaviour {
 
                     //display game image
                     Texture2D selectedGame = selectedPerson.Games.Shuffle()[0];
+                    gameNames[i] = selectedGame.name;
                     activity.Find("Detailed Activity/Game Image").GetComponent<SpriteRenderer>().sprite = Sprite.Create(selectedGame, new Rect(0, 0, selectedGame.width, selectedGame.height), new Vector2(0.5f, 0.5f));
 
                     //display time activity
@@ -1518,7 +1510,7 @@ public class Kuro : MonoBehaviour {
     private string GetActivityTime()
     {
         TimeSpan diffTime = DateTime.Now - solveTime;
-        
+
         if (diffTime.Days >= 1)
         {
             return $"{diffTime.Days}d";
