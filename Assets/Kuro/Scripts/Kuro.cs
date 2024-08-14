@@ -1382,7 +1382,6 @@ public class Kuro : MonoBehaviour {
             //randomize what to show
             Activity selectedActivity;
             selectedActivity = new Activity[] { Activity.VC, Activity.Game, Activity.Song }.Shuffle()[0];
-            selectedActivity  = Activity.Song;
             activities[i] = selectedActivity;
             Person selectedPerson;
             Person[] peopleArr = vc.people.Where(p => p.Name != "Kuro").OrderBy(p => p.Name).ToArray();
@@ -1406,6 +1405,12 @@ public class Kuro : MonoBehaviour {
                             break;
                     }
 
+                    //disable spotify logo
+                    activity.Find("Spotify Logo").gameObject.SetActive(false);
+
+                    //disable game image
+                    activity.Find("Detailed Activity/Game Image").gameObject.SetActive(false);
+                        
                     activity.Find("Canvas/Name").GetComponent<Text>().text = inVCName;
 
                     //change name of the vc that people are in
@@ -1429,6 +1434,7 @@ public class Kuro : MonoBehaviour {
                     }
                     break;
                 case Activity.Game:
+                    activity.transform.Translate(new Vector3(0f, 0f, 0.005f));
 
                     //select a person
                     selectedPerson = peopleArr.Shuffle()[0];
@@ -1470,7 +1476,7 @@ public class Kuro : MonoBehaviour {
 
                     break;
                 case Activity.Song:
-
+                    activity.Find("Detailed Activity/Game Image").gameObject.SetActive(false);
                     //select a person 
                     selectedPerson = peopleArr.Shuffle()[0];
                     Song selectedSong = selectedPerson.Songs.Shuffle()[0];
