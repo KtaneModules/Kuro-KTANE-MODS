@@ -68,6 +68,9 @@ public class Kuro : MonoBehaviour {
     //todo tp (stretch goal)
 
     [SerializeField]
+    private Sprite[] songs; //alors, collared, die in a fire, funkytown, glass animals, golden afternoon, i should've known, paint it black, wavetapper
+
+    [SerializeField]
     private AudioClip[] audioClips; //join, leave, eggs, fab lolly, pasta
     [SerializeField]
     private GameObject wariningSign;
@@ -243,6 +246,14 @@ public class Kuro : MonoBehaviour {
             new Person(piccoloPfp),
             new Person(playPfp),
         };
+
+        //add songs to people
+        //acer, blaise, camia, ciel, hazel. kit, mar, piccolo
+        people.Where(p => p.Name == "Acer" || p.Name == "Blaise" || p.Name == "Camia" || p.Name == "Ciel" || p.Name == "Hazel" || p.Name == "Kit" || p.Name == "Mar" || p.Name == "Piccolo").ToList().ForEach(p => p.Songs.AddRange(new Song[] { new Song("It Should've Been Me", "Riproducer", songs[6]), new Song("Collared", "Vane Lily", songs[1]), new Song("Golden Afternoon", "CircusP", songs[5]) }));
+        people.First(p => p.Name == "Hawker").Songs.AddRange(new Song[] { new Song("Alors on danse", "Stromae", songs[0]), new Song("Poplar St", "Glass Animals", songs[4]), new Song("Pork Soda", "Glass Animals", songs[4]) });
+        people.First(p => p.Name == "GoodHood").Songs.AddRange(new Song[] { new Song("Funky Town", "Lipps Inc.", songs[3]) });
+        people.First(p => p.Name == "Play").Songs.AddRange(new Song[] { new Song("Paint It, Black", "The Rolling Stones", songs[7]), new Song("Die In A Fire", "Living Tombstone", songs[2]), new Song("Wavetapper", "Frums", songs[8]) });
+        people.First(p => p.Name == "CurlBot").Songs.AddRange(new Song[] { new Song("Crazy", "Creo", songs[0]), new Song("Ordinary Day", "The Great Big Sea", songs[0]), new Song("Death By Glamour", "Toby Foxx", songs[0]) });
 
         //create the vcs
         voiceChannelList = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaTransform.gameObject, "Chill Zone Alfa"), new VoiceChannel(chillZoneBravoTransform.gameObject, "Chill Zone Bravo"), new VoiceChannel(chillZoneCharlieTransform.gameObject, "Chill Zone Charlie"), new VoiceChannel(voiceChannelTransform.Find("Modded Alfa").gameObject, "Modded Alfa") };
@@ -1370,6 +1381,7 @@ public class Kuro : MonoBehaviour {
 
                     //select a person 
                     Person person = peopleArr.Shuffle()[0];
+                    Song selectedSong = person.Songs.Shuffle()[0];
 
                     //change activity name
                     activity.Find("Canvas/Activity").GetComponent<Text>().text = $"Spotify - {Rnd.Range(0,60)}m";
@@ -1380,19 +1392,13 @@ public class Kuro : MonoBehaviour {
                     //change the person's Name
                     activity.Find("Canvas/Name").GetComponent<Text>().text = person.Name;
 
-                    //change the name of the song and the artist
-                    activity.Find("Canvas/Main Text").GetComponent<Text>().text = "Song name";
-                    activity.Find("Canvas/Sub Text").GetComponent<Text>().text = "Author name";
-
+                    //change the name of the song, the artist, and the cover
+                    activity.Find("Canvas/Main Text").GetComponent<Text>().text = selectedSong.Name;
+                    activity.Find("Canvas/Sub Text").GetComponent<Text>().text = selectedSong.Author;
+                    activity.Find($"Detailed Activity/Media Image").GetComponent<SpriteRenderer>().sprite = selectedSong.Image;
+                    
                     //disable the small pfps
                     Enumerable.Range(1, 3).ToList().ForEach(ix => activity.Find($"Detailed Activity/small pfp {ix}").gameObject.SetActive(false));
-
-                    //change the small sprite to be spotify
-                    activity.Find("Detailed Activity/Media Image").GetComponent<SpriteRenderer>().sprite = spotifyLogo;
-
-                    
-
-
                     break;
             }
             

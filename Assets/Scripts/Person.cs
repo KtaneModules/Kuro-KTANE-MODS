@@ -8,6 +8,7 @@ public class Person {
     public string Name { get; set; }
     public Material ProfilePicture { get; private set; }
     public int Tolerance { get; private set; }
+    public List<Song> Songs { get;  }
 
     public Enums.Role Role { get; set; }
     public Person(Material picture)
@@ -15,6 +16,7 @@ public class Person {
         Name = picture.name;
         ProfilePicture = picture;
         Role = Enums.Role.None;
+        Songs = new List<Song>();
     }
 
     public void SetTolerance(DayOfWeek day)
