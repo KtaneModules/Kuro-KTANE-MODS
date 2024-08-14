@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class Person {
@@ -9,6 +8,7 @@ public class Person {
     public Texture2D ProfilePicture { get; private set; }
     public int Tolerance { get; private set; }
     public List<Song> Songs { get;  }
+    public List<Texture2D> Games { get; }
 
     public Enums.Role Role { get; set; }
     public Person(Texture2D picture)
@@ -17,6 +17,7 @@ public class Person {
         ProfilePicture = picture;
         Role = Enums.Role.None;
         Songs = new List<Song>();
+        Games = new List<Texture2D>();
     }
 
     public void SetTolerance(DayOfWeek day)

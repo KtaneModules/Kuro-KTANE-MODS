@@ -7,9 +7,9 @@ public class Song {
 	public string Name  { get; private set; }
     public string Author { get; private set; }
 
-	public Sprite Image  { get; private set; }
+	public Texture2D Image  { get; private set; }
 
-	public Song(string name, string author, Sprite image) 
+	public Song(string name, string author, Texture2D image) 
 	{
 		Name = name;
         Author = author;

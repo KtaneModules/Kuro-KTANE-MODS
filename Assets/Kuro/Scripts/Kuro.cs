@@ -90,7 +90,9 @@ public class Kuro : MonoBehaviour {
     private Sprite spotifyLogo;
 
     [SerializeField]
-    private Sprite[] songs; //alors, collared, die in a fire, funkytown, glass animals, golden afternoon, i should've known, paint it black, wavetapper
+    private Texture2D[] songs; //alors, collared, die in a fire, funkytown, glass animals, golden afternoon, i should've known, paint it black, wavetapper
+    [SerializeField]
+    private Texture2D[] games; //
 
     [SerializeField]
     private AudioClip[] audioClips; //join, leave, eggs, fab lolly, pasta
@@ -293,13 +295,23 @@ public class Kuro : MonoBehaviour {
             new Person(playPfp),
         };
 
-        //add songs to people
+        //add songs and games to people
         //acer, blaise, camia, ciel, hazel. kit, mar, piccolo
         people.Where(p => p.Name == "Acer" || p.Name == "Blaise" || p.Name == "Camia" || p.Name == "Ciel" || p.Name == "Hazel" || p.Name == "Kit" || p.Name == "Mar" || p.Name == "Piccolo").ToList().ForEach(p => p.Songs.AddRange(new Song[] { new Song("It Should've Been Me", "Riproducer", songs[8]), new Song("Collared", "Vane Lily", songs[1]), new Song("Golden Afternoon", "CircusP", songs[6]) }));
+        people.Where(p => p.Name == "Acer" || p.Name == "Blaise" || p.Name == "Camia" || p.Name == "Ciel" || p.Name == "Hazel" || p.Name == "Kit" || p.Name == "Mar" || p.Name == "Piccolo").ToList().ForEach(p => p.Games.AddRange(new Texture2D[] { games[0] }));
+
+
         people.First(p => p.Name == "Hawker").Songs.AddRange(new Song[] { new Song("Alors on danse", "Stromae", songs[0]), new Song("Poplar St", "Glass Animals", songs[5]), new Song("Pork Soda", "Glass Animals", songs[5]) });
+        people.First(p => p.Name == "Hawker").Games.AddRange(new Texture2D[] { games[0] });
+
         people.First(p => p.Name == "GoodHood").Songs.AddRange(new Song[] { new Song("Funky Town", "Lipps Inc.", songs[4]) });
+        people.First(p => p.Name == "GoodHood").Games.AddRange(new Texture2D[] { games[0] });
+
         people.First(p => p.Name == "Play").Songs.AddRange(new Song[] { new Song("Paint It, Black", "The Rolling Stones", songs[9]), new Song("Die In A Fire", "Living Tombstone", songs[3]), new Song("Wavetapper", "Frums", songs[11]) });
+        people.First(p => p.Name == "Play").Games.AddRange(new Texture2D[] { games[0] });
+
         people.First(p => p.Name == "CurlBot").Songs.AddRange(new Song[] { new Song("Crazy", "Creo", songs[2]), new Song("Ordinary Day", "The Great Big Sea", songs[7]), new Song("Death By Glamour", "Toby Foxx", songs[10]) });
+        people.First(p => p.Name == "CurlBot").Games.AddRange(new Texture2D[] { games[0] });
 
         //create the vcs
         voiceChannelList = new List<VoiceChannel>() { new VoiceChannel(chillZoneAlfaTransform.gameObject, "Chill Zone Alfa"), new VoiceChannel(chillZoneBravoTransform.gameObject, "Chill Zone Bravo"), new VoiceChannel(chillZoneCharlieTransform.gameObject, "Chill Zone Charlie"), new VoiceChannel(voiceChannelTransform.Find("Modded Alfa").gameObject, "Modded Alfa") };
@@ -1429,8 +1441,7 @@ public class Kuro : MonoBehaviour {
 
                     //select a person
                     selectedPerson = peopleArr.Shuffle()[0];
-                    //select game here
-
+                    
                     //disable Background
                     activity.Find("Background").gameObject.SetActive(false);
 
@@ -1453,10 +1464,13 @@ public class Kuro : MonoBehaviour {
 
                     //display name
                     activity.Find("Canvas/Main Text").GetComponent<Text>().text = selectedPerson.Name;
-                    //display time activity
-                    activity.Find("Canvas/Sub Text").GetComponent<Text>().text = $"Game Name - just now";
 
                     //display game image
+                    Texture2D selectedGame = selectedPerson.Games.Shuffle()[0];
+                    activity.Find("Detailed Activity/Game Image").GetComponent<SpriteRenderer>().sprite = Sprite.Create(selectedGame, new Rect(0, 0, selectedGame.width, selectedGame.height), new Vector2(0.5f, 0.5f));
+
+                    //display time activity
+                    activity.Find("Canvas/Sub Text").GetComponent<Text>().text = $"{selectedGame.name} - just now";
 
                     //change media image to pfp
                     Texture2D texture = selectedPerson.ProfilePicture;
@@ -1481,8 +1495,8 @@ public class Kuro : MonoBehaviour {
                     //change the name of the song, the artist, and the cover
                     activity.Find("Canvas/Main Text").GetComponent<Text>().text = selectedSong.Name;
                     activity.Find("Canvas/Sub Text").GetComponent<Text>().text = selectedSong.Author;
-                    activity.Find($"Detailed Activity/Media Image").GetComponent<SpriteRenderer>().sprite = selectedSong.Image;
-                    
+                    activity.Find($"Detailed Activity/Media Image").GetComponent<SpriteRenderer>().sprite = Sprite.Create(selectedSong.Image, new Rect(0, 0, selectedSong.Image.width, selectedSong.Image.height), new Vector2(0.5f, 0.5f));
+
                     //disable the small pfps
                     Enumerable.Range(1, 3).ToList().ForEach(ix => activity.Find($"Detailed Activity/small pfp {ix}").gameObject.SetActive(false));
                     break;
