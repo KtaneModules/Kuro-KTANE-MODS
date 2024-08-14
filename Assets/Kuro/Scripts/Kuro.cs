@@ -1471,11 +1471,17 @@ public class Kuro : MonoBehaviour {
         yield return null;
 
         if (!RepoJSONGetter.LoadingDone || !moduleActivated)
+        { 
             yield return "sendtochaterror Please wait until module is done loading";
+            yield break;
+        }
 
         //verify pausing is false
-        if(pause)
+        if (pause)
+        { 
             yield return "sendtochaterror Interactions are paused right now. Please wait until previous interaction is finished and try again.";
+            yield break;
+        }
 
 
         //join voice / text channel
@@ -1515,7 +1521,10 @@ public class Kuro : MonoBehaviour {
         {
             //check if a person is in a vc
             if (currentVoiceLocation == VoiceLocation.None)
+            { 
                 yield return "sendtochaterror Can't leave a call since you're not in a call";
+                yield break;
+            }
             CallButtonClick();
         }
 
@@ -1525,7 +1534,10 @@ public class Kuro : MonoBehaviour {
         {
             //check if food options are open
             if (!transform.Find("Module Active State/Eat").gameObject.activeInHierarchy)
+            { 
                 yield return "sendtochaterror Can't repeat food options since options are not available yet";
+                yield break;
+            }
 
             //find where kuro is and have him repeat
             Transform vcTransform = transform.Find($"Module Active State/Voice Channels/Chill Zone {currentVoiceLocation.ToString().Substring(9)}");
@@ -1545,7 +1557,10 @@ public class Kuro : MonoBehaviour {
         {
             //check if food options are open
             if (!transform.Find("Module Active State/Eat").gameObject.activeInHierarchy)
+            { 
                 yield return "sendtochaterror Can't choose a food option since options are not available yet";
+                yield break;
+            }
 
             //choose the food option
             transform.Find($"Module Active State/Eat/Food {match.Groups[1].Value}").GetComponent<KMSelectable>().OnInteract();
@@ -1558,8 +1573,11 @@ public class Kuro : MonoBehaviour {
         {
             //verify repo requests is active
             if (!transform.Find("Module Active State/Repo Request").gameObject.activeInHierarchy)
+            { 
                 yield return "sendtochaterror Can't claim a request since you are not in repo requests";
-            
+                yield break;
+            }
+
             //captailzie name of person
             string name = char.ToUpper(match.Groups[1].Value[0]) + match.Groups[1].Value.Substring(1);
 
@@ -1576,6 +1594,7 @@ public class Kuro : MonoBehaviour {
             }
 
             yield return $"sendtochaterror No person with the name \"{name}\" exists";
+            yield break;
         }
 
         //choose mod idea
@@ -1584,7 +1603,10 @@ public class Kuro : MonoBehaviour {
         {
             //verify repo requests is active
             if (!transform.Find("Module Active State/Mod Ideas").gameObject.activeInHierarchy)
+            { 
                 yield return "sendtochaterror Can't choose an idea since you are not in mod ideas";
+                yield break;
+            }
 
             //captailzie name of person
             string name = char.ToUpper(match.Groups[1].Value[0]) + match.Groups[1].Value.Substring(1);
@@ -1601,6 +1623,7 @@ public class Kuro : MonoBehaviour {
             }
 
             yield return $"sendtochaterror No person with the name \"{name}\" exists";
+            yield break;
         }
 
         //choose expert/defuse
@@ -1608,7 +1631,10 @@ public class Kuro : MonoBehaviour {
         if(match.Success) 
         {
             if (!transform.Find("Module Active State/Play KTANE").gameObject.activeInHierarchy)
+            { 
                 yield return "sendtochaterror Can't choose a role since you are not in voice text modded";
+                yield break;
+            }
 
             if (match.Groups[1].Value == "defuse")
             {
@@ -1621,10 +1647,10 @@ public class Kuro : MonoBehaviour {
             }
 
             yield break;
-
         }
 
-        yield return $"sendtochaterror Don't understand the command \"{Command}\"";
+        yield return $"sendtochaterror Invalid Command: \"{Command}\"";
+        yield break;
     }
 
     IEnumerator TwitchHandleForcedSolve () {
