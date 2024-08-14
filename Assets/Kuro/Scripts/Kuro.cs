@@ -619,7 +619,7 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            desiredTask = Task.Bed;
+            desiredTask = Task.PlayKTANE;
         }
 
         Log($"It's {FormatHourMinute(desiredTime)}. You should be {GetTask(desiredTask)}");
@@ -743,15 +743,18 @@ public class Kuro : MonoBehaviour {
 
     private void OnModIdeas()
     {
-        Log("You pressed #mod-ideas");
 
+        if (currentTextLocation == TextLocation.ModIdeas)
+            return;
+
+        Log("You pressed #mod-ideas");
         if (desiredTask != Task.CreateModule || onBombKuroModules.Count > 0)
         {
             WrongChannel("#mod-ideas");
             return;
         }
 
-        currentTextLocation = TextLocation.ModIdeas;
+        
         Person[] modIdeaPeople = new Person[3];
         string[] loves = new string[] { "Polish music", "skating", "yellow", "programming", "modeling" };
 
@@ -894,17 +897,18 @@ public class Kuro : MonoBehaviour {
             }
         }
 
+        generalTextChannel.Deactivate();
+        modIdeasTextChannel.Activate();
+        currentTextLocation = TextLocation.ModIdeas;
         EnableModIdeas(true);
     }
 
     private void OnRepoRequest()
     {
         if (currentTextLocation == TextLocation.RepoRequest)
-        {
             return;
-        }
+        
         Log("You pressed #repo-request");
-        currentTextLocation = TextLocation.RepoRequest;
         if (desiredTask != Task.MaintainRepo) 
         {
             WrongChannel("#repo-request");
@@ -1167,6 +1171,8 @@ public class Kuro : MonoBehaviour {
 
         EnablePlayKTANE(true);
         currentTextLocation = TextLocation.VoiceTextModded;
+        generalTextChannel.Deactivate();
+        voiceTextModdedTextChannel.Activate();
     }
 
     private IEnumerator OnModdedAlfa()
