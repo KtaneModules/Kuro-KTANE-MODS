@@ -20,11 +20,15 @@ public class Kuro : MonoBehaviour {
     //todo - autosolve (stretch goal)
     //todo change logging for when eating food
 
+    private string[] correctModNames;
+    private string[] correctRepoNames;
     private string[] gameNames = new string[3];
     private Activity[] activities;
 
     [SerializeField]
     private Task debugDesiredTask;
+    [SerializeField]
+    private Mood debugCurrentMood;
     [SerializeField]
     private bool debug;
     [SerializeField]
@@ -46,6 +50,7 @@ public class Kuro : MonoBehaviour {
     #region Module States
     private GameObject loadingState, solvedState;
     #endregion
+
 
     #region Food
     [SerializeField]
@@ -92,6 +97,7 @@ public class Kuro : MonoBehaviour {
 
     AudioClip[] foodClips;
     int foodIndex = -1; //the index of the food kuro wants
+    int correctFoodIndex = -1; //the food button to press
 
     private KMBombInfo BombInfo;
     private KMAudio Audio;
@@ -297,8 +303,11 @@ public class Kuro : MonoBehaviour {
 
         if (debug)
         {
-            currentMood = Mood.Curious;
-            num = (int)currentMood;
+            if (debugCurrentMood != Mood.Random)
+            { 
+                currentMood = debugCurrentMood;
+                num = (int)currentMood;
+            }
         }
 
         kuroPfp.material.mainTexture = kuroMoods[num];
@@ -455,7 +464,7 @@ public class Kuro : MonoBehaviour {
         yield return new WaitForSeconds(audioClips[0].length); //wait for join sound to end
         string[] foods = new string[] { "eggs", "a fab lolly", "pasta" };
         foodIndex = Rnd.Range(0, 3);
-        int correctIndex = Rnd.Range(0, 3);
+        correctFoodIndex = Rnd.Range(0, 3);
         Audio.PlaySoundAtTransform(foodClips[foodIndex].name, transform);
         vc.EnableSpeaking(true);
         EnableSpeaking(true);
@@ -485,7 +494,7 @@ public class Kuro : MonoBehaviour {
         for (int i = 0; i < 3; i++)
         {
             int dummy = i;
-            if (correctIndex == dummy)
+            if (correctFoodIndex == dummy)
             {
                 foodButtons[dummy].GetComponent<MeshRenderer>().material.mainTexture = correctTexture;
                 foodButtons[dummy].OnInteract += delegate () { if (moduleActivated && !pause) { Solve($"You chose {foodButtons[dummy].name}. This is correct"); } return false; };
@@ -901,6 +910,8 @@ public class Kuro : MonoBehaviour {
             }
         }
 
+        correctModNames = correctIndex.Select(i => modIdeaPeople[i].Name).ToArray();
+
         generalTextChannel.Deactivate();
         modIdeasTextChannel.Activate();
         currentTextLocation = TextLocation.ModIdeas;
@@ -1001,19 +1012,22 @@ public class Kuro : MonoBehaviour {
                 }
                 int maxValue = repoRequestValue.Max();
                 List<int> correctIndicies = repoRequestValue.Select((value, index) => value == maxValue ? index : -1).Where(index => index != -1).ToList();
-                Debug.Log($"You should choose: {correctIndicies.Select(i => repoRequestPeople[i].Name).ToArray().Join(", ")}");
+                correctRepoNames = correctIndicies.Select(i => repoRequestPeople[i].Name).ToArray();
+                Debug.Log($"You should choose: {correctRepoNames.Join(", ")}");
 
                 for (int i = 0; i < 3; i++)
                 {
                     int dummy = i;
+                    KMSelectable button = transform.Find($"Module Active State/Repo Request/Person {i + 1}/PFP").GetComponent<KMSelectable>();
+                    string s = $"You chose {repoRequestPeople[dummy].Name}. That is";
                     if (correctIndicies.Contains(i))
                     {
-                        transform.Find($"Module Active State/Repo Request/Person {i + 1}/PFP").GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { Solve($"You chose {repoRequestPeople[dummy].Name}. That is correct"); } return false; };
+                        button.OnInteract += delegate () { if (moduleActivated && !pause) { Solve($"{s} correct"); } return false; };
                     }
 
                     else
-                    { 
-                        transform.Find($"Module Active State/Repo Request/Person {i + 1}/PFP").GetComponent<KMSelectable>().OnInteract += delegate () { if (moduleActivated && !pause) { Strike($"You chose {repoRequestPeople[dummy].Name}. That is incorrect"); } return false; };
+                    {
+                        button.OnInteract += delegate () { if (moduleActivated && !pause) { Strike($"{s} incorrect"); } return false; };
                     }
                 }
             }
@@ -1613,7 +1627,7 @@ public class Kuro : MonoBehaviour {
                 yield break;
             }
 
-            //captailzie name of person
+            //lower case
             string name = match.Groups[1].Value.ToLower();
 
             //verify the person the ask for exists
@@ -1659,6 +1673,71 @@ public class Kuro : MonoBehaviour {
     }
 
     IEnumerator TwitchHandleForcedSolve () {
-      yield return null;
-   }
+        //wait till loading is done
+        while (!RepoJSONGetter.LoadingDone || !moduleActivated)
+        {
+            yield return null;
+        }
+        switch (desiredTask)
+        {
+            case Task.CreateModule:
+                if (onBombKuroModules.Count > 0)
+                {
+                    Solve("Forcing Solve");
+                }
+                else
+                {
+                    //jpin mod ideas
+                    if (currentTextLocation == TextLocation.None)
+                    { 
+                        yield return ProcessTwitchCommand($"join mod ideas");
+                    }
+
+                    //choose the correct name
+                    yield return ProcessTwitchCommand($"choose {correctModNames[0]}");
+
+                }
+                break;
+            case Task.MaintainRepo:
+                //jpin repo rquests
+                if (currentTextLocation == TextLocation.None)
+                {
+                    yield return ProcessTwitchCommand($"join repo requests");
+                }
+
+                //choose the correct name
+                yield return ProcessTwitchCommand($"claim {correctRepoNames[0]}");
+                break;
+            case Task.Eat:
+                //join correct vc if not already in vc
+                if (currentVoiceLocation == VoiceLocation.None)
+                { 
+                    yield return ProcessTwitchCommand($"join {desiredVCs[0].Name}");
+                }
+                
+                //wait until eat options are visible
+                while(!transform.Find("Module Active State/Eat").gameObject.activeInHierarchy)
+                {
+                    yield return null;
+                }
+                //choose the correct option
+                yield return ProcessTwitchCommand($"Eat {correctFoodIndex + 1}");
+                break;
+            case Task.PlayKTANE:
+                break;
+            case Task.Bed:
+                if (currentVoiceLocation == VoiceLocation.None)
+                {
+                    yield return ProcessTwitchCommand("join Chill Zone Alfa");
+                    yield return new WaitForSeconds(2f); //wait a few seconds
+                    yield return ProcessTwitchCommand("end call");
+                }
+                break;
+        }
+
+       while (!ModuleSolved)
+       { 
+           yield return null;
+       }
+    }
 }

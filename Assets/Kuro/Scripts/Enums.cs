@@ -19,7 +19,8 @@ public class Enums {
         Curious,
         Devious,
         Happy,
-        Neutral
+        Neutral,
+        Random
     }
 
     public enum TextLocation
