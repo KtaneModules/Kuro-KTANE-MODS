@@ -9,9 +9,7 @@ public class VoiceChannel
 {
     public List<Person> people;
     private GameObject[] peopleGameObjects;
-    private TextMesh textMesh;
     private GameObject highlight;
-    private Color defaultColor = new Color(148f / 255, 155f / 255, 164f / 255);
     public string Name { get; private set; }
     private bool active;
     public bool Active { get { return active; } }
@@ -19,7 +17,6 @@ public class VoiceChannel
     public VoiceChannel(GameObject gameObject, string name)
     {
         Name = name;
-        textMesh = gameObject.transform.Find("label").GetComponent<TextMesh>();
         highlight = gameObject.transform.Find("background").gameObject;
         people = new List<Person>();
 

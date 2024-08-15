@@ -7,18 +7,9 @@ using KModkit;
 using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
 using static Enums;
-using static UnityEditor.Experimental.Build.AssetBundle.BuildCommandSet;
 using System.Text.RegularExpressions;
-using UnityEngine.Experimental.UIElements;
 
 public class Kuro : MonoBehaviour {
-
-    //x todo fix pfps looking the opposite way
-    //x todo change the discord leaving sound (stretch goal)
-    //todo tp (stretch goal)
-    //todo - regular (stretch goal)
-    //todo - autosolve (stretch goal)
-    //todo change logging for when eating food
 
     private string[] correctModNames;
     private string[] correctRepoNames;
@@ -491,42 +482,48 @@ public class Kuro : MonoBehaviour {
                 break;
         }
         wrongTextures = wrongTextures.Shuffle().Take(3).ToArray();
-        for (int i = 0; i < 3; i++)
-        {
-            int dummy = i;
-            if (correctFoodIndex == dummy)
-            {
-                foodButtons[dummy].GetComponent<MeshRenderer>().material.mainTexture = correctTexture;
-                foodButtons[dummy].OnInteract += delegate () { if (moduleActivated && !pause) { Solve($"You chose {foodButtons[dummy].name}. This is correct"); } return false; };
-
-            }
-            else
-            {
-                foodButtons[dummy].GetComponent<MeshRenderer>().material.mainTexture = wrongTextures[dummy];
-                foodButtons[dummy].OnInteract += delegate () { if (moduleActivated && !pause) { Strike($"You chose {foodButtons[dummy].name}. This is incorrect"); } return false; };
-            }
-        }
 
         Log($"Kuro wants {foods[foodIndex]}");
         List<string> newNames = new List<string>();
 
         for (int i = 0; i < foodButtons.Length; i++)
         {
-            string oldName = foodButtons[i].GetComponent<MeshRenderer>().sharedMaterial.name;
-            string newName = "";
-            foreach (char c in oldName)
+            int dummy = i;
+            if (correctFoodIndex == dummy)
             {
-                if (!Char.IsDigit(c))
-                {
-                    newName += c;
-                }
-            }
+                foodButtons[dummy].GetComponent<MeshRenderer>().material.mainTexture = correctTexture;
+                string name = GetCorrectName(correctTexture.name);
+                newNames.Add(name);
 
-            newNames.Add(newName.Trim());
+                foodButtons[dummy].OnInteract += delegate () { if (moduleActivated && !pause) { Solve($"You chose {name}. This is correct"); } return false; };
+
+            }
+            else
+            {
+                foodButtons[dummy].GetComponent<MeshRenderer>().material.mainTexture = wrongTextures[dummy];
+                string name = GetCorrectName(wrongTextures[dummy].name);
+                newNames.Add(name);
+
+                foodButtons[dummy].OnInteract += delegate () { if (moduleActivated && !pause) { Strike($"You chose {name}. This is incorrect"); } return false; };
+            }
         }
         SetUpPfpButtons();
         Log($"The displayed foods are {newNames.Join(", ")}");
         EnableFood(true);
+    }
+
+    private string GetCorrectName(string oldName)
+    {
+        string newName = "";
+        foreach (char c in oldName)
+        {
+            if (!Char.IsDigit(c))
+            {
+                newName += c;
+            }
+        }
+
+        return newName.Trim();
     }
 
     private void SetUpPfpButtons()

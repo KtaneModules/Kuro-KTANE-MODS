@@ -161,6 +161,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -211,6 +216,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -263,6 +273,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -309,6 +324,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -361,6 +381,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -411,6 +436,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -463,6 +493,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -513,6 +548,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -565,6 +605,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -615,6 +660,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -667,6 +717,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -718,6 +773,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -768,6 +828,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -861,6 +926,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -977,6 +1047,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -1110,6 +1185,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -1160,6 +1240,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
@@ -1212,6 +1297,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -1263,6 +1353,11 @@ Prefab:
       propertyPath: debug
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
   m_IsPrefabParent: 0
@@ -1313,6 +1408,11 @@ Prefab:
         type: 2}
       propertyPath: debug
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114155347196176212, guid: f14fcc42174e6004181c93929d509c2a,
+        type: 2}
+      propertyPath: debugDesiredTask
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f14fcc42174e6004181c93929d509c2a, type: 2}
