@@ -22,8 +22,6 @@ public class Kuro : MonoBehaviour {
     private Mood debugCurrentMood;
     [SerializeField]
     private bool debug;
-    [SerializeField]
-    private Sprite spotifyLogo;
 
     [SerializeField]
     private Texture2D[] songs; //alors, collared, die in a fire, funkytown, glass animals, golden afternoon, i should've known, paint it black, wavetapper
