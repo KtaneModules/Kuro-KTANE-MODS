@@ -499,6 +499,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224799038354649408}
   - component: {fileID: 212218723771020764}
+  - component: {fileID: 114913255628277898}
   m_Layer: 0
   m_Name: Game Image
   m_TagString: Untagged
@@ -1428,6 +1429,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4892622572175360}
   - component: {fileID: 212344206827938618}
+  - component: {fileID: 114580249762068588}
   m_Layer: 0
   m_Name: Spotify Logo
   m_TagString: Untagged
@@ -2861,6 +2863,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224083228884078704}
   - component: {fileID: 212035997788795122}
+  - component: {fileID: 114944458944571534}
   m_Layer: 0
   m_Name: Game Image
   m_TagString: Untagged
@@ -3414,6 +3417,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224406878043599244}
   - component: {fileID: 212714429793427430}
+  - component: {fileID: 114575245629080814}
   m_Layer: 0
   m_Name: Media Image
   m_TagString: Untagged
@@ -3682,6 +3686,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4807055083484370}
   - component: {fileID: 212105315399793366}
+  - component: {fileID: 114923013407925044}
   m_Layer: 0
   m_Name: Spotify Logo
   m_TagString: Untagged
@@ -4105,6 +4110,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224853103164141672}
   - component: {fileID: 212970817282947352}
+  - component: {fileID: 114982898212224194}
   m_Layer: 0
   m_Name: Media Image
   m_TagString: Untagged
@@ -4191,6 +4197,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224240645886035720}
   - component: {fileID: 212646147056646782}
+  - component: {fileID: 114153424492220400}
   m_Layer: 0
   m_Name: Game Image
   m_TagString: Untagged
@@ -4353,6 +4360,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4655244882894590}
   - component: {fileID: 212130018777229388}
+  - component: {fileID: 114450730825581102}
   m_Layer: 0
   m_Name: Spotify Logo
   m_TagString: Untagged
@@ -4516,6 +4524,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224492349651121280}
   - component: {fileID: 212168022110871430}
+  - component: {fileID: 114198096525774934}
   m_Layer: 0
   m_Name: Media Image
   m_TagString: Untagged
@@ -15653,8 +15662,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114082005471659454
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -15731,8 +15739,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114100536204971546
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -15864,8 +15871,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114124526326343508
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -15939,8 +15945,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114151373689498628
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -15957,6 +15962,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114153424492220400
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1872341337611206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Sprites/Default
 --- !u!114 &114155347196176212
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16055,8 +16073,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114157157113190852
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16220,8 +16237,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114186693458652522
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16268,8 +16284,20 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShaderNames: []
+--- !u!114 &114198096525774934
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1933820013791202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - Sprites/Default
 --- !u!114 &114200159981533000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16357,8 +16385,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114223997147971694
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16425,8 +16452,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114227837686081766
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16640,8 +16666,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114271318375530226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -16953,8 +16978,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114319389908694024
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17048,8 +17072,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114337876703594748
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17126,8 +17149,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114349518367154312
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17165,8 +17187,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114353585292004354
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17443,8 +17464,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114427921409914560
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17528,6 +17548,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16c1cc04e0449084ca5d0ab92ad470cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114450730825581102
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1904173886018466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Sprites/Default
 --- !u!114 &114455729911427816
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17552,8 +17585,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114461846296057824
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17587,8 +17619,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114463530989570676
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17705,8 +17736,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114479586864378728
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17817,8 +17847,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114495799589515070
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17873,8 +17902,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114520103126539720
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17886,8 +17914,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114520134422515210
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17899,8 +17926,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114520478481526656
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -17962,8 +17988,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114537119193855360
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18010,8 +18035,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114543387540656676
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18049,8 +18073,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114546179527054192
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18166,12 +18189,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - Standard
+--- !u!114 &114575245629080814
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1711628068378234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Sprites/Default
 --- !u!114 &114576270602426906
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1559332066201318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Sprites/Default
+--- !u!114 &114580249762068588
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1314177467386258}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
@@ -18190,8 +18239,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114597762422328462
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18548,8 +18596,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114634459379586984
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18771,8 +18818,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114697556896165158
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18832,8 +18878,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114708747049076318
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -18964,8 +19009,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114723518273794970
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -19145,8 +19189,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114771586467333482
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -19679,8 +19722,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114875545496818266
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -19727,8 +19769,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114881918432278818
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -19860,8 +19901,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114905829804278522
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -19875,6 +19915,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - Standard
+--- !u!114 &114913255628277898
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1104475382692246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Sprites/Default
 --- !u!114 &114914739983234874
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -19964,6 +20017,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Add dark mode support for Totally Accurate Minecraft Simulator
+--- !u!114 &114923013407925044
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1763166011426318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Sprites/Default
 --- !u!114 &114927192414577048
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20054,6 +20120,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - Standard
+--- !u!114 &114944458944571534
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1599809706955062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Sprites/Default
 --- !u!114 &114949000892975628
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20179,8 +20258,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114958517340971448
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20192,8 +20270,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114958726906485952
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20262,8 +20339,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114969874822970250
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20336,6 +20412,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Outline
+--- !u!114 &114982898212224194
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1855020093990760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShaderNames:
+  - Sprites/Default
 --- !u!114 &114992599560317700
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20347,8 +20436,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114996648093459160
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20360,8 +20448,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114997633062148228
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -20373,8 +20460,7 @@ MonoBehaviour:
   m_Script: {fileID: -1005838349, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShaderNames:
-  - Standard
+  ShaderNames: []
 --- !u!114 &114999729968124708
 MonoBehaviour:
   m_ObjectHideFlags: 1
