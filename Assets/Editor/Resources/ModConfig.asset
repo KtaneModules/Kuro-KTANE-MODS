@@ -17,4 +17,4 @@ MonoBehaviour:
   description: A day in the life with Kuro
   version: 
   outputFolder: build
-  previewImage: {fileID: 2800000, guid: 38f3a64bf77bdff418beea0f999babeb, type: 3}
+  previewImage: {fileID: 2800000, guid: e6e483c8d2b71ad4db8da40feedef254, type: 3}
