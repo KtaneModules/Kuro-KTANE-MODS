@@ -96,6 +96,8 @@ public class Kuro : MonoBehaviour {
     int ModuleId;
     private bool ModuleSolved, moduleActivated = false;
     private List<string> onBombKuroModules = new List<string>(); //all the modules on the bomb made by Kuro
+    private List<string> currentOnBombKuroModules = new List<string>(); //all the modules on the bomb made by Kuro
+
     private List<string> currentSolvedModules; //modules that have been solved on the bomb
     private bool pause = false; //if this is true, something must finish before any interactions can be done
 
@@ -110,7 +112,7 @@ public class Kuro : MonoBehaviour {
 
     IEnumerator Start()
     {
-        BombModule.OnActivate += delegate { StartCoroutine(OnActivate()); };
+        BombModule.OnActivate += OnActivate;
 
         SetUpModule();
 
@@ -147,8 +149,6 @@ public class Kuro : MonoBehaviour {
             {
                 switch (activities[i])
                 {
-                    case Activity.VC:
-                        continue;
                     case Activity.Game:
                         transform.Find($"Solved State/Activity {i + 1}").Find("Canvas/Sub Text").GetComponent<Text>().text = $"{gameNames[i]} - {actiityTime}";
                         break;
@@ -159,7 +159,7 @@ public class Kuro : MonoBehaviour {
             }
         }
 
-        else if (desiredTask == Task.CreateModule)
+        else if (desiredTask == Task.CreateModule && currentOnBombKuroModules.Count != 0)
         {
             List<string> solvedModules = BombInfo.GetSolvedModuleNames();
 
@@ -167,9 +167,9 @@ public class Kuro : MonoBehaviour {
             {
                 string solvedModule = GetLatestSolve(solvedModules, currentSolvedModules);
 
-                if (onBombKuroModules.Contains(solvedModule))
+                if (currentOnBombKuroModules.Contains(solvedModule))
                 {
-                    onBombKuroModules.Remove(solvedModule);
+                    currentOnBombKuroModules.Remove(solvedModule);
                     if (currentVoiceLocation != VoiceLocation.ChillZoneAlfa)
                     {
                         Strike($"You solved {solvedModule} before moving to Chill Zone Alfa. Strike!");
@@ -178,7 +178,7 @@ public class Kuro : MonoBehaviour {
 
                     else
                     {
-                        if (onBombKuroModules.Count == 0)
+                        if (currentOnBombKuroModules.Count == 0)
                         {
                             Log($"Solved {solvedModule}. Leave the call to solve the module");
                         }
@@ -358,7 +358,7 @@ public class Kuro : MonoBehaviour {
 
     private string GetGroupModuleString()
     {
-        return onBombKuroModules.GroupBy(name => name).Select(kv => $"{kv.Key} ({kv.Count()})").Join(", ");
+        return currentOnBombKuroModules.GroupBy(name => name).Select(kv => $"{kv.Key} ({kv.Count()})").Join(", ");
     }
 
     private void CallButtonClick()
@@ -551,7 +551,7 @@ public class Kuro : MonoBehaviour {
         EnableSpeaking(false);
         pause = false;
     }
-    IEnumerator OnActivate()
+    void OnActivate()
     {
         currentTime = DateTime.Now;
 
@@ -636,16 +636,11 @@ public class Kuro : MonoBehaviour {
         List<string> allModules = BombInfo.GetSolvableModuleNames();
         List<string> kuroModules;
 
-        do
-        {
-            yield return new WaitForSeconds(0.1f);
-
-        } while (!RepoJSONGetter.LoadingDone);
-
-        if (!RepoJSONGetter.Success)
-        {
+        //if the repo has not finished loading at this point, consider it a failure
+        if(!RepoJSONGetter.LoadingDone || !RepoJSONGetter.Success)
+        { 
             kuroModules = "Technical Keypad|Procedural Maze|Blank Slate|Orientation Hypercube|Shy Guy Says|Samuel Says|Coloured Cubes".Split('|').ToList();
-            Log("Data failed to load. List of Kuro modules: " + string.Join(", ", kuroModules.ToArray()));
+            Log("Data failed to load. Using hardcoded list of modules: " + string.Join(", ", kuroModules.ToArray()));
             wariningSign.SetActive(true);
         }
         else
@@ -655,6 +650,7 @@ public class Kuro : MonoBehaviour {
             kuroModules = RepoJSONGetter.kuroModules;
         }
         onBombKuroModules = allModules.Where(mod => kuroModules.Contains(mod)).OrderBy(q => q).ToList();
+        currentOnBombKuroModules = new List<string>(onBombKuroModules);
         currentSolvedModules = new List<string>();
 
         switch (desiredTask)
@@ -1668,11 +1664,6 @@ public class Kuro : MonoBehaviour {
     }
 
     IEnumerator TwitchHandleForcedSolve () {
-        //wait till loading is done
-        while (!RepoJSONGetter.LoadingDone || !moduleActivated)
-        {
-            yield return null;
-        }
         switch (desiredTask)
         {
             case Task.CreateModule:

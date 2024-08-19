@@ -23,4 +23,14 @@ public class Dummy : MonoBehaviour {
         GetComponent<KMBombModule>().HandlePass();
         ModuleSolved = true;
     }
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        KMSelectable kms = GetComponent<KMSelectable>();
+        kms.OnFocus();
+        //kms.OnDefocus();
+
+        while (!ModuleSolved)
+            yield return null;
+    }
 }
