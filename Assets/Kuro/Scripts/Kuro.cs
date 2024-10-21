@@ -1005,7 +1005,7 @@ public class Kuro : MonoBehaviour {
                 int maxValue = repoRequestValue.Max();
                 List<int> correctIndicies = repoRequestValue.Select((value, index) => value == maxValue ? index : -1).Where(index => index != -1).ToList();
                 correctRepoNames = correctIndicies.Select(i => repoRequestPeople[i].Name).ToArray();
-                Debug.Log($"You should choose: {correctRepoNames.Join(", ")}");
+                Log($"You should choose: {correctRepoNames.Join(", ")}");
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -1726,7 +1726,6 @@ public class Kuro : MonoBehaviour {
                 //join voice text modded
                 if(currentTextLocation == TextLocation.None)
                 {
-                    Debug.Log("Text location none");
                     yield return ProcessTwitchCommand("join voice text modded");
                 }
 
