@@ -15986,9 +15986,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf29aa97f277ae740a2a7783e3a6e709, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugDesiredTask: 2
+  debugDesiredTask: 3
   debugCurrentMood: 5
-  debug: 1
+  debug: 0
   songs:
   - {fileID: 2800000, guid: eb435de08acf5a4418fd40bd5cc7490e, type: 3}
   - {fileID: 2800000, guid: 3938d62b4255fd0489a1fdbff0218c1d, type: 3}
