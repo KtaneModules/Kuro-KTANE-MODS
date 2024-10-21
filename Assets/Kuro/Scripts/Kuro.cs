@@ -8,6 +8,7 @@ using Rnd = UnityEngine.Random;
 using UnityEngine.UI;
 using static Enums;
 using System.Text.RegularExpressions;
+using static UnityEngine.UI.Navigation;
 
 public class Kuro : MonoBehaviour {
 
@@ -1675,7 +1676,7 @@ public class Kuro : MonoBehaviour {
                 {
                     //jpin mod ideas
                     if (currentTextLocation == TextLocation.None)
-                    { 
+                    {
                         yield return ProcessTwitchCommand($"join mod ideas");
                     }
 
@@ -1697,12 +1698,12 @@ public class Kuro : MonoBehaviour {
             case Task.Eat:
                 //join correct vc if not already in vc
                 if (currentVoiceLocation == VoiceLocation.None)
-                { 
+                {
                     yield return ProcessTwitchCommand($"join {desiredVCs[0].Name}");
                 }
-                
+
                 //wait until eat options are visible
-                while(!transform.Find("Module Active State/Eat").gameObject.activeInHierarchy)
+                while (!transform.Find("Module Active State/Eat").gameObject.activeInHierarchy)
                 {
                     yield return null;
                 }
@@ -1710,6 +1711,41 @@ public class Kuro : MonoBehaviour {
                 yield return ProcessTwitchCommand($"Eat {correctFoodIndex + 1}");
                 break;
             case Task.PlayKTANE:
+
+                //join modded alfa
+                if (currentVoiceLocation == VoiceLocation.None)
+                {
+                    yield return ProcessTwitchCommand("join Modded Alfa");
+                    while (moddedAlfaPeople == null || moddedAlfaPeople.Length < 2)
+                    {
+                        //wait til 3 people are in the channel
+                        yield return new WaitForSeconds(1f);
+                    }
+                }
+
+                //join voice text modded
+                if(currentTextLocation == TextLocation.None)
+                {
+                    Debug.Log("Text location none");
+                    yield return ProcessTwitchCommand("join voice text modded");
+                }
+
+                string command;
+                switch (correctRole)
+                {
+                    case Role.None:
+                        command = "end call";
+                        break;
+                    case Role.Defuse:
+                        command = "defuse";
+                        break;
+
+                    default:
+                        command = "expert";
+                        break;
+                }
+
+                yield return ProcessTwitchCommand(command);
                 break;
             case Task.Bed:
                 if (currentVoiceLocation == VoiceLocation.None)
