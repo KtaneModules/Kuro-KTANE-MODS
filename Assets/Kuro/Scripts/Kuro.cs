@@ -369,7 +369,7 @@ public class Kuro : MonoBehaviour {
         switch (desiredTask)
         {
             case Task.CreateModule:
-                if (onBombKuroModules.Count > 0)
+                if (currentOnBombKuroModules.Count > 0)
                 {
                     Strike("Tried to leave the call before all modules were solved");
                 }

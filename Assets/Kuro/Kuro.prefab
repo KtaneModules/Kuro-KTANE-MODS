@@ -15986,7 +15986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf29aa97f277ae740a2a7783e3a6e709, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugDesiredTask: 3
+  debugDesiredTask: 0
   debugCurrentMood: 5
   debug: 0
   songs:
